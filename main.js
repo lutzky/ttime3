@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @typedef {Object} Course
  * @property {string} name
@@ -130,6 +132,150 @@ function refreshSelectedCourses() {
     li.appendChild(nameSpan);
     ul.appendChild(li);
   });
+}
+
+/**
+ * Start a worker to generate schedules
+ */
+function getSchedules() {
+  /* exported getSchedules */
+  let genButton = document.getElementById('generate-schedules');
+  genButton.disabled = true;
+  let w = new Worker('scheduler.js');
+  // TODO(lutzky): Wrap worker with a Promise
+  w.onmessage = function(e) {
+    console.info('Received message from worker:', e);
+    genButton.disabled = false;
+    w.terminate();
+    setPossibleSchedules(e.data);
+  };
+  w.postMessage(selectedCourses);
+}
+
+let possibleSchedules = [];
+let currentSchedule = 0;
+
+/**
+ * Set the collection of possible schedules
+ *
+ * @param {Schedule[]} schedules - Possible schedules
+ */
+function setPossibleSchedules(schedules) {
+  possibleSchedules = schedules;
+  currentSchedule = 0;
+  let div = document.getElementById('schedule-browser');
+  document.getElementById('num-schedules').textContent = schedules.length;
+  if (schedules.length > 0) {
+    div.style.display = 'block';
+  } else {
+    div.style.display = 'none';
+  }
+  goToSchedule(0);
+}
+
+/**
+ * Increment the current displayed schedule
+ */
+function nextSchedule() {
+  /* exported nextSchedule */
+  goToSchedule(currentSchedule + 1);
+}
+
+/**
+ * Decrement the current displayed schedule
+ */
+function prevSchedule() {
+  /* exported prevSchedule */
+  goToSchedule(currentSchedule - 1);
+}
+
+const dayNames = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+/**
+ * Display schedule i, modulo the possible range 0-(numSchedules - 1)
+ *
+ * @param {number} i - schedule to show
+ */
+function goToSchedule(i) {
+  let max = possibleSchedules.length;
+  i = (i + max) % max;
+  currentSchedule = i;
+  document.getElementById('current-schedule-id').textContent = i + 1;
+  let days = byDay(possibleSchedules[i]);
+
+  let scheduleContents = document.getElementById('schedule-contents');
+  scheduleContents.innerHTML = '';
+
+  days.forEach(function(dayEvents) {
+    let dayEntry = document.createElement('li');
+    scheduleContents.appendChild(dayEntry);
+    dayEntry.textContent = dayNames[dayEvents[0].day];
+    let eventList = document.createElement('ul');
+    dayEntry.appendChild(eventList);
+    dayEvents.forEach(function(e) {
+      let eventEntry = document.createElement('li');
+      let startTime = minutesToTime(e.startMinute);
+      let endTime = minutesToTime(e.endMinute);
+      eventEntry.textContent = `${startTime}-${endTime} something at ${
+        e.location
+      }`;
+      eventList.appendChild(eventEntry);
+    });
+  });
+}
+
+/**
+ * Convert minutes-from-midnight to HH:MM
+ *
+ * @param {number} minutes - Minutes from midnight
+ * @returns {string} - HH:MM
+ */
+function minutesToTime(minutes) {
+  let hourString = Math.floor(minutes / 60)
+    .toString()
+    .padStart(2, '0');
+  let minuteString = (minutes % 60).toString().padStart(2, '0');
+  return hourString + ':' + minuteString;
+}
+
+/**
+ * Get events for schedule split into per-day arrays
+ *
+ * @param {Schedule} schedule - Schedule to split into days
+ * @returns {Array.<Array.<Event>>} - Each entry is an array of Events with the
+ *                                    same day, sorted ascending.
+ */
+function byDay(schedule) {
+  let events = schedule.events.slice();
+  let result = [[]];
+
+  events.sort(function(a, b) {
+    // TODO(lutzky): Reuse sorting function from events.js
+    if (a.day != b.day) {
+      return a.day - b.day;
+    }
+    return a.startMinute - b.startMinute;
+  });
+
+  let currentDay = events[0].day;
+
+  events.forEach(function(e) {
+    if (e.day != currentDay) {
+      result.push([]);
+      currentDay = e.day;
+    }
+    result[result.length - 1].push(e);
+  });
+
+  return result;
 }
 
 loadCatalog(catalogUrl).then(
