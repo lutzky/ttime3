@@ -1,0 +1,23 @@
+{
+  "name": "ttime3",
+  "version": "1.0.0",
+  "description": "TTime pure-JS implementation",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "prettier": "^1.13.5"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/lutzky/ttime3"
+  },
+  "author": "Ohad Lutzky <lutzky@gmail.com>",
+  "license": "ISC"
+}
