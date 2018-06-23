@@ -141,7 +141,7 @@ function getSchedules() {
   /* exported getSchedules */
   let genButton = document.getElementById('generate-schedules');
   genButton.disabled = true;
-  let w = new Worker('scheduler.js');
+  let w = new Worker('scheduler_worker.js');
   // TODO(lutzky): Wrap worker with a Promise
   w.onmessage = function(e) {
     console.info('Received message from worker:', e);

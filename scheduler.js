@@ -2,6 +2,7 @@
  * @typedef {Object} Event
  * @property {number} day - Day of week
  * @property {number} startMinute - Minutes since midnight for start
+ * @property {number} endMinute - Minutes since midnight for end
  */
 
 /**
@@ -90,6 +91,7 @@ const cartesian = (a, b, ...c) => (b ? cartesian(f(a, b), ...c) : a);
  * @returns {Schedule[]}
  */
 function generateSchedules(courses) {
+  /* exported generateSchedules */
   console.time('generateSchedules');
   let groupBins = courses
     .map(c => groupsByType(c))
@@ -119,12 +121,3 @@ function groupsToSchedule(groups) {
   let e = groups.reduce((a, b) => a.concat(b.events), []);
   return { events: e };
 }
-
-onmessage = function(e) {
-  console.log('Message received from main script:', e.data);
-
-  let courses = Array.from(e.data);
-
-  let schedules = generateSchedules(courses);
-  postMessage(schedules);
-};
