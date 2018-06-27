@@ -24,6 +24,12 @@ const catalogUrl =
 let selectedCourses = new Set();
 
 /**
+ * Catalog of all courses
+ * @type {Catalog}
+ */
+var currentCatalog = null;
+
+/**
  * Load the catalog object from url.
  *
  * @param {string} url - URL to download catalog from.
@@ -53,16 +59,14 @@ function loadCatalog(url) {
 
 /**
  * Write catalog selector to page.
- *
- * @param {Catalog} catalog - Catalog of faculties.
  */
-function writeCatalogSelector(catalog) {
+function writeCatalogSelector() {
   let facultiesDiv = document.getElementById('catalog');
   let facultyList = document.createElement('ul');
 
   facultiesDiv.innerHTML = '';
   facultiesDiv.appendChild(facultyList);
-  catalog.forEach(function(faculty) {
+  currentCatalog.forEach(function(faculty) {
     let li = document.createElement('li');
     li.textContent = faculty.name;
     let courseList = document.createElement('ul');
@@ -73,7 +77,7 @@ function writeCatalogSelector(catalog) {
       let btn = document.createElement('button');
       let nameSpan = document.createElement('span');
       btn.textContent = '+';
-      nameSpan.textContent = ' ' + course.name;
+      nameSpan.textContent = ' ' + course.id + ' ' + course.name;
       let courseLi = document.createElement('li');
       courseLi.appendChild(btn);
       courseLi.appendChild(nameSpan);
@@ -95,6 +99,29 @@ function addSelectedCourse(course) {
   console.info('Selected', course);
   selectedCourses.add(course);
   refreshSelectedCourses();
+}
+
+/**
+ * Add a course with a given ID
+ * @param {number} id - Course ID
+ */
+function addSelectedCourseByID(id) {
+  /* exported addSelectedCourseByID */
+  let found = false;
+  currentCatalog.forEach(function(faculty) {
+    if (!found) {
+      faculty.courses.forEach(function(course) {
+        if (course.id == id) {
+          addSelectedCourse(course);
+          found = true;
+          return;
+        }
+      });
+    }
+  });
+  if (!found) {
+    throw new Error('No course with ID ' + id);
+  }
 }
 
 /**
@@ -127,7 +154,7 @@ function refreshSelectedCourses() {
     btn.onclick = function() {
       delSelectedCourse(course);
     };
-    nameSpan.innerText = ' ' + course.name;
+    nameSpan.innerText = ' ' + course.id + ' ' + course.name;
     li.appendChild(btn);
     li.appendChild(nameSpan);
     ul.appendChild(li);
@@ -267,7 +294,11 @@ function byDay(schedule) {
 loadCatalog(catalogUrl).then(
   function(catalog) {
     console.log('Loaded catalog:', catalog);
-    writeCatalogSelector(catalog);
+    currentCatalog = catalog;
+    writeCatalogSelector();
+    [104166, 104018, 234114, 234145].forEach(function(id) {
+      addSelectedCourseByID(id);
+    });
   },
   function(error) {
     console.error('Failed!', error);
