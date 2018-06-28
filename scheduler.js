@@ -56,20 +56,6 @@ function eventsCollide(events) {
 }
 
 /**
- * Sorts events by start time
- *
- * @param {Event[]} events - Events to sort
- */
-function sortEvents(events) {
-  events.sort(function(a, b) {
-    if (a.day != b.day) {
-      return a.day - b.day;
-    }
-    return a.startMinute - b.startMinute;
-  });
-}
-
-/**
  * Returns true iff schedule has no collisions
  *
  * @param {Schedule} schedule - Schedule to check for collisions

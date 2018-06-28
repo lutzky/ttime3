@@ -328,13 +328,7 @@ function byDay(schedule) {
   let events = schedule.events.slice();
   let result = [[]];
 
-  events.sort(function(a, b) {
-    // TODO(lutzky): Reuse sorting function from events.js
-    if (a.day != b.day) {
-      return a.day - b.day;
-    }
-    return a.startMinute - b.startMinute;
-  });
+  sortEvents(events);
 
   let currentDay = events[0].day;
 

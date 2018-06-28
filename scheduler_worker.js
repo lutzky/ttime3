@@ -1,4 +1,4 @@
-importScripts('scheduler.js');
+importScripts('common.js', 'scheduler.js');
 
 onmessage = function(e) {
   console.log('Message received from main script:', e.data);
