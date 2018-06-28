@@ -28,12 +28,12 @@ let selectedCourses = new Set();
  * Catalog of all courses
  * @type {Catalog}
  */
-var currentCatalog = null;
+let currentCatalog = null;
 
 /**
  * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
  *
- * @param {Catalog} catalog
+ * @param {Catalog} catalog - Catalog to add back-links to
  */
 function fixRawCatalog(catalog) {
   catalog.forEach(function(faculty) {
