@@ -5,6 +5,7 @@
  * @property {string} name
  * @property {number} academicPoints - Number of academic points
  * @property {number} id - Course ID
+ * @property {Group[]} groups
  * @
  */
 
@@ -30,6 +31,29 @@ let selectedCourses = new Set();
 var currentCatalog = null;
 
 /**
+ * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
+ *
+ * @param {Catalog} catalog
+ */
+function fixRawCatalog(catalog) {
+  catalog.forEach(function(faculty) {
+    faculty.courses.forEach(function(course) {
+      course.faculty = faculty;
+      if (course.groups) {
+        course.groups.forEach(function(group) {
+          group.course = course;
+          if (group.events) {
+            group.events.forEach(function(event) {
+              event.group = group;
+            });
+          }
+        });
+      }
+    });
+  });
+}
+
+/**
  * Load the catalog object from url.
  *
  * @param {string} url - URL to download catalog from.
@@ -42,7 +66,9 @@ function loadCatalog(url) {
     req.open('GET', catalogUrl);
     req.onload = function() {
       if (req.status == 200) {
-        resolve(JSON.parse(req.response));
+        let result /** Catalog */ = JSON.parse(req.response);
+        fixRawCatalog(result);
+        resolve(result);
       } else {
         reject(Error(req.statusText));
       }
@@ -64,7 +90,20 @@ function loadCatalog(url) {
  */
 function showCourseDebugInfo(course) {
   let infoDiv = document.getElementById('course-extra-info');
-  infoDiv.innerHTML = '<pre>' + JSON.stringify(course, null, 4) + '</pre>';
+  infoDiv.innerHTML =
+    '<pre>' +
+    JSON.stringify(
+      course,
+      function(key, value) {
+        if (['course', 'group', 'faculty'].includes(key)) {
+          return undefined;
+        } else {
+          return value;
+        }
+      },
+      4
+    ) +
+    '</pre>';
   infoDiv.style.visibility = 'visible';
 }
 
@@ -94,10 +133,7 @@ function writeCatalogSelector() {
       let nameSpan = document.createElement('span');
       btn.textContent = '+';
       nameSpan.textContent = ' ' + course.id + ' ' + course.name;
-      nameSpan.onmouseover = function() {
-        // TODO(lutzky): Format this code more nicely
-        showCourseDebugInfo(course);
-      };
+      nameSpan.onmouseover = () => showCourseDebugInfo(course);
       let courseLi = document.createElement('li');
       courseLi.appendChild(btn);
       courseLi.appendChild(nameSpan);
@@ -123,6 +159,7 @@ function addSelectedCourse(course) {
 
 /**
  * Add a course with a given ID
+ *
  * @param {number} id - Course ID
  */
 function addSelectedCourseByID(id) {
@@ -175,10 +212,7 @@ function refreshSelectedCourses() {
       delSelectedCourse(course);
     };
     nameSpan.innerText = ' ' + course.id + ' ' + course.name;
-    nameSpan.onmouseover = function() {
-      // TODO(lutzky): Format this code more nicely
-      showCourseDebugInfo(course);
-    };
+    nameSpan.onmouseover = () => showCourseDebugInfo(course);
     li.appendChild(btn);
     li.appendChild(nameSpan);
     ul.appendChild(li);
@@ -275,9 +309,9 @@ function goToSchedule(i) {
       let eventEntry = document.createElement('li');
       let startTime = minutesToTime(e.startMinute);
       let endTime = minutesToTime(e.endMinute);
-      eventEntry.textContent = `${startTime}-${endTime} something at ${
-        e.location
-      }`;
+      eventEntry.textContent = `${startTime}-${endTime} ${
+        e.group.course.name
+      } at ${e.location}`;
       eventList.appendChild(eventEntry);
     });
   });
