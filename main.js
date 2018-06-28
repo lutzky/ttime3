@@ -58,6 +58,17 @@ function loadCatalog(url) {
 }
 
 /**
+ * Show debug information about a course
+ *
+ * @param {Course} course - Course to show information about
+ */
+function showCourseDebugInfo(course) {
+  let infoDiv = document.getElementById('course-extra-info');
+  infoDiv.innerHTML = '<pre>' + JSON.stringify(course, null, 4) + '</pre>';
+  infoDiv.style.visibility = 'visible';
+}
+
+/**
  * Write catalog selector to page.
  */
 function writeCatalogSelector() {
@@ -78,6 +89,10 @@ function writeCatalogSelector() {
       let nameSpan = document.createElement('span');
       btn.textContent = '+';
       nameSpan.textContent = ' ' + course.id + ' ' + course.name;
+      nameSpan.onmouseover = function() {
+        // TODO(lutzky): Format this code more nicely
+        showCourseDebugInfo(course);
+      };
       let courseLi = document.createElement('li');
       courseLi.appendChild(btn);
       courseLi.appendChild(nameSpan);
@@ -155,6 +170,10 @@ function refreshSelectedCourses() {
       delSelectedCourse(course);
     };
     nameSpan.innerText = ' ' + course.id + ' ' + course.name;
+    nameSpan.onmouseover = function() {
+      // TODO(lutzky): Format this code more nicely
+      showCourseDebugInfo(course);
+    };
     li.appendChild(btn);
     li.appendChild(nameSpan);
     ul.appendChild(li);
