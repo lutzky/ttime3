@@ -1,0 +1,15 @@
+#course-extra-info {
+  float: right;
+  width: 50%;
+  border: 1px solid black;
+  visibility: hidden;
+}
+
+.semester-tag {
+  color: #333;
+  background-color: #dde;
+  font-size: x-small;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 1px;
+}

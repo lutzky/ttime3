@@ -79,7 +79,12 @@ function writeCatalogSelector() {
   facultiesDiv.appendChild(facultyList);
   currentCatalog.forEach(function(faculty) {
     let li = document.createElement('li');
-    li.textContent = faculty.name;
+    li.textContent = faculty.name + ' ';
+    let semesterTag = document.createElement('span');
+    semesterTag.className = 'semester-tag';
+    semesterTag.textContent = faculty.semester;
+    li.appendChild(semesterTag);
+
     let courseList = document.createElement('ul');
     li.appendChild(courseList);
     facultyList.appendChild(li);
