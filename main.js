@@ -89,6 +89,7 @@ function loadCatalog(url) {
  * @param {Course} course - Course to show information about
  */
 function showCourseDebugInfo(course) {
+  let infoBoxDiv = document.getElementById('course-extra-info-box');
   let infoDiv = document.getElementById('course-extra-info');
   infoDiv.innerHTML =
     '<pre>' +
@@ -104,7 +105,35 @@ function showCourseDebugInfo(course) {
       4
     ) +
     '</pre>';
-  infoDiv.style.visibility = 'visible';
+  infoBoxDiv.style.visibility = 'visible';
+}
+
+/**
+ * Hide the informational box
+ */
+function closeInfoBox() {
+  /* exported closeInfoBox */
+  let infoBoxDiv = document.getElementById('course-extra-info-box');
+  infoBoxDiv.style.visibility = 'hidden';
+}
+
+/**
+ * Create a span for a course label, including info button
+ *
+ * @param {Course} course - Course to create label for
+ *
+ * @returns {HTMLSpanElement}
+ */
+function courseLabel(course) {
+  let span = document.createElement('span');
+  let infoLink = document.createElement('a');
+  infoLink.textContent = '[?]';
+  infoLink.className = 'info-link';
+  infoLink.href = '#';
+  span.textContent = ` ${course.id} ${course.name} `;
+  infoLink.onclick = () => showCourseDebugInfo(course);
+  span.appendChild(infoLink);
+  return span;
 }
 
 /**
@@ -130,13 +159,11 @@ function writeCatalogSelector() {
 
     faculty.courses.forEach(function(course) {
       let btn = document.createElement('button');
-      let nameSpan = document.createElement('span');
+      let label = courseLabel(course);
       btn.textContent = '+';
-      nameSpan.textContent = ' ' + course.id + ' ' + course.name;
-      nameSpan.onmouseover = () => showCourseDebugInfo(course);
       let courseLi = document.createElement('li');
       courseLi.appendChild(btn);
-      courseLi.appendChild(nameSpan);
+      courseLi.appendChild(label);
       courseList.appendChild(courseLi);
 
       btn.onclick = function() {
@@ -205,16 +232,14 @@ function refreshSelectedCourses() {
   div.appendChild(ul);
   selectedCourses.forEach(function(course) {
     let li = document.createElement('li');
-    let nameSpan = document.createElement('span');
+    let label = courseLabel(course);
     let btn = document.createElement('button');
     btn.innerText = '-';
     btn.onclick = function() {
       delSelectedCourse(course);
     };
-    nameSpan.innerText = ' ' + course.id + ' ' + course.name;
-    nameSpan.onmouseover = () => showCourseDebugInfo(course);
     li.appendChild(btn);
-    li.appendChild(nameSpan);
+    li.appendChild(label);
     ul.appendChild(li);
   });
 }

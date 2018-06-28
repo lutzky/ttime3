@@ -1,4 +1,4 @@
-#course-extra-info {
+#course-extra-info-box {
   float: right;
   width: 50%;
   border: 1px solid black;
@@ -24,4 +24,13 @@
   width: 100%;
   box-sizing: border-box;
   background-color: white;
+}
+
+.info-link {
+  font-size: x-small;
+}
+
+#info-box-closer {
+  float: right;
+  font-size: x-small;
 }
