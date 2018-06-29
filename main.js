@@ -76,7 +76,7 @@ function courseLabel(course) {
   let infoLink = document.createElement('a');
   infoLink.textContent = '[?]';
   infoLink.className = 'info-link';
-  infoLink.href = '#';
+  infoLink.href = '#/';
   span.textContent = ` ${course.id} ${course.name} `;
   infoLink.onclick = () => showCourseDebugInfo(course);
   span.appendChild(infoLink);
