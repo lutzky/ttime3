@@ -320,7 +320,7 @@ loadCatalog(catalogUrl).then(
     console.log('Loaded catalog:', catalog);
     currentCatalog = catalog;
     writeCatalogSelector();
-    [104166, 104018, 234114, 234145].forEach(function(id) {
+    [104016, 104004, 234112, 114051].forEach(function(id) {
       addSelectedCourseByID(id);
     });
   },
