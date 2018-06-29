@@ -1,3 +1,7 @@
+#gen-schedules-button * {
+  vertical-align: middle;
+}
+
 #course-extra-info-box {
   position: fixed;
   background-color: white;

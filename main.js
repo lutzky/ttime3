@@ -197,12 +197,16 @@ function refreshSelectedCourses() {
 function getSchedules() {
   /* exported getSchedules */
   let genButton = document.getElementById('generate-schedules');
+  let spinner = document.getElementById('spinner');
   genButton.disabled = true;
+  spinner.style.visibility = 'visible';
+
   let w = new Worker('scheduler_worker.js');
   // TODO(lutzky): Wrap worker with a Promise
   w.onmessage = function(e) {
     console.info('Received message from worker:', e);
     genButton.disabled = false;
+    spinner.style.visibility = 'hidden';
     w.terminate();
     setPossibleSchedules(e.data);
   };
