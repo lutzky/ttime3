@@ -1,0 +1,319 @@
+[
+  {
+    "name": "פקולטה שקרית",
+    "courses": [
+      {
+        "id": 104166,
+        "name": "אלגברה א'",
+        "academicPoints": 5.5,
+        "lecturerInCharge": "",
+        "weeklyHours": {
+          "lecture": 4,
+          "tutorial": 3
+        },
+        "testDates": [
+          {
+            "year": 2018,
+            "month": 2,
+            "day": 9
+          },
+          {
+            "year": 2018,
+            "month": 3,
+            "day": 8
+          }
+        ],
+        "groups": [
+          {
+            "id": 10,
+            "teachers": [],
+            "events": [
+              {
+                "day": 0,
+                "location": "",
+                "startMinute": 750,
+                "endMinute": 870
+              }
+            ],
+            "type": "lecture"
+          },
+          {
+            "id": 11,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 630,
+                "endMinute": 750
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 12,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 870,
+                "endMinute": 990
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 13,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 570,
+                "endMinute": 630
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 14,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 870,
+                "endMinute": 930
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 20,
+            "teachers": [],
+            "events": [
+              {
+                "day": 0,
+                "location": "",
+                "startMinute": 750,
+                "endMinute": 870
+              }
+            ],
+            "type": "lecture"
+          },
+          {
+            "id": 21,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 630,
+                "endMinute": 750
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 22,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 870,
+                "endMinute": 990
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 23,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 870,
+                "endMinute": 930
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 30,
+            "teachers": [
+              "פרופ/מ ר.בנד"
+            ],
+            "events": [
+              {
+                "day": 0,
+                "location": "",
+                "startMinute": 750,
+                "endMinute": 870
+              }
+            ],
+            "type": "lecture"
+          },
+          {
+            "id": 31,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 930,
+                "endMinute": 990
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 32,
+            "teachers": [],
+            "events": [
+              {
+                "day": 1,
+                "location": "",
+                "startMinute": 510,
+                "endMinute": 630
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 33,
+            "teachers": [],
+            "events": [
+              {
+                "day": 2,
+                "location": "",
+                "startMinute": 630,
+                "endMinute": 690
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 34,
+            "teachers": [],
+            "events": [
+              {
+                "day": 2,
+                "location": "",
+                "startMinute": 630,
+                "endMinute": 690
+              }
+            ],
+            "type": "tutorial"
+          }
+        ]
+      },
+      {
+        "id": 14003,
+        "name": "סטטיסטיקה",
+        "academicPoints": 3,
+        "lecturerInCharge": "ב.פישביין",
+        "weeklyHours": {
+          "lecture": 2,
+          "tutorial": 2
+        },
+        "testDates": [
+          {
+            "year": 2016,
+            "month": 1,
+            "day": 28
+          },
+          {
+            "year": 2016,
+            "month": 2,
+            "day": 26
+          }
+        ],
+        "groups": [
+          {
+            "id": 10,
+            "teachers": [
+              "פרופ/מ ב.פישביין"
+            ],
+            "events": [
+              {
+                "day": 2,
+                "location": "רבין 206",
+                "startMinute": 870,
+                "endMinute": 990
+              }
+            ],
+            "type": "lecture"
+          }
+        ]
+      },
+      {
+        "id": 234322,
+        "name": "מערכות אחסון מידע",
+        "academicPoints": 3,
+        "lecturerInCharge": "",
+        "weeklyHours": {
+          "lecture": 2,
+          "tutorial": 1
+        },
+        "testDates": [
+          {
+            "year": 2016,
+            "month": 2,
+            "day": 11
+          },
+          {
+            "year": 2016,
+            "month": 3,
+            "day": 8
+          }
+        ],
+        "groups": [
+          {
+            "id": 10,
+            "teachers": [
+              "ד\"ר ג.ידגר"
+            ],
+            "events": [
+              {
+                "day": 2,
+                "location": "טאוב 9",
+                "startMinute": 630,
+                "endMinute": 750
+              }
+            ],
+            "type": "lecture"
+          },
+          {
+            "id": 11,
+            "teachers": [],
+            "events": [
+              {
+                "day": 2,
+                "location": "טאוב 5",
+                "startMinute": 1050,
+                "endMinute": 1110
+              }
+            ],
+            "type": "tutorial"
+          },
+          {
+            "id": 12,
+            "teachers": [],
+            "events": [
+              {
+                "day": 3,
+                "location": "טאוב 6",
+                "startMinute": 930,
+                "endMinute": 990
+              }
+            ],
+            "type": "tutorial"
+          }
+        ]
+      }
+    ]
+  }
+]

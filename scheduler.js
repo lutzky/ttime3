@@ -83,7 +83,7 @@ function generateSchedules(courses) {
     .map(c => groupsByType(c))
     .reduce((a, b) => a.concat(b), []);
 
-  let groupProduct = cartesian(groupBins);
+  let groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
   let numUnfilteredSchedules = schedules.length;
