@@ -19,6 +19,11 @@
  * @typedef {Faculty[]} Catalog
  */
 
+/**
+ * @typedef {Object} Settings
+ * @property {number[]} selectedCourseNumbers
+ */
+
 const catalogUrl =
   'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
 
@@ -121,6 +126,17 @@ function writeCatalogSelector() {
 }
 
 /**
+ * Save all settings to localStorage
+ */
+function saveSettings() {
+  let selectedCourseNumbers = Array.from(selectedCourses).map(c => c.id);
+  window.localStorage.ttime3_selectedCourses = JSON.stringify(
+    selectedCourseNumbers
+  );
+  console.info(window.localStorage.ttime3_selectedCourses);
+}
+
+/**
  * Mark course as selected.
  *
  * @param {Course} course - Course to select
@@ -128,31 +144,34 @@ function writeCatalogSelector() {
 function addSelectedCourse(course) {
   console.info('Selected', course);
   selectedCourses.add(course);
+  saveSettings();
   refreshSelectedCourses();
 }
 
 /**
  * Add a course with a given ID
  *
- * @param {number} id - Course ID
+ * @param {...number} ids - Course IDS
  */
-function addSelectedCourseByID(id) {
+function addSelectedCourseByID(...ids) {
   /* exported addSelectedCourseByID */
-  let found = false;
-  currentCatalog.forEach(function(faculty) {
+  ids.forEach(function(id) {
+    let found = false;
+    currentCatalog.forEach(function(faculty) {
+      if (!found) {
+        faculty.courses.forEach(function(course) {
+          if (course.id == id) {
+            addSelectedCourse(course);
+            found = true;
+            return;
+          }
+        });
+      }
+    });
     if (!found) {
-      faculty.courses.forEach(function(course) {
-        if (course.id == id) {
-          addSelectedCourse(course);
-          found = true;
-          return;
-        }
-      });
+      throw new Error('No course with ID ' + id);
     }
   });
-  if (!found) {
-    throw new Error('No course with ID ' + id);
-  }
 }
 
 /**
@@ -163,6 +182,7 @@ function addSelectedCourseByID(id) {
 function delSelectedCourse(course) {
   console.info('Unselected', course);
   selectedCourses.delete(course);
+  saveSettings();
   refreshSelectedCourses();
 }
 
@@ -319,12 +339,31 @@ function byDay(schedule) {
   return result;
 }
 
+/**
+ * Load settings from localStorage
+ *
+ * @param {Object} s - The window.localStorage object to load from
+ * @returns {Settings}
+ */
+function loadSettings(s) {
+  let result = {
+    selectedCourseNumbers: [],
+  };
+  if (s.ttime3_selectedCourses) {
+    result.selectedCourseNumbers = JSON.parse(s.ttime3_selectedCourses);
+  }
+  console.info('Loaded settings:', result);
+  return result;
+}
+
 loadCatalog(catalogUrl).then(
   function(catalog) {
     console.log('Loaded catalog:', catalog);
     currentCatalog = catalog;
     writeCatalogSelector();
-    [104016, 104004, 234112, 114051].forEach(function(id) {
+    loadSettings(window.localStorage).selectedCourseNumbers.forEach(function(
+      id
+    ) {
       addSelectedCourseByID(id);
     });
   },
