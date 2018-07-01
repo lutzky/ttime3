@@ -65,8 +65,26 @@ function filterNoCollisions(schedule) {
   return !eventsCollide(schedule.events);
 }
 
-const f = (a, b) => [].concat(...a.map(d => b.map(e => [].concat(d, e))));
-const cartesian = (a, b, ...c) => (b ? cartesian(f(a, b), ...c) : a);
+/**
+ * Return a cartesian product of arrays
+ *
+ * @param {...Object[]} a - Arrays to multiply
+ * @returns {Array.<Array.<Object>>}
+ */
+function cartesian(...a) {
+  if (a.length == 0) {
+    return [[]];
+  }
+  let result = [];
+  subCart = cartesian(...a.slice(1));
+  a[0].forEach(function(x) {
+    subCart.forEach(function(y) {
+      result.push([x].concat(y));
+    });
+  });
+
+  return result;
+}
 
 /**
  * Return all possible schedules

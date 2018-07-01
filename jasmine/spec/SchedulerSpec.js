@@ -2,6 +2,38 @@ const testData = '../testdata.json';
 const algebraCourseID = 104166;
 
 describe('Scheduler', function() {
+  describe('Cartesian products', function() {
+    it('should calculate correctly in trivial cases', function() {
+      let a = [[1, 2]];
+      expect(cartesian(...a)).toEqual([[1], [2]]);
+      let b = [[1, 2, 3]];
+      expect(cartesian(...b)).toEqual([[1], [2], [3]]);
+    });
+    it('should caculate correctly in nontrivial cases', function() {
+      let a = [[1, 2], [3, 4, 6]];
+      expect(cartesian(...a)).toEqual([
+        [1, 3],
+        [1, 4],
+        [1, 6],
+        [2, 3],
+        [2, 4],
+        [2, 6],
+      ]);
+    });
+    it('should not crash with large inputs', function() {
+      let a = [
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      ];
+      expect(() => cartesian(...a)).not.toThrow();
+    });
+  });
+
   it('should detect when events collide', function() {
     let events = [
       { day: 1, startMinute: 10, endMinute: 20 },
