@@ -2,23 +2,6 @@
   vertical-align: middle;
 }
 
-#course-extra-info-box {
-  position: fixed;
-  background-color: white;
-  width: 50%;
-  height: 50%;
-  top: 10px;
-  right: 10px;
-  border: 1px solid black;
-  visibility: hidden;
-  padding-bottom: 30px;
-}
-
-#course-extra-info {
-  overflow: scroll;
-  height: 100%;
-}
-
 .semester-tag {
   color: #333;
   background-color: #dde;
@@ -41,7 +24,7 @@
 }
 
 .info-link {
-  font-size: x-small;
+  text-decoration: none;
 }
 
 #info-box-closer {

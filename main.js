@@ -36,38 +36,32 @@ let selectedCourses = new Set();
 let currentCatalog = null;
 
 /**
- * Show debug information about a course
+ * Return an HTML description for a course
  *
- * @param {Course} course - Course to show information about
+ * @param {Course} course - Course to describe
+ *
+ * @returns {HTMLSpanElement}
  */
-function showCourseDebugInfo(course) {
-  let infoBoxDiv = document.getElementById('course-extra-info-box');
-  let infoDiv = document.getElementById('course-extra-info');
-  infoDiv.innerHTML =
-    '<pre>' +
-    JSON.stringify(
-      course,
-      function(key, value) {
-        if (['course', 'group', 'faculty'].includes(key)) {
-          return undefined;
-        } else {
-          return value;
-        }
-      },
-      4
-    ) +
-    '</pre>';
-  infoBoxDiv.style.visibility = 'visible';
+function htmlDescribeCourse(course) {
+  let result = document.createElement('span');
+  let pre = document.createElement('pre');
+  pre.innerText = JSON.stringify(
+    course,
+    function(key, value) {
+      if (['course', 'group', 'faculty'].includes(key)) {
+        return undefined;
+      } else {
+        return value;
+      }
+    },
+    4
+  );
+  result.appendChild(pre);
+  return result;
 }
 
-/**
- * Hide the informational box
- */
-function closeInfoBox() {
-  /* exported closeInfoBox */
-  let infoBoxDiv = document.getElementById('course-extra-info-box');
-  infoBoxDiv.style.visibility = 'hidden';
-}
+const rightArrow = '&#9656;';
+const downArrow = '&#9662;';
 
 /**
  * Create a span for a course label, including info button
@@ -79,11 +73,25 @@ function closeInfoBox() {
 function courseLabel(course) {
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
-  infoLink.textContent = '[?]';
+  infoLink.innerHTML = rightArrow;
   infoLink.className = 'info-link';
   infoLink.href = '#/';
   span.textContent = ` ${course.id} ${course.name} `;
-  infoLink.onclick = () => showCourseDebugInfo(course);
+  infoLink.onclick = function() {
+    if (!span.ttime3_expanded) {
+      let infoDiv = document.createElement('div');
+      span.infoDiv = infoDiv;
+      infoDiv.appendChild(htmlDescribeCourse(course));
+      // showCourseDebugInfo(course);
+      span.appendChild(infoDiv);
+      infoLink.innerHTML = downArrow;
+      span.ttime3_expanded = true;
+    } else {
+      infoLink.innerHTML = rightArrow;
+      span.ttime3_expanded = false;
+      span.removeChild(span.infoDiv);
+    }
+  };
   span.appendChild(infoLink);
   return span;
 }
