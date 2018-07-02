@@ -13,12 +13,12 @@
     "prettier": "^1.13.5"
   },
   "scripts": {
-    "test": "jasmine"
+    "test": "eslint *.js"
   },
   "repository": {
     "type": "git",
     "url": "github.com/lutzky/ttime3"
   },
-  "author": "Ohad Lutzky <lutzky@gmail.com>",
+  "author": "Ohad Lutzky <ohad@lutzky.net>>",
   "license": "ISC"
 }
