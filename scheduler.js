@@ -75,15 +75,11 @@ function cartesian(...a) {
   if (a.length == 0) {
     return [[]];
   }
-  let result = [];
-  subCart = cartesian(...a.slice(1));
-  a[0].forEach(function(x) {
-    subCart.forEach(function(y) {
-      result.push([x].concat(y));
-    });
-  });
 
-  return result;
+  subCart = cartesian(...a.slice(1));
+  return a[0]
+    .map(x => subCart.map(y => [x].concat(y)))
+    .reduce((a, b) => a.concat(b));
 }
 
 /**
