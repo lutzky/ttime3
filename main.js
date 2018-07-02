@@ -21,11 +21,23 @@
 
 /**
  * @typedef {Object} Settings
- * @property {number[]} selectedCourseNumbers
+ * @property {number[]} selectedCourses
+ * @property {string} catalogUrl
  */
 
-const catalogUrl =
+const defaultCatalogUrl =
   'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
+
+/**
+ * Set the given catalog URL and save settings. For use from HTML.
+ *
+ * @param {string} url - URL to set
+ */
+function setCatalogUrl(url) {
+  /* exported setCatalogUrl */
+  document.getElementById('catalog-url').value = url;
+  saveSettings();
+}
 
 let selectedCourses = new Set();
 
@@ -74,7 +86,7 @@ function courseLabel(course) {
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
   infoLink.innerHTML = rightArrow;
-  infoLink.className = 'info-link';
+  infoLink.className = 'expando';
   infoLink.href = '#/';
   span.textContent = ` ${course.id} ${course.name} `;
   infoLink.onclick = function() {
@@ -142,11 +154,10 @@ function writeCatalogSelector() {
  * Save all settings to localStorage
  */
 function saveSettings() {
-  let selectedCourseNumbers = Array.from(selectedCourses).map(c => c.id);
-  window.localStorage.ttime3_selectedCourses = JSON.stringify(
-    selectedCourseNumbers
-  );
-  console.info(window.localStorage.ttime3_selectedCourses);
+  settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
+  settings.catalogUrl = document.getElementById('catalog-url').value;
+  window.localStorage.ttime3_settings = JSON.stringify(settings);
+  console.info('Saved settings:', settings);
 }
 
 /**
@@ -363,25 +374,54 @@ function byDay(schedule) {
  * @returns {Settings}
  */
 function loadSettings(s) {
-  let result = {
-    selectedCourseNumbers: [],
-  };
-  if (s.ttime3_selectedCourses) {
-    result.selectedCourseNumbers = JSON.parse(s.ttime3_selectedCourses);
+  let result = {};
+  if (s.ttime3_settings) {
+    result = JSON.parse(s.ttime3_settings);
   }
+
+  if (!result.catalogUrl) {
+    result.catalogUrl = defaultCatalogUrl;
+  }
+  if (!result.selectedCourses) {
+    result.selectedCourses = [];
+  }
+
   console.info('Loaded settings:', result);
+
+  document.getElementById('catalog-url').value = result.catalogUrl;
+
   return result;
 }
 
-loadCatalog(catalogUrl).then(
+/**
+ * Show or hide the settings div. Updates shape of toggle button appropriately.
+ *
+ * @param {bool} show - Whether or not the settings div should be visible
+ */
+function showSettingsDiv(show) {
+  let toggleLink = document.getElementById('toggle-settings-div');
+  let settingsDiv = document.getElementById('settings-div');
+
+  toggleLink.innerHTML = show ? downArrow : rightArrow;
+  settingsDiv.hidden = !show;
+  toggleLink.onclick = () => showSettingsDiv(!show);
+}
+
+showSettingsDiv(false);
+
+let settings = loadSettings(window.localStorage);
+
+loadCatalog(settings.catalogUrl).then(
   function(catalog) {
     console.log('Loaded catalog:', catalog);
     currentCatalog = catalog;
     writeCatalogSelector();
-    loadSettings(window.localStorage).selectedCourseNumbers.forEach(function(
-      id
-    ) {
-      addSelectedCourseByID(id);
+    settings.selectedCourses.forEach(function(id) {
+      try {
+        addSelectedCourseByID(id);
+      } catch (error) {
+        console.error(`Failed to add course ${id}:`, error);
+      }
     });
   },
   function(error) {
