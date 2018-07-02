@@ -2,6 +2,10 @@
   vertical-align: middle;
 }
 
+.disabled-course-label {
+  color: #999;
+}
+
 .semester-tag {
   color: #333;
   background-color: #dde;

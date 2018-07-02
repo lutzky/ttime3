@@ -96,6 +96,9 @@ function courseLabel(course) {
   return span;
 }
 
+let courseAddButtons = new Map();
+let courseAddLabels = new Map();
+
 /**
  * Write catalog selector to page.
  */
@@ -119,7 +122,9 @@ function writeCatalogSelector() {
 
     faculty.courses.forEach(function(course) {
       let btn = document.createElement('button');
+      courseAddButtons.set(course.id, btn);
       let label = courseLabel(course);
+      courseAddLabels.set(course.id, label);
       btn.textContent = '+';
       let courseLi = document.createElement('li');
       courseLi.appendChild(btn);
@@ -152,6 +157,8 @@ function saveSettings() {
 function addSelectedCourse(course) {
   console.info('Selected', course);
   selectedCourses.add(course);
+  courseAddButtons.get(course.id).disabled = true;
+  courseAddLabels.get(course.id).classList.add('disabled-course-label');
   saveSettings();
   refreshSelectedCourses();
 }
@@ -190,6 +197,8 @@ function addSelectedCourseByID(...ids) {
 function delSelectedCourse(course) {
   console.info('Unselected', course);
   selectedCourses.delete(course);
+  courseAddButtons.get(course.id).disabled = false;
+  courseAddLabels.get(course.id).classList.remove('disabled-course-label');
   saveSettings();
   refreshSelectedCourses();
 }
