@@ -1,5 +1,11 @@
-const testData = '../testdata.json';
 const algebraCourseID = 104166;
+
+if (typeof require == 'undefined') {
+  // Not running in Node
+  loadTestCatalog = () => loadCatalog('../testdata.json');
+} else {
+  // loadTestCatalog is defined in NodeHelpers.js.
+}
 
 describe('Scheduler', function() {
   describe('Cartesian products', function() {
@@ -48,7 +54,7 @@ describe('Scheduler', function() {
   });
 
   it('should have one faculty', function(done) {
-    loadCatalog(testData).then(catalog => {
+    loadTestCatalog().then(catalog => {
       expect(catalog.length).toBe(1);
       done();
     });
@@ -58,7 +64,7 @@ describe('Scheduler', function() {
     let catalog = null;
     let algebra = null;
     beforeEach(function(done) {
-      loadCatalog(testData).then(function(c) {
+      loadTestCatalog().then(function(c) {
         catalog = c;
         algebra = catalog[0].courses.find(
           course => course.id == algebraCourseID

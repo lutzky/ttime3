@@ -91,7 +91,6 @@ function cartesian(...a) {
  * @returns {Schedule[]}
  */
 function generateSchedules(courses) {
-  /* exported generateSchedules */
   console.time('generateSchedules');
   let groupBins = courses
     .map(c => groupsByType(c))
@@ -120,4 +119,12 @@ function generateSchedules(courses) {
 function groupsToSchedule(groups) {
   let e = groups.reduce((a, b) => a.concat(b.events), []);
   return { events: e };
+}
+
+if (typeof module != 'undefined') {
+  module.exports = {
+    generateSchedules: generateSchedules,
+    cartesian: cartesian,
+    eventsCollide: eventsCollide,
+  };
 }

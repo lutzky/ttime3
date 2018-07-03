@@ -5,10 +5,15 @@
  * @returns {string} - HH:MM
  */
 function minutesToTime(minutes) {
-  /* exported minutesToTime */
   let hourString = Math.floor(minutes / 60)
     .toString()
     .padStart(2, '0');
   let minuteString = (minutes % 60).toString().padStart(2, '0');
   return hourString + ':' + minuteString;
+}
+
+if (typeof module != 'undefined') {
+  module.exports = {
+    minutesToTime: minutesToTime,
+  };
 }
