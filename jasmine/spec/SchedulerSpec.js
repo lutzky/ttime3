@@ -26,7 +26,8 @@ describe('Scheduler', function() {
         [2, 6],
       ]);
     });
-    it('should not crash with large inputs', function() {
+    xit('should not crash with large inputs', function() {
+      // Disabled because this is a slow test. CARTESIAN_SLOW_TEST
       let a = [
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],

@@ -68,6 +68,8 @@ function filterNoCollisions(schedule) {
 /**
  * Return a cartesian product of arrays
  *
+ * Note: If changing this method, reenable CARTESIAN_SLOW_TEST.
+ *
  * @param {...Object[]} a - Arrays to multiply
  * @returns {Array.<Array.<Object>>}
  */
