@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * @typedef {Object} Event
  * @property {number} day - Day of week

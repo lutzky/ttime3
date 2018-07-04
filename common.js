@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Sorts events by start time
  *
