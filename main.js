@@ -83,7 +83,9 @@ function htmlDescribeCourse(course) {
   ul.appendChild(
     elementWithHTML(
       'li',
-      `<b>Lecturer in charge:</b> ${course.lecturerInCharge || '[unknown]'}`
+      `<b>Lecturer in charge:</b> ${rtlSpan(
+        course.lecturerInCharge || '[unknown]'
+      )}`
     )
   );
   ul.appendChild(elementWithHTML('li', '<b>Test dates:</b>'));
@@ -122,6 +124,16 @@ const rightArrow = '&#9656;';
 const downArrow = '&#9662;';
 
 /**
+ * Wrap s with a right-to-left span
+ *
+ * @param {string} s - String to wrap
+ * @returns {string}
+ */
+function rtlSpan(s) {
+  return `<span dir="rtl">${s}</span>`;
+}
+
+/**
  * Create a span for a course label, including info button
  *
  * @param {Course} course - Course to create label for
@@ -134,7 +146,7 @@ function courseLabel(course) {
   infoLink.innerHTML = rightArrow;
   infoLink.className = 'expando';
   infoLink.href = '#/';
-  span.textContent = ` ${course.id} ${course.name} `;
+  span.innerHTML = ` ${course.id} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
     if (!span.ttime3_expanded) {
       let infoDiv = document.createElement('div');
@@ -379,9 +391,9 @@ function goToSchedule(i) {
       let eventEntry = document.createElement('li');
       let startTime = minutesToTime(e.startMinute);
       let endTime = minutesToTime(e.endMinute);
-      eventEntry.textContent = `${startTime}-${endTime} ${
+      eventEntry.innerHTML = `${startTime}-${endTime} ${rtlSpan(
         e.group.course.name
-      } at ${e.location}`;
+      )} at ${rtlSpan(e.location || '[unknown]')}`;
       eventList.appendChild(eventEntry);
     });
   });
