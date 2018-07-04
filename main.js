@@ -107,16 +107,20 @@ function htmlDescribeCourse(course) {
         elementWithHTML('li', `<b>Group ${g.id} (type: ${g.type})`)
       );
       let events = document.createElement('ul');
-      g.events.forEach(function(e) {
-        events.appendChild(
-          elementWithHTML(
-            'li',
-            `${dayNames[e.day]}, ${minutesToTime(
-              e.startMinute
-            )}-${minutesToTime(e.endMinute)} at ${e.location || '[unknown]'}`
-          )
-        );
-      });
+      if (g.events) {
+        g.events.forEach(function(e) {
+          events.appendChild(
+            elementWithHTML(
+              'li',
+              `${dayNames[e.day]}, ${minutesToTime(
+                e.startMinute
+              )}-${minutesToTime(e.endMinute)} at ${e.location || '[unknown]'}`
+            )
+          );
+        });
+      } else {
+        events.appendChild(elementWithHTML('li', '[unknown]'));
+      }
       groups.appendChild(events);
     });
   } else {
