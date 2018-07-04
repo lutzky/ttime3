@@ -14,8 +14,26 @@ function minutesToTime(minutes) {
   return hourString + ':' + minuteString;
 }
 
+/**
+ * typedef {Object} DateObj
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
+ */
+
+/**
+ * Format a DateObj as a string
+ *
+ * @param {DateObj} dateObj - Date to format
+ * @returns {string}
+ */
+function formatDate(dateObj) {
+  return new Date(dateObj.year, dateObj.month, dateObj.day).toDateString();
+}
+
 if (typeof module != 'undefined') {
   module.exports = {
     minutesToTime: minutesToTime,
+    formatDate: formatDate,
   };
 }

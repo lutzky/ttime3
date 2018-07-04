@@ -48,6 +48,22 @@ let selectedCourses = new Set();
 let currentCatalog = null;
 
 /**
+ * Creates an element with the given HTML.
+ *
+ * TODO(lutzky): There must be some builtin that does this...
+ *
+ * @param {string} tagName - Tag to build
+ * @param {string} innerHTML - HTML to fill tag with
+ *
+ * @returns {HTMLElement}
+ */
+function elementWithHTML(tagName, innerHTML) {
+  let elem = document.createElement(tagName);
+  elem.innerHTML = innerHTML;
+  return elem;
+}
+
+/**
  * Return an HTML description for a course
  *
  * @param {Course} course - Course to describe
@@ -56,19 +72,49 @@ let currentCatalog = null;
  */
 function htmlDescribeCourse(course) {
   let result = document.createElement('span');
-  let pre = document.createElement('pre');
-  pre.innerText = JSON.stringify(
-    course,
-    function(key, value) {
-      if (['course', 'group', 'faculty'].includes(key)) {
-        return undefined;
-      } else {
-        return value;
-      }
-    },
-    4
+  console.info('Rendering description of course:', course);
+  let ul = document.createElement('ul');
+  ul.appendChild(
+    elementWithHTML('li', `<b>Full name</b> ${course.id} ${course.name}`)
   );
-  result.appendChild(pre);
+  ul.appendChild(
+    elementWithHTML('li', `<b>Academic points:</b> ${course.academicPoints}`)
+  );
+  ul.appendChild(
+    elementWithHTML(
+      'li',
+      `<b>Lecturer in charge:</b> ${course.lecturerInCharge || '[unknown]'}`
+    )
+  );
+  ul.appendChild(elementWithHTML('li', '<b>Test dates:</b>'));
+  let testDates = document.createElement('ul');
+  course.testDates.forEach(function(d) {
+    testDates.appendChild(elementWithHTML('li', formatDate(d)));
+  });
+  ul.appendChild(testDates);
+
+  ul.appendChild(elementWithHTML('li', '<b>Groups:</b>'));
+  let groups = document.createElement('ul');
+  course.groups.forEach(function(g) {
+    groups.appendChild(
+      elementWithHTML('li', `<b>Group ${g.id} (type: ${g.type})`)
+    );
+    let events = document.createElement('ul');
+    g.events.forEach(function(e) {
+      events.appendChild(
+        elementWithHTML(
+          'li',
+          `${dayNames[e.day]}, ${minutesToTime(e.startMinute)}-${minutesToTime(
+            e.endMinute
+          )} at ${e.location || '[unknown]'}`
+        )
+      );
+    });
+    groups.appendChild(events);
+  });
+  ul.appendChild(groups);
+
+  result.appendChild(ul);
   return result;
 }
 
