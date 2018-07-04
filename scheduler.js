@@ -18,7 +18,7 @@
  * @returns {Array.<Array.<Group>>}
  */
 function groupsByType(course) {
-  m = new Map();
+  let m = new Map();
   if (!course.groups) {
     return [];
   }
@@ -78,7 +78,7 @@ function cartesian(...a) {
     return [[]];
   }
 
-  subCart = cartesian(...a.slice(1));
+  let subCart = cartesian(...a.slice(1));
   return a[0]
     .map(x => subCart.map(y => [x].concat(y)))
     .reduce((a, b) => a.concat(b));
