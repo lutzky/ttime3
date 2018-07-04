@@ -90,30 +90,38 @@ function htmlDescribeCourse(course) {
   );
   ul.appendChild(elementWithHTML('li', '<b>Test dates:</b>'));
   let testDates = document.createElement('ul');
-  course.testDates.forEach(function(d) {
-    testDates.appendChild(elementWithHTML('li', formatDate(d)));
-  });
+  if (course.testDates) {
+    course.testDates.forEach(function(d) {
+      testDates.appendChild(elementWithHTML('li', formatDate(d)));
+    });
+  } else {
+    testDates.appendChild(elementWithHTML('li', '[unknown]'));
+  }
   ul.appendChild(testDates);
 
   ul.appendChild(elementWithHTML('li', '<b>Groups:</b>'));
   let groups = document.createElement('ul');
-  course.groups.forEach(function(g) {
-    groups.appendChild(
-      elementWithHTML('li', `<b>Group ${g.id} (type: ${g.type})`)
-    );
-    let events = document.createElement('ul');
-    g.events.forEach(function(e) {
-      events.appendChild(
-        elementWithHTML(
-          'li',
-          `${dayNames[e.day]}, ${minutesToTime(e.startMinute)}-${minutesToTime(
-            e.endMinute
-          )} at ${e.location || '[unknown]'}`
-        )
+  if (course.groups) {
+    course.groups.forEach(function(g) {
+      groups.appendChild(
+        elementWithHTML('li', `<b>Group ${g.id} (type: ${g.type})`)
       );
+      let events = document.createElement('ul');
+      g.events.forEach(function(e) {
+        events.appendChild(
+          elementWithHTML(
+            'li',
+            `${dayNames[e.day]}, ${minutesToTime(
+              e.startMinute
+            )}-${minutesToTime(e.endMinute)} at ${e.location || '[unknown]'}`
+          )
+        );
+      });
+      groups.appendChild(events);
     });
-    groups.appendChild(events);
-  });
+  } else {
+    groups.appendChild(elementWithHTML('li', '[unknown]'));
+  }
   ul.appendChild(groups);
 
   result.appendChild(ul);
