@@ -14,7 +14,8 @@
     "prettier": "^1.13.5"
   },
   "scripts": {
-    "test": "jasmine && eslint *.js jasmine/spec/*.js"
+    "test": "jasmine && eslint *.js jasmine/spec/*.js",
+    "fix": "eslint --fix *.js jasmine/spec/*.js"
   },
   "repository": {
     "type": "git",
