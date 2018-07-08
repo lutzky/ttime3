@@ -26,6 +26,13 @@
       </ul>
 
       <p>Reload for settings to take effect.</p>
+
+      <p>Filters</p>
+      <ul>
+        <li><input type="checkbox" onchange="saveSettings()" id="filter.noCollisions" /> No collisions</li>
+        <li><input type="checkbox" onchange="saveSettings()" id="filter.noRunning" /> No running (no
+          consecutive classes in different buildings)</li>
+      </ul>
     </div>
     <h2>Selected courses</h2>
     <div id="selected-courses"></div>

@@ -105,13 +105,13 @@ describe('Scheduler', function() {
     let eventD = { startMinute: 120, endMinute: 180, location: 'Ulman 200' };
     let eventE = { startMinute: 120, endMinute: 180 /* no location */ };
     it('should return false if events have different buildings', function() {
-      expect(filterNoRunning([eventA, eventB, eventC])).toBe(false);
+      expect(filterNoRunning({ events: [eventA, eventB, eventC] })).toBe(false);
     });
     it('should return true if everything is in the same building', function() {
-      expect(filterNoRunning([eventA, eventB, eventD])).toBe(true);
+      expect(filterNoRunning({ events: [eventA, eventB, eventD] })).toBe(true);
     });
     it('should not count missing locations as different', function() {
-      expect(filterNoRunning([eventA, eventB, eventE])).toBe(true);
+      expect(filterNoRunning({ events: [eventA, eventB, eventE] })).toBe(true);
     });
   });
 });

@@ -77,16 +77,18 @@ function eventBuilding(ev) {
  * Filter schedules in which events involve running between different buildings
  * in adjacent classes.
  *
- * @param {Event[]} events - Events to check for collisions
+ * @param {Schedule} schedule - Schedule to check for running
  *
  * @returns {boolean}
  */
-function filterNoRunning(events) {
-  for (let i = 0; i < events.length - 1; i++) {
-    if (events[i].day == events[i + 1].day) {
-      if (events[i + 1].startMinute == events[i].endMinute) {
-        let b1 = eventBuilding(events[i]);
-        let b2 = eventBuilding(events[i + 1]);
+function filterNoRunning(schedule) {
+  let e = schedule.events.slice();
+  sortEvents(e);
+  for (let i = 0; i < e.length - 1; i++) {
+    if (e[i].day == e[i + 1].day) {
+      if (e[i + 1].startMinute == e[i].endMinute) {
+        let b1 = eventBuilding(e[i]);
+        let b2 = eventBuilding(e[i + 1]);
         if (b1 && b2 && b1 != b2) {
           return false;
         }

@@ -226,7 +226,12 @@ function writeCatalogSelector() {
 function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
   settings.catalogUrl = document.getElementById('catalog-url').value;
+  settings.filters = Array.from(document.querySelectorAll('[id^="filter."]'))
+    .filter(node => node.checked)
+    .map(node => node.id.split('.')[1]);
+
   window.localStorage.ttime3_settings = JSON.stringify(settings);
+
   console.info('Saved settings:', settings);
 }
 
@@ -328,7 +333,7 @@ function getSchedules() {
     w.terminate();
     setPossibleSchedules(e.data);
   };
-  w.postMessage(selectedCourses);
+  w.postMessage({ courses: selectedCourses, filters: settings.filters });
 }
 
 let possibleSchedules = [];
@@ -455,10 +460,17 @@ function loadSettings(s) {
   if (!result.selectedCourses) {
     result.selectedCourses = [];
   }
+  if (!result.filters) {
+    result.filters = ['noCollisions'];
+  }
 
   console.info('Loaded settings:', result);
 
   document.getElementById('catalog-url').value = result.catalogUrl;
+
+  result.filters.forEach(function(filter) {
+    document.getElementById('filter.' + filter).checked = true;
+  });
 
   return result;
 }
