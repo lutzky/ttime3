@@ -125,15 +125,19 @@ function cartesian(...a) {
     .reduce((a, b) => a.concat(b));
 }
 
+let filterFunctions = {
+  noRunning: filterNoRunning,
+  noCollisions: filterNoCollisions,
+};
+
 /**
  * Return all possible schedules
  *
- * TODO(lutzky): Make filters configurable
- *
  * @param {Course[]} courses - Courses to schedule from
+ * @param {string[]} filters - Filter names to apply
  * @returns {Schedule[]}
  */
-function generateSchedules(courses) {
+function generateSchedules(courses, filters) {
   console.time('generateSchedules');
   let groupBins = courses
     .map(c => groupsByType(c))
@@ -142,12 +146,17 @@ function generateSchedules(courses) {
   let groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
-  let numUnfilteredSchedules = schedules.length;
-  schedules = schedules.filter(filterNoCollisions);
-  console.info(
-    `Filtered ${numUnfilteredSchedules -
-      schedules.length} of ${numUnfilteredSchedules} schedules`
-  );
+  console.info(`${schedules.length} total schedules`);
+
+  filters.forEach(function(filterName) {
+    let filter = filterFunctions[filterName];
+    if (filter) {
+      schedules = schedules.filter(filter);
+      console.info(`After ${filterName} filter, ${schedules.length} schedules`);
+    } else {
+      console.error(`No such filter ${filterName}`);
+    }
+  });
 
   console.timeEnd('generateSchedules');
   return schedules;

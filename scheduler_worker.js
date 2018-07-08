@@ -5,6 +5,6 @@ onmessage = function(e) {
 
   let courses = Array.from(e.data);
 
-  let schedules = generateSchedules(courses);
+  let schedules = generateSchedules(courses, ['noCollisions']);
   postMessage(schedules);
 };
