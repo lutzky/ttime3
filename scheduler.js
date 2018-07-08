@@ -5,6 +5,7 @@
  * @property {number} day - Day of week
  * @property {number} startMinute - Minutes since midnight for start
  * @property {number} endMinute - Minutes since midnight for end
+ * @property {string} location - Where the event happens
  */
 
 /**
@@ -55,6 +56,44 @@ function eventsCollide(events) {
   }
 
   return false;
+}
+
+/**
+ * Return the building in which ev happens
+ *
+ * @param {Event} ev - Event to consider
+ *
+ * @returns {string}
+ */
+function eventBuilding(ev) {
+  if (ev.location) {
+    return ev.location.split(' ')[0];
+  } else {
+    return ev.location;
+  }
+}
+
+/**
+ * Filter schedules in which events involve running between different buildings
+ * in adjacent classes.
+ *
+ * @param {Event[]} events - Events to check for collisions
+ *
+ * @returns {boolean}
+ */
+function filterNoRunning(events) {
+  for (let i = 0; i < events.length - 1; i++) {
+    if (events[i].day == events[i + 1].day) {
+      if (events[i + 1].startMinute == events[i].endMinute) {
+        let b1 = eventBuilding(events[i]);
+        let b2 = eventBuilding(events[i + 1]);
+        if (b1 && b2 && b1 != b2) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
 }
 
 /**
@@ -130,5 +169,6 @@ if (typeof module != 'undefined') {
     generateSchedules: generateSchedules,
     cartesian: cartesian,
     eventsCollide: eventsCollide,
+    filterNoRunning: filterNoRunning,
   };
 }

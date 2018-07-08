@@ -8,6 +8,7 @@ if (typeof require != 'undefined') {
   eventsCollide = scheduler.eventsCollide;
   minutesToTime = formatting.minutesToTime;
   generateSchedules = scheduler.generateSchedules;
+  noRunningFilter = scheduler.noRunningFilter;
 
   loadTestCatalog = () => common.loadCatalog('testdata.json', true);
 } else {
