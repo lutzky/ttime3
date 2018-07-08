@@ -15,18 +15,6 @@
   padding: 1px;
 }
 
-#footer {
-  position: fixed;
-  text-align: right;
-  font-size: x-small;
-  padding: 5px;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-  background-color: white;
-}
-
 .expando {
   text-decoration: none;
 }
@@ -34,4 +22,10 @@
 #info-box-closer {
   text-align: right;
   font-size: x-small;
+}
+
+.course-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

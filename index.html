@@ -6,7 +6,7 @@
   </head>
   <body>
     <h1>TTime3</h1>
-    <p><b>Settings</b> <a href="#/" class="expando" id="toggle-settings-div"></a></p>
+    <h2>Settings <a href="#/" class="expando" id="toggle-settings-div"></a></h2>
     <div id="settings-div" hidden>
       <div style="display: flex">
         <label for="catalog-url">Catalog URL</label>
@@ -14,7 +14,7 @@
         onkeyup="saveSettings()" onchange="saveSettings()" />
       </div>
 
-      <p>Preset catalog URLs:</p>
+      <h3>Preset catalog URLs</h3>
       <ul>
         <li><a href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a></li>
         <li><a href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a></li>
@@ -27,11 +27,19 @@
 
       <p>Reload for settings to take effect.</p>
 
-      <p>Filters</p>
+      <h3>Filters</h3>
       <ul>
         <li><input type="checkbox" onchange="saveSettings()" id="filter.noCollisions" /> No collisions</li>
         <li><input type="checkbox" onchange="saveSettings()" id="filter.noRunning" /> No running (no
           consecutive classes in different buildings)</li>
+      </ul>
+
+      <h3>Developers</h3>
+      <ul>
+        <li><a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)"
+               href="#/">Add sample courses</a></li>
+        <li><a href="http://github.com/lutzky/ttime3">Repository</a></li>
+        <li><a href="jasmine/SpecRunner.html">Run tests</a></li>
       </ul>
     </div>
     <h2>Selected courses</h2>
@@ -49,13 +57,6 @@
     <div id="schedules"></div>
     <h2>Catalog</h2>
     <div id="catalog">(Loading courses)</div>
-    <footer id="footer">
-      <a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)" href="#/">
-        Add sample courses
-      </a>
-      <a href="http://github.com/lutzky/ttime3">Repository</a>
-      <a href="jasmine/SpecRunner.html">Run tests</a>
-    </footer>
     <script src="common.js"></script>
     <script src="formatting.js"></script>
     <script src="main.js"></script>

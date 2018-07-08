@@ -186,21 +186,20 @@ let courseAddLabels = new Map();
  */
 function writeCatalogSelector() {
   let facultiesDiv = document.getElementById('catalog');
-  let facultyList = document.createElement('ul');
 
   facultiesDiv.innerHTML = '';
-  facultiesDiv.appendChild(facultyList);
   currentCatalog.forEach(function(faculty) {
-    let li = document.createElement('li');
-    li.textContent = faculty.name + ' ';
+    let heading = document.createElement('h3');
+    heading.textContent = faculty.name + ' ';
     let semesterTag = document.createElement('span');
     semesterTag.className = 'semester-tag';
     semesterTag.textContent = faculty.semester;
-    li.appendChild(semesterTag);
+    heading.appendChild(semesterTag);
+    facultiesDiv.appendChild(heading);
 
     let courseList = document.createElement('ul');
-    li.appendChild(courseList);
-    facultyList.appendChild(li);
+    courseList.className = 'course-list';
+    facultiesDiv.appendChild(courseList);
 
     faculty.courses.forEach(function(course) {
       let btn = document.createElement('button');
@@ -299,6 +298,7 @@ function refreshSelectedCourses() {
   let div = document.getElementById('selected-courses');
   div.innerHTML = '';
   let ul = document.createElement('ul');
+  ul.className = 'course-list';
   div.appendChild(ul);
   selectedCourses.forEach(function(course) {
     let li = document.createElement('li');
