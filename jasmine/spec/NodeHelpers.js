@@ -1,14 +1,16 @@
 if (typeof require != 'undefined') {
   let common = require('../../common');
-  let scheduler = require('../../scheduler');
   let formatting = require('../../formatting');
+  let render = require('../../render');
+  let scheduler = require('../../scheduler');
 
-  sortEvents = common.sortEvents;
   cartesian = scheduler.cartesian;
   eventsCollide = common.eventsCollide;
-  minutesToTime = formatting.minutesToTime;
-  generateSchedules = scheduler.generateSchedules;
   filterNoRunning = scheduler.filterNoRunning;
+  generateSchedules = scheduler.generateSchedules;
+  layoutLayeredEvents = render.layoutLayeredEvents;
+  minutesToTime = formatting.minutesToTime;
+  sortEvents = common.sortEvents;
 
   loadTestCatalog = () => common.loadCatalog('testdata.json', true);
 } else {
