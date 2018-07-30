@@ -15,6 +15,28 @@ function sortEvents(events) {
 }
 
 /**
+ * Returns false iff two entries in events overlap
+ *
+ * @param {Event[]} events - Events to check for collisions
+ *
+ * @returns {boolean}
+ */
+function eventsCollide(events) {
+  let e = events.slice();
+  sortEvents(e);
+
+  for (let i = 0; i < e.length - 1; i++) {
+    if (e[i].day == e[i + 1].day) {
+      if (e[i + 1].startMinute < e[i].endMinute) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
  * Load the catalog object from url.
  *
  * @param {string} url - URL to download catalog from.
@@ -83,6 +105,7 @@ function fixRawCatalog(catalog) {
 
 if (typeof module != 'undefined') {
   module.exports = {
+    eventsCollide: eventsCollide,
     sortEvents: sortEvents,
     loadCatalog: loadCatalog,
   };

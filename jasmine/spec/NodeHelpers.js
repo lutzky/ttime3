@@ -5,7 +5,7 @@ if (typeof require != 'undefined') {
 
   sortEvents = common.sortEvents;
   cartesian = scheduler.cartesian;
-  eventsCollide = scheduler.eventsCollide;
+  eventsCollide = common.eventsCollide;
   minutesToTime = formatting.minutesToTime;
   generateSchedules = scheduler.generateSchedules;
   filterNoRunning = scheduler.filterNoRunning;

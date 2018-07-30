@@ -37,28 +37,6 @@ function groupsByType(course) {
 }
 
 /**
- * Returns false iff two entries in events overlap
- *
- * @param {Event[]} events - Events to check for collisions
- *
- * @returns {boolean}
- */
-function eventsCollide(events) {
-  let e = events.slice();
-  sortEvents(e);
-
-  for (let i = 0; i < e.length - 1; i++) {
-    if (e[i].day == e[i + 1].day) {
-      if (e[i + 1].startMinute < e[i].endMinute) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-/**
  * Return the building in which ev happens
  *
  * @param {Event} ev - Event to consider
@@ -179,7 +157,6 @@ if (typeof module != 'undefined') {
   module.exports = {
     generateSchedules: generateSchedules,
     cartesian: cartesian,
-    eventsCollide: eventsCollide,
     filterNoRunning: filterNoRunning,
   };
 }
