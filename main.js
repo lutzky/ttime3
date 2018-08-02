@@ -395,12 +395,21 @@ function goToSchedule(i) {
   document.getElementById('current-schedule-id').textContent = i + 1;
   let days = byDay(possibleSchedules[i]);
 
-  let scheduleContents = document.getElementById('schedule-contents');
-  scheduleContents.innerHTML = '';
+  writeScheduleContents(document.getElementById('schedule-contents'), days);
+}
+
+/**
+ * Write the schedule contents, as described by days, to target
+ *
+ * @param {HTMLUlistElement} target - Target to write schedule to
+ * @param {Array<Array<Event>>} days - List of events for each day
+ */
+function writeScheduleContents(target, days) {
+  target.innerHTML = '';
 
   days.forEach(function(dayEvents) {
     let dayEntry = document.createElement('li');
-    scheduleContents.appendChild(dayEntry);
+    target.appendChild(dayEntry);
     dayEntry.textContent = dayNames[dayEvents[0].day];
     let eventList = document.createElement('ul');
     dayEntry.appendChild(eventList);
