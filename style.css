@@ -29,3 +29,17 @@
   margin: 0;
   padding: 0;
 }
+
+.rendered-schedule {
+  border: 1px solid black;
+  width: 800px;
+  position: relative;
+}
+
+.rendered-schedule-event {
+  border: thin solid #777;
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 5px;
+  background-color: #eee;
+}
