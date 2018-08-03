@@ -1,29 +1,51 @@
 'use strict';
 
 /**
- * @typedef {Object} Course
- * @property {string} name
- * @property {number} academicPoints - Number of academic points
- * @property {number} id - Course ID
- * @property {Group[]} groups
- * @
+ * @typedef {{
+ *   course: Course,
+ *   events: Array<AcademicEvent>,
+ *   id: number,
+ *   type: string,
+ * }}
  */
+let Group;
+/* exported Group */
 
 /**
- * @typedef {Object} Faculty
- * @property {string} name
- * @property {Course[]} courses
+ * @typedef {{
+ *   name: string,
+ *   academicPoints: number,
+ *   id: number,
+ *   groups: Array<Group>,
+ * }}
  */
+let Course;
+/* exported Course */
 
 /**
- * @typedef {Faculty[]} Catalog
+ * @typedef {{
+ *   name: string,
+ *   semester: string,
+ *   courses: Array<Course>
+ *  }}
  */
+let Faculty;
+/* exported Faculty */
 
 /**
- * @typedef {Object} Settings
- * @property {number[]} selectedCourses
- * @property {string} catalogUrl
+ * @typedef {Array<Faculty>}
  */
+let Catalog;
+/* exported Catalog */
+
+/**
+ * @typedef {{
+ *   selectedCourses: Array<number>,
+ *   catalogUrl: string,
+ * }}
+ */
+let Settings;
+/* exported Settings */
 
 const defaultCatalogUrl =
   'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
@@ -55,7 +77,7 @@ let currentCatalog = null;
  * @param {string} tagName - Tag to build
  * @param {string} innerHTML - HTML to fill tag with
  *
- * @returns {HTMLElement}
+ * @returns {!Element}
  */
 function elementWithHTML(tagName, innerHTML) {
   let elem = document.createElement(tagName);
@@ -68,7 +90,7 @@ function elementWithHTML(tagName, innerHTML) {
  *
  * @param {Course} course - Course to describe
  *
- * @returns {HTMLSpanElement}
+ * @returns {!Element}
  */
 function htmlDescribeCourse(course) {
   let result = document.createElement('span');
@@ -150,7 +172,7 @@ function rtlSpan(s) {
  *
  * @param {Course} course - Course to create label for
  *
- * @returns {HTMLSpanElement}
+ * @returns {!Element}
  */
 function courseLabel(course) {
   let span = document.createElement('span');
@@ -345,7 +367,7 @@ let currentSchedule = 0;
 /**
  * Set the collection of possible schedules
  *
- * @param {Schedule[]} schedules - Possible schedules
+ * @param {Array<Schedule>} schedules - Possible schedules
  */
 function setPossibleSchedules(schedules) {
   possibleSchedules = schedules;
@@ -408,7 +430,7 @@ const renderScaleY = 0.5;
 /**
  * Render a schedule to target
  *
- * @param {HTMLUlistElement} target - Target to write schedule to
+ * @param {Element} target - Target to write schedule to
  * @param {Schedule} schedule - Schedule to render
  */
 function renderSchedule(target, schedule) {
@@ -439,8 +461,8 @@ function renderSchedule(target, schedule) {
 /**
  * Write the schedule contents, as described by days, to target
  *
- * @param {HTMLUlistElement} target - Target to write schedule to
- * @param {Array<Array<Event>>} days - List of events for each day
+ * @param {Element} target - Target to write schedule to
+ * @param {Array<Array<AcademicEvent>>} days - List of events for each day
  */
 function writeScheduleContents(target, days) {
   target.innerHTML = '';
@@ -467,8 +489,8 @@ function writeScheduleContents(target, days) {
  * Get events for schedule split into per-day arrays
  *
  * @param {Schedule} schedule - Schedule to split into days
- * @returns {Array.<Array.<Event>>} - Each entry is an array of Events with the
- *                                    same day, sorted ascending.
+ * @returns {Array<Array<AcademicEvent>>} - Each entry is an array of Events
+ *                                          with the same day, sorted ascending.
  */
 function byDay(schedule) {
   let events = schedule.events.slice();
@@ -496,9 +518,14 @@ function byDay(schedule) {
  * @returns {Settings}
  */
 function loadSettings(s) {
-  let result = {};
+  /** @type {Settings} */
+  let result = {
+    catalogUrl: '',
+    selectedCourses: [],
+  };
+
   if (s.ttime3_settings) {
-    result = JSON.parse(s.ttime3_settings);
+    result = /** @type {Settings} */ (JSON.parse(s.ttime3_settings));
   }
 
   if (!result.catalogUrl) {
@@ -525,7 +552,7 @@ function loadSettings(s) {
 /**
  * Show or hide the settings div. Updates shape of toggle button appropriately.
  *
- * @param {bool} show - Whether or not the settings div should be visible
+ * @param {boolean} show - Whether or not the settings div should be visible
  */
 function showSettingsDiv(show) {
   let toggleLink = document.getElementById('toggle-settings-div');
@@ -540,7 +567,7 @@ showSettingsDiv(false);
 
 let settings = loadSettings(window.localStorage);
 
-loadCatalog(settings.catalogUrl).then(
+loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
   function(catalog) {
     console.log('Loaded catalog:', catalog);
     currentCatalog = catalog;

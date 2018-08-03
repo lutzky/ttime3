@@ -3,7 +3,7 @@
 /**
  * Sorts events by start time
  *
- * @param {Event[]} events - Events to sort
+ * @param {Array<AcademicEvent>} events - Events to sort
  */
 function sortEvents(events) {
   events.sort(function(a, b) {
@@ -17,7 +17,7 @@ function sortEvents(events) {
 /**
  * Returns false iff two entries in events overlap
  *
- * @param {Event[]} events - Events to check for collisions
+ * @param {Array<AcademicEvent>} events - Events to check for collisions
  *
  * @returns {boolean}
  */
@@ -40,7 +40,7 @@ function eventsCollide(events) {
  * Load the catalog object from url.
  *
  * @param {string} url - URL to download catalog from.
- * @param {bool} isLocal - Load from local FS using Node rather than XHR
+ * @param {boolean} isLocal - Load from local FS using Node rather than XHR
  *
  * @returns {Promise<Catalog>}
  */
@@ -52,7 +52,7 @@ function loadCatalog(url, isLocal) {
           reject(err);
         } else {
           let result = JSON.parse(data);
-          fixRawCatalog(result);
+          fixRawCatalog(/** @type {Catalog} */ (result));
           resolve(result);
         }
       });
@@ -63,8 +63,8 @@ function loadCatalog(url, isLocal) {
     req.open('GET', url);
     req.onload = function() {
       if (req.status == 200) {
-        let result /** Catalog */ = JSON.parse(req.response);
-        fixRawCatalog(result);
+        let result = JSON.parse(/** @type {string } */ (req.response));
+        fixRawCatalog(/** @type {Catalog} */ (result));
         resolve(result);
       } else {
         reject(Error(req.statusText));

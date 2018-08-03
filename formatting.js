@@ -15,11 +15,10 @@ function minutesToTime(minutes) {
 }
 
 /**
- * typedef {Object} DateObj
- * @param {number} year
- * @param {number} month
- * @param {number} day
+ * @typedef {{year: number, month: number, day: number}}
  */
+let DateObj;
+/* exported DateObj */
 
 /**
  * Format a DateObj as a string

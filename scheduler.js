@@ -1,24 +1,30 @@
 'use strict';
 
 /**
- * @typedef {Object} Event
- * @property {number} day - Day of week
- * @property {number} startMinute - Minutes since midnight for start
- * @property {number} endMinute - Minutes since midnight for end
- * @property {string} location - Where the event happens
+ * @typedef {{
+ *   day: number,
+ *   group: Group,
+ *   startMinute: number,
+ *   endMinute: number,
+ *   location: string,
+ * }}
  */
+let AcademicEvent;
+/* exported AcademicEvent */
+// Called AcademicEvent because Event is a google-closure-compiler builtin
 
 /**
- * @typedef {Object} Schedule
- * @property {Event[]} events - Events in schedule
+ * @typedef {{events: Array<AcademicEvent>}}
  */
+let Schedule;
+/* exported Schedule */
 
 /**
  * Return course's groups as an array of arrays, split by type
  *
  * @param {Course} course - Course to get groups from
  *
- * @returns {Array.<Array.<Group>>}
+ * @returns {Array<Array<Group>>}
  */
 function groupsByType(course) {
   let m = new Map();
@@ -39,7 +45,7 @@ function groupsByType(course) {
 /**
  * Return the building in which ev happens
  *
- * @param {Event} ev - Event to consider
+ * @param {AcademicEvent} ev - Event to consider
  *
  * @returns {string}
  */
@@ -91,7 +97,7 @@ function filterNoCollisions(schedule) {
  *
  * Note: If changing this method, reenable CARTESIAN_SLOW_TEST.
  *
- * @param {...Object[]} a - Arrays to multiply
+ * @param {...Array<Object>} a - Arrays to multiply
  * @returns {Array.<Array.<Object>>}
  */
 function cartesian(...a) {
@@ -113,9 +119,9 @@ let filterFunctions = {
 /**
  * Return all possible schedules
  *
- * @param {Course[]} courses - Courses to schedule from
- * @param {string[]} filters - Filter names to apply
- * @returns {Schedule[]}
+ * @param {Array<Course>} courses - Courses to schedule from
+ * @param {Array<string>} filters - Filter names to apply
+ * @returns {Array<Schedule>}
  */
 function generateSchedules(courses, filters) {
   console.time('generateSchedules');
@@ -145,7 +151,7 @@ function generateSchedules(courses, filters) {
 /**
  * Convert groups to a schedule
  *
- * @param {Group[]} groups - Groups to convert
+ * @param {Array<Group>} groups - Groups to convert
  * @returns {Schedule}
  */
 function groupsToSchedule(groups) {

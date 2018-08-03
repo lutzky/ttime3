@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * @typedef {Object} LayeredEvent
- * @property {Event} event - Actual event
- * @property {number} layer - Collision layer for event
- * @property {number} numLayers - The total number of layers
+ * @typedef {{
+ *   event: AcademicEvent,
+ *   layer: number,
+ *   numLayers: number,
+ * }}
  *
  * Explanation: Suppose you have events A, B, C, that collide like so (time
  * being horizontal):
@@ -31,6 +32,8 @@
  * 0, 1, and 2 respectively.
  *
  */
+let LayeredEvent;
+/* exported LayeredEvent */
 
 /**
  * Sort events into buckets of colliding events.
@@ -38,7 +41,7 @@
  * Shamelessly lifted from boazg at
  * https://github.com/lutzky/ttime/blob/master/lib/ttime/tcal/tcal.rb
  *
- * @param {Array<Event>} events - Events to layer
+ * @param {Array<AcademicEvent>} events - Events to layer
  *
  * @returns {Array<LayeredEvent>}
  */
@@ -69,7 +72,7 @@ function layoutLayeredEvents(events) {
       remaining = remaining.filter(x => !selected.has(x));
     }
 
-    /** @type {Array<Array<<Event>>} */
+    /** @type {Array<Array<AcademicEvent>>} */
     let layers = [];
 
     selected.forEach(function(s) {
