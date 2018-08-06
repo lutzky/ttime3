@@ -19,6 +19,12 @@
   text-decoration: none;
 }
 
+.forbid-link {
+  text-decoration: none;
+  font-style: italic;
+  font-size: small;
+}
+
 #info-box-closer {
   text-align: right;
   font-size: x-small;

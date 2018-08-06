@@ -121,9 +121,12 @@ let filterFunctions = {
  *
  * @param {Array<Course>} courses - Courses to schedule from
  * @param {Array<string>} filters - Filter names to apply
+ * @param {Object} filterSettings - Settings for filters
+ * TODO(lutzky): filterSettings should be a more specific type
+ *
  * @returns {Array<Schedule>}
  */
-function generateSchedules(courses, filters) {
+function generateSchedules(courses, filters, filterSettings) {
   console.time('generateSchedules');
   let groupBins = courses
     .map(c => groupsByType(c))
@@ -133,6 +136,8 @@ function generateSchedules(courses, filters) {
   let schedules = groupProduct.map(groupsToSchedule);
 
   console.info(`${schedules.length} total schedules`);
+
+  schedules = filterForbiddenGroups(schedules, filterSettings.forbiddenGroups);
 
   filters.forEach(function(filterName) {
     let filter = filterFunctions[filterName];
@@ -146,6 +151,21 @@ function generateSchedules(courses, filters) {
 
   console.timeEnd('generateSchedules');
   return schedules;
+}
+
+function filterForbiddenGroups(schedules, forbiddenGroups) {
+  if (!forbiddenGroups || forbiddenGroups.size == 0) {
+    return schedules;
+  }
+
+  let result = schedules.filter(function(schedule) {
+    return !schedule.events.some(function(event) {
+      let groupId = `${event.group.course.id}.${event.group.id}`;
+      return forbiddenGroups.has(groupId);
+    });
+  });
+
+  return result;
 }
 
 /**

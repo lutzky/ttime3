@@ -41,6 +41,7 @@ let Catalog;
 /**
  * @typedef {{
  *   selectedCourses: Array<number>,
+ *   forbiddenGroups: Array<string>,
  *   catalogUrl: string,
  * }}
  */
@@ -86,6 +87,74 @@ function elementWithHTML(tagName, innerHTML) {
 }
 
 /**
+ * Creates a header for the given group, for displaying in the catalog
+ *
+ * @param {Group} group - Group to create header for
+ *
+ * @returns {!Element}
+ */
+function groupHeaderForCatalog(group) {
+  let result = document.createElement('li');
+  let groupName = document.createElement('b');
+  groupName.innerText = `Group ${group.id} (type: ${group.type}) `;
+  result.appendChild(groupName);
+
+  let forbidLink = document.createElement('a');
+  forbidLink.className = 'forbid-link';
+  forbidLink.innerText = '[forbid]';
+  forbidLink.href = '#/';
+  forbidLink.onclick = function() {
+    addForbiddenGroup(group);
+  };
+  result.appendChild(forbidLink);
+
+  return result;
+}
+
+/**
+ * Format: 'course_id.group_id'
+ *
+ * @type Set<string>
+ */
+let forbiddenGroups = new Set();
+
+/**
+ * Add the given group to the forbidden groups
+ *
+ * @param {Group} group - Group to forbid
+ */
+function addForbiddenGroup(group) {
+  forbiddenGroups.add(`${group.course.id}.${group.id}`);
+  saveSettings();
+
+  updateForbiddenGroups();
+}
+
+/**
+ * Update the list of currently forbidden groups
+ */
+function updateForbiddenGroups() {
+  let ul = document.getElementById('forbidden-groups');
+  ul.innerHTML = '';
+
+  forbiddenGroups.forEach(function(fg) {
+    let li = document.createElement('li');
+    li.innerText = fg + ' ';
+
+    let unforbidLink = document.createElement('a');
+    unforbidLink.href = '#/';
+    unforbidLink.innerText = '[unforbid]';
+    unforbidLink.onclick = function() {
+      forbiddenGroups.delete(fg);
+      saveSettings();
+      updateForbiddenGroups();
+    };
+    li.appendChild(unforbidLink);
+    ul.appendChild(li);
+  });
+}
+
+/**
  * Return an HTML description for a course
  *
  * @param {Course} course - Course to describe
@@ -125,9 +194,7 @@ function htmlDescribeCourse(course) {
   let groups = document.createElement('ul');
   if (course.groups) {
     course.groups.forEach(function(g) {
-      groups.appendChild(
-        elementWithHTML('li', `<b>Group ${g.id} (type: ${g.type})`)
-      );
+      groups.appendChild(groupHeaderForCatalog(g));
       let events = document.createElement('ul');
       if (g.events) {
         g.events.forEach(function(e) {
@@ -248,6 +315,7 @@ function writeCatalogSelector() {
  * Save all settings to localStorage
  */
 function saveSettings() {
+  settings.forbiddenGroups = Array.from(forbiddenGroups);
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
   settings.catalogUrl = document.getElementById('catalog-url').value;
   settings.filters = Array.from(document.querySelectorAll('[id^="filter."]'))
@@ -358,7 +426,11 @@ function getSchedules() {
     w.terminate();
     setPossibleSchedules(e.data);
   };
-  w.postMessage({ courses: selectedCourses, filters: settings.filters });
+  w.postMessage({
+    courses: selectedCourses,
+    filters: settings.filters,
+    forbiddenGroups: forbiddenGroups,
+  });
 }
 
 /** @type {Array<Schedule>} */
@@ -492,6 +564,7 @@ function loadSettings(s) {
   let result = {
     catalogUrl: '',
     selectedCourses: [],
+    forbiddenGroups: [],
   };
 
   if (s.ttime3_settings) {
@@ -536,6 +609,9 @@ function showSettingsDiv(show) {
 showSettingsDiv(false);
 
 let settings = loadSettings(window.localStorage);
+
+forbiddenGroups = new Set(settings.forbiddenGroups);
+updateForbiddenGroups();
 
 loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
   function(catalog) {

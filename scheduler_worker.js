@@ -9,6 +9,10 @@ onmessage = function(e) {
   let courses = Array.from(e.data.courses);
   let filters = Array.from(e.data.filters);
 
-  let schedules = generateSchedules(courses, filters);
+  let filterSettings = {
+    forbiddenGroups: new Set(e.data.forbiddenGroups),
+  };
+
+  let schedules = generateSchedules(courses, filters, filterSettings);
   postMessage(schedules);
 };
