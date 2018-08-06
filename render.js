@@ -106,8 +106,6 @@ function layoutLayeredEvents(events) {
   return result;
 }
 
-const renderScaleY = 0.5;
-
 /**
  * Render a schedule to target
  *
@@ -120,7 +118,7 @@ function renderSchedule(target, schedule) {
   let earliest = Math.min(...schedule.events.map(x => x.startMinute));
   let latest = Math.max(...schedule.events.map(x => x.endMinute));
 
-  target.style.height = `${renderScaleY * (latest - earliest)}px`;
+  let scale = 100.0 / (latest - earliest);
 
   let layeredEvents = layoutLayeredEvents(schedule.events);
 
@@ -130,9 +128,8 @@ function renderSchedule(target, schedule) {
     eventDiv.className = 'event';
     eventDiv.style.width = `${20 / le.numLayers}%`;
     eventDiv.style.left = `${20 * (event.day + le.layer / le.numLayers)}%`;
-    eventDiv.style.top = `${renderScaleY * (event.startMinute - earliest)}px`;
-    eventDiv.style.height = `${renderScaleY *
-      (event.endMinute - event.startMinute)}px`;
+    eventDiv.style.top = `${scale * (event.startMinute - earliest)}%`;
+    eventDiv.style.height = `${scale * (event.endMinute - event.startMinute)}%`;
     eventDiv.innerHTML = event.group.course.name;
     target.appendChild(eventDiv);
   });
