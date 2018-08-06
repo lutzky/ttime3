@@ -211,17 +211,20 @@ function writeCatalogSelector() {
 
   facultiesDiv.innerHTML = '';
   currentCatalog.forEach(function(faculty) {
-    let heading = document.createElement('h3');
-    heading.textContent = faculty.name + ' ';
+    let facultyDetails = document.createElement('details');
+
+    let summary = document.createElement('summary');
+    summary.innerHTML = `<strong>${faculty.name}</strong> `;
     let semesterTag = document.createElement('span');
     semesterTag.className = 'semester-tag';
     semesterTag.textContent = faculty.semester;
-    heading.appendChild(semesterTag);
-    facultiesDiv.appendChild(heading);
+    summary.appendChild(semesterTag);
+    facultyDetails.appendChild(summary);
+    facultiesDiv.appendChild(facultyDetails);
 
     let courseList = document.createElement('ul');
     courseList.className = 'course-list';
-    facultiesDiv.appendChild(courseList);
+    facultyDetails.appendChild(courseList);
 
     faculty.courses.forEach(function(course) {
       let btn = document.createElement('button');
