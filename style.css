@@ -30,13 +30,13 @@
   padding: 0;
 }
 
-.rendered-schedule {
+#rendered-schedule {
   border: 1px solid black;
   width: 800px;
   position: relative;
 }
 
-.rendered-schedule-event {
+#rendered-schedule .event {
   border: thin solid #777;
   position: absolute;
   box-sizing: border-box;

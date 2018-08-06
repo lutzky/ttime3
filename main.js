@@ -425,39 +425,6 @@ function goToSchedule(i) {
   renderSchedule(document.getElementById('rendered-schedule'), schedule);
 }
 
-const renderScaleY = 0.5;
-
-/**
- * Render a schedule to target
- *
- * @param {Element} target - Target to write schedule to
- * @param {Schedule} schedule - Schedule to render
- */
-function renderSchedule(target, schedule) {
-  target.innerHTML = '';
-  target.className = 'rendered-schedule';
-
-  let earliest = Math.min(...schedule.events.map(x => x.startMinute));
-  let latest = Math.max(...schedule.events.map(x => x.endMinute));
-
-  target.style.height = `${renderScaleY * (latest - earliest)}px`;
-
-  let layeredEvents = layoutLayeredEvents(schedule.events);
-
-  layeredEvents.forEach(function(le) {
-    let eventDiv = document.createElement('div');
-    let event = le.event;
-    eventDiv.className = 'rendered-schedule-event';
-    eventDiv.style.width = `${20 / le.numLayers}%`;
-    eventDiv.style.left = `${20 * (event.day + le.layer / le.numLayers)}%`;
-    eventDiv.style.top = `${renderScaleY * (event.startMinute - earliest)}px`;
-    eventDiv.style.height = `${renderScaleY *
-      (event.endMinute - event.startMinute)}px`;
-    eventDiv.innerHTML = event.group.course.name;
-    target.appendChild(eventDiv);
-  });
-}
-
 /**
  * Write the schedule contents, as described by days, to target
  *
