@@ -64,3 +64,27 @@
   font-size: x-small;
   color: #666;
 }
+
+.event .course-name {
+  font-weight: bold;
+}
+
+.event .location {
+  font-size: x-small;
+}
+
+.event .location::after {
+  content: "@";
+}
+
+.event .event-type::before {
+  content: "[";
+}
+
+.event .event-type::after{
+  content: "]";
+}
+
+.event .event-type {
+  font-size: xx-small;
+}

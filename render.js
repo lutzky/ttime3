@@ -155,11 +155,35 @@ function renderSchedule(target, schedule) {
       /* width  */ 100 / 6.0 / le.numLayers,
       /* height */ scale * (event.endMinute - event.startMinute)
     );
-    eventDiv.innerHTML = event.group.course.name;
+    annotateEvent(eventDiv, event);
     target.appendChild(eventDiv);
   });
 
   addGridLines(target, schedule);
+}
+
+/**
+ * Annotate the div with the actualy contents of the event
+ *
+ * @param {Element} target - Div to annotate
+ * @param {AcademicEvent} event - Event details to show
+ */
+function annotateEvent(target, event) {
+  target.innerHTML = '';
+  let courseName = document.createElement('span');
+  courseName.className = 'course-name';
+  courseName.innerText = event.group.course.name + ' ';
+  target.appendChild(courseName);
+
+  let eventType = document.createElement('span');
+  eventType.className = 'event-type';
+  eventType.innerText = event.group.type;
+  target.appendChild(eventType);
+
+  let location = document.createElement('div');
+  location.className = 'location';
+  location.innerText = event.location;
+  target.appendChild(location);
 }
 
 const gridDensity = 30;
