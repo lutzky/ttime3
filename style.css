@@ -54,3 +54,9 @@
   border-radius: 5px;
   background-color: #eee;
 }
+
+#rendered-schedule .grid-line {
+  border-top: thin solid #ccc;
+  position: absolute;
+  z-index: -1;
+}

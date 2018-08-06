@@ -107,6 +107,28 @@ function layoutLayeredEvents(events) {
 }
 
 /**
+ * Get the start time of the earliest event in the schedule
+ *
+ * @param {Schedule} schedule - Schedule
+ *
+ * @returns {number}
+ */
+function getEarliest(schedule) {
+  return Math.min(...schedule.events.map(x => x.startMinute));
+}
+
+/**
+ * Get the end time of the latest event in the schedule
+ *
+ * @param {Schedule} schedule - Schedule
+ *
+ * @returns {number}
+ */
+function getLatest(schedule) {
+  return Math.max(...schedule.events.map(x => x.endMinute));
+}
+
+/**
  * Render a schedule to target
  *
  * @param {Element} target - Target to write schedule to
@@ -115,9 +137,8 @@ function layoutLayeredEvents(events) {
 function renderSchedule(target, schedule) {
   target.innerHTML = '';
 
-  let earliest = Math.min(...schedule.events.map(x => x.startMinute));
-  let latest = Math.max(...schedule.events.map(x => x.endMinute));
-
+  let earliest = getEarliest(schedule);
+  let latest = getLatest(schedule);
   let scale = 100.0 / (latest - earliest);
 
   let layeredEvents = layoutLayeredEvents(schedule.events);
@@ -137,6 +158,40 @@ function renderSchedule(target, schedule) {
     eventDiv.innerHTML = event.group.course.name;
     target.appendChild(eventDiv);
   });
+
+  addGridLines(target, schedule);
+}
+
+const gridDensity = 30;
+
+/**
+ * Render grid lines on target
+ *
+ * @param {Element} target - Target to draw grid lines on
+ * @param {Schedule} schedule - Schedule being rendered
+ */
+function addGridLines(target, schedule) {
+  let earliest = getEarliest(schedule);
+  let latest = getLatest(schedule);
+  let scale = 100.0 / (latest - earliest);
+
+  let firstGridLine = Math.ceil(earliest / gridDensity) * gridDensity;
+  let lastGridLine = Math.floor(latest / gridDensity) * gridDensity;
+
+  for (let t = firstGridLine; t <= lastGridLine; t += gridDensity) {
+    console.info(`Grid line at ${minutesToTime(t)}`);
+    let gridDiv = document.createElement('div');
+    gridDiv.className = 'grid-line';
+    positionElement(
+      gridDiv,
+      '%',
+      /* left    */ 0,
+      /* top     */ scale * (t - earliest),
+      /* width   */ 100,
+      /* height  */ scale * gridDensity
+    );
+    target.appendChild(gridDiv);
+  }
 }
 
 /**
