@@ -126,13 +126,34 @@ function renderSchedule(target, schedule) {
     let eventDiv = document.createElement('div');
     let event = le.event;
     eventDiv.className = 'event';
-    eventDiv.style.width = `${20 / le.numLayers}%`;
-    eventDiv.style.left = `${20 * (event.day + le.layer / le.numLayers)}%`;
-    eventDiv.style.top = `${scale * (event.startMinute - earliest)}%`;
-    eventDiv.style.height = `${scale * (event.endMinute - event.startMinute)}%`;
+    positionElement(
+      eventDiv,
+      '%',
+      /* left   */ 20 * (event.day + le.layer / le.numLayers),
+      /* top    */ scale * (event.startMinute - earliest),
+      /* width  */ 20 / le.numLayers,
+      /* height */ scale * (event.endMinute - event.startMinute)
+    );
     eventDiv.innerHTML = event.group.course.name;
     target.appendChild(eventDiv);
   });
+}
+
+/**
+ * Position element using the given units
+ *
+ * @param {Element} element - Element to position
+ * @param {string} units - Units, appended to all coordinates
+ * @param {number} left - Left coordinate
+ * @param {number} top - Top coordinate
+ * @param {number} width - Width
+ * @param {number} height - Height
+ */
+function positionElement(element, units, left, top, width, height) {
+  element.style.left = `${left}${units}`;
+  element.style.top = `${top}${units}`;
+  element.style.width = `${width}${units}`;
+  element.style.height = `${height}${units}`;
 }
 
 if (typeof module != 'undefined') {
