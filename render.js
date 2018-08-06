@@ -150,9 +150,9 @@ function renderSchedule(target, schedule) {
     positionElement(
       eventDiv,
       '%',
-      /* left   */ 20 * (event.day + le.layer / le.numLayers),
+      /* left   */ (100 / 6.0) * (1 + event.day + le.layer / le.numLayers),
       /* top    */ scale * (event.startMinute - earliest),
-      /* width  */ 20 / le.numLayers,
+      /* width  */ 100 / 6.0 / le.numLayers,
       /* height */ scale * (event.endMinute - event.startMinute)
     );
     eventDiv.innerHTML = event.group.course.name;
@@ -179,9 +179,9 @@ function addGridLines(target, schedule) {
   let lastGridLine = Math.floor(latest / gridDensity) * gridDensity;
 
   for (let t = firstGridLine; t <= lastGridLine; t += gridDensity) {
-    console.info(`Grid line at ${minutesToTime(t)}`);
     let gridDiv = document.createElement('div');
     gridDiv.className = 'grid-line';
+    gridDiv.innerText = minutesToTime(t);
     positionElement(
       gridDiv,
       '%',

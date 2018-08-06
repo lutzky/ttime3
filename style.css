@@ -59,4 +59,8 @@
   border-top: thin solid #ccc;
   position: absolute;
   z-index: -1;
+
+  /* Showing the actual time */
+  font-size: x-small;
+  color: #666;
 }
