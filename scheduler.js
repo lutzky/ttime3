@@ -153,6 +153,15 @@ function generateSchedules(courses, filters, filterSettings) {
   return schedules;
 }
 
+/**
+ * Remove forbidden groups
+ *
+ * @param {!Array<Schedule>} schedules - Schedules to filter
+ * @param {!Set<string>} forbiddenGroups - Strings of the form
+ *                                         course_id.group_id
+ *
+ * @returns {!Array<Schedule>}
+ */
 function filterForbiddenGroups(schedules, forbiddenGroups) {
   if (!forbiddenGroups || forbiddenGroups.size == 0) {
     return schedules;

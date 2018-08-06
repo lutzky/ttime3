@@ -114,7 +114,7 @@ function groupHeaderForCatalog(group) {
 /**
  * Format: 'course_id.group_id'
  *
- * @type Set<string>
+ * @type {!Set<string>}
  */
 let forbiddenGroups = new Set();
 

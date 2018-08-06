@@ -63,12 +63,12 @@ describe('Scheduler', function() {
     });
 
     it('should get the right amount of different schedules', function() {
-      let schedules = generateSchedules([algebra], ['noCollisions']);
+      let schedules = generateSchedules([algebra], ['noCollisions'], {});
       expect(schedules.length).toBe(33);
     });
 
     it('should have one lecture and one tutorial in each schedule', function() {
-      let schedules = generateSchedules([algebra], ['noCollisions']);
+      let schedules = generateSchedules([algebra], ['noCollisions'], {});
       let want = new Map([['lecture', 1], ['tutorial', 1]]);
       schedules.forEach(function(schedule) {
         expect(schedule.events.length).toBe(2);
