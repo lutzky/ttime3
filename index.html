@@ -56,7 +56,18 @@
       <button onclick="prevSchedule()">&laquo;</button>Schedule <span id="current-schedule-id">?</span>
       of <span id="num-schedules">?</span><button onclick="nextSchedule()">&raquo;</button>
       <ul id="schedule-contents"></ul>
-      <div id="rendered-schedule"></div>
+      <div id="rendered-schedule-container">
+        <table id="day-headers">
+          <tr>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+          </tr>
+        </table>
+        <div id="rendered-schedule"></div>
+      </div>
     </div>
     <div id="schedules"></div>
     <h2>Catalog</h2>
