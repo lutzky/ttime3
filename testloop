@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec npx supervisor -n exit -x 'npm' test
