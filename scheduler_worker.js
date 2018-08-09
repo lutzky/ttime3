@@ -4,7 +4,10 @@ importScripts('common.js', 'scheduler.js');
  * @param {Event} e - Message event
  */
 onmessage = function(e) {
-  console.log('Message received from main script:', e.data);
+  console.log(
+    'Message received from main script:',
+    JSON.stringify(e.data, null, '  ')
+  );
 
   let courses = Array.from(e.data.courses);
   let filters = Array.from(e.data.filters);
