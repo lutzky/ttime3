@@ -111,24 +111,28 @@ function cartesian(...a) {
     .reduce((a, b) => a.concat(b));
 }
 
-let filterFunctions = {
-  noRunning: filterNoRunning,
-  noCollisions: filterNoCollisions,
-};
+/**
+ * @typedef {{
+ *   noRunning: boolean,
+ *   noCollisions: boolean,
+ *   forbiddenGroups: Array<string>,
+ * }}
+ */
+let FilterSettings;
+/* exported FilterSettings */
 
 /**
  * Return all possible schedules
  *
- * @param {Array<Course>} courses - Courses to schedule from
- * @param {Array<string>} filters - Filter names to apply
- * @param {Object} filterSettings - Settings for filters
+ * @param {!Set<Course>} courses - Courses to schedule from
+ * @param {FilterSettings} settings - Settings for filters
  * TODO(lutzky): filterSettings should be a more specific type
  *
  * @returns {Array<Schedule>}
  */
-function generateSchedules(courses, filters, filterSettings) {
+function generateSchedules(courses, settings) {
   console.time('generateSchedules');
-  let groupBins = courses
+  let groupBins = Array.from(courses)
     .map(c => groupsByType(c))
     .reduce((a, b) => a.concat(b), []);
 
@@ -137,44 +141,76 @@ function generateSchedules(courses, filters, filterSettings) {
 
   console.info(`${schedules.length} total schedules`);
 
-  schedules = filterForbiddenGroups(schedules, filterSettings.forbiddenGroups);
-
-  filters.forEach(function(filterName) {
-    let filter = filterFunctions[filterName];
-    if (filter) {
-      schedules = schedules.filter(filter);
-      console.info(`After ${filterName} filter, ${schedules.length} schedules`);
-    } else {
-      console.error(`No such filter ${filterName}`);
-    }
-  });
+  schedules = runAllFilters(schedules, settings);
 
   console.timeEnd('generateSchedules');
   return schedules;
 }
 
 /**
+ * Filter src using filter (named filterName), logging how many schedules
+ * it removed.
+ *
+ * @param {Array<Schedule>} src - Source schedules to filter
+ * @param {function(Schedule): boolean} filter - Filter to use
+ * @param {string} filterName - Display name of filter
+ *
+ * @returns {Array<Schedule>}
+ */
+function filterWithDelta(src, filter, filterName) {
+  let result = src.filter(filter);
+  console.info(
+    `Filter ${filterName} removed ${src.length - result.length} schedules`
+  );
+  return result;
+}
+
+/**
+ * Filter using all filters, according to settings
+ *
+ * @param {Array<Schedule>} schedules - Schedules to filter
+ * @param {FilterSettings} settings - Filter settings
+ *
+ * @returns {Array<Schedule>}
+ */
+function runAllFilters(schedules, settings) {
+  let result = schedules.slice();
+
+  result = filterForbiddenGroups(result, settings);
+
+  if (settings.noCollisions) {
+    result = filterWithDelta(result, filterNoCollisions, 'noCollisions');
+  }
+
+  if (settings.noRunning) {
+    result = filterWithDelta(result, filterNoRunning, 'noRunning');
+  }
+
+  return result;
+}
+
+/**
  * Remove forbidden groups
  *
  * @param {!Array<Schedule>} schedules - Schedules to filter
- * @param {!Set<string>} forbiddenGroups - Strings of the form
- *                                         course_id.group_id
+ * @param {FilterSettings} settings - Filter settings
  *
  * @returns {!Array<Schedule>}
  */
-function filterForbiddenGroups(schedules, forbiddenGroups) {
-  if (!forbiddenGroups || forbiddenGroups.size == 0) {
+function filterForbiddenGroups(schedules, settings) {
+  if (!settings.forbiddenGroups || settings.forbiddenGroups.length == 0) {
     return schedules;
   }
 
-  let result = schedules.filter(function(schedule) {
-    return !schedule.events.some(function(event) {
-      let groupId = `${event.group.course.id}.${event.group.id}`;
-      return forbiddenGroups.has(groupId);
-    });
-  });
+  let forbiddenGroupsSet = new Set(settings.forbiddenGroups);
 
-  return result;
+  return schedules.filter(
+    schedule =>
+      !schedule.events.some(function(event) {
+        let groupId = `${event.group.course.id}.${event.group.id}`;
+        return forbiddenGroupsSet.has(groupId);
+      })
+  );
 }
 
 /**

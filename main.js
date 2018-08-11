@@ -1,6 +1,17 @@
 'use strict';
 
 /**
+ * Shorthand for document.getElementById
+ *
+ * @param {string} id - Element ID
+ *
+ * @returns {Element}
+ */
+function dgebid(id) {
+  return document.getElementById(id);
+}
+
+/**
  * @typedef {{
  *   course: Course,
  *   events: Array<AcademicEvent>,
@@ -39,10 +50,14 @@ let Catalog;
 /* exported Catalog */
 
 /**
+ * Settings to be saved. Note that this must be serializable directly as JSON,
+ * so Settings and all of the types of its member variables can't have maps
+ * nor sets.
+ *
  * @typedef {{
  *   selectedCourses: Array<number>,
- *   forbiddenGroups: Array<string>,
  *   catalogUrl: string,
+ *   filterSettings: FilterSettings,
  * }}
  */
 let Settings;
@@ -58,7 +73,7 @@ const defaultCatalogUrl =
  */
 function setCatalogUrl(url) {
   /* exported setCatalogUrl */
-  document.getElementById('catalog-url').value = url;
+  dgebid('catalog-url').value = url;
   saveSettings();
 }
 
@@ -134,7 +149,7 @@ function addForbiddenGroup(group) {
  * Update the list of currently forbidden groups
  */
 function updateForbiddenGroups() {
-  let ul = document.getElementById('forbidden-groups');
+  let ul = dgebid('forbidden-groups');
   ul.innerHTML = '';
 
   forbiddenGroups.forEach(function(fg) {
@@ -274,7 +289,7 @@ let courseAddLabels = new Map();
  * Write catalog selector to page.
  */
 function writeCatalogSelector() {
-  let facultiesDiv = document.getElementById('catalog');
+  let facultiesDiv = dgebid('catalog');
 
   facultiesDiv.innerHTML = '';
   currentCatalog.forEach(function(faculty) {
@@ -315,12 +330,13 @@ function writeCatalogSelector() {
  * Save all settings to localStorage
  */
 function saveSettings() {
-  settings.forbiddenGroups = Array.from(forbiddenGroups);
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
-  settings.catalogUrl = document.getElementById('catalog-url').value;
-  settings.filters = Array.from(document.querySelectorAll('[id^="filter."]'))
-    .filter(node => node.checked)
-    .map(node => node.id.split('.')[1]);
+  settings.catalogUrl = dgebid('catalog-url').value;
+  settings.filterSettings = {
+    forbiddenGroups: Array.from(forbiddenGroups),
+    noCollisions: dgebid('filter.noCollisions').checked,
+    noRunning: dgebid('filter.noRunning').checked,
+  };
 
   window.localStorage.ttime3_settings = JSON.stringify(settings);
 
@@ -388,7 +404,7 @@ function delSelectedCourse(course) {
  * something neater.
  */
 function refreshSelectedCourses() {
-  let div = document.getElementById('selected-courses');
+  let div = dgebid('selected-courses');
   div.innerHTML = '';
   let ul = document.createElement('ul');
   ul.className = 'course-list';
@@ -412,8 +428,8 @@ function refreshSelectedCourses() {
  */
 function getSchedules() {
   /* exported getSchedules */
-  let genButton = document.getElementById('generate-schedules');
-  let spinner = document.getElementById('spinner');
+  let genButton = dgebid('generate-schedules');
+  let spinner = dgebid('spinner');
   genButton.disabled = true;
   spinner.style.visibility = 'visible';
 
@@ -426,10 +442,10 @@ function getSchedules() {
     w.terminate();
     setPossibleSchedules(e.data);
   };
+
   w.postMessage({
     courses: selectedCourses,
-    filters: settings.filters,
-    forbiddenGroups: forbiddenGroups,
+    filterSettings: settings.filterSettings,
   });
 }
 
@@ -447,8 +463,8 @@ let currentSchedule = 0;
 function setPossibleSchedules(schedules) {
   possibleSchedules = schedules;
   currentSchedule = 0;
-  let div = document.getElementById('schedule-browser');
-  document.getElementById('num-schedules').textContent = schedules.length;
+  let div = dgebid('schedule-browser');
+  dgebid('num-schedules').textContent = schedules.length;
   if (schedules.length > 0) {
     div.style.display = 'block';
   } else {
@@ -492,12 +508,12 @@ function goToSchedule(i) {
   let max = possibleSchedules.length;
   i = (i + max) % max;
   currentSchedule = i;
-  document.getElementById('current-schedule-id').textContent = i + 1;
+  dgebid('current-schedule-id').textContent = i + 1;
   let schedule = possibleSchedules[i];
   let days = byDay(possibleSchedules[i]);
 
-  writeScheduleContents(document.getElementById('schedule-contents'), days);
-  renderSchedule(document.getElementById('rendered-schedule'), schedule);
+  writeScheduleContents(dgebid('schedule-contents'), days);
+  renderSchedule(dgebid('rendered-schedule'), schedule);
 }
 
 /**
@@ -562,32 +578,31 @@ function byDay(schedule) {
 function loadSettings(s) {
   /** @type {Settings} */
   let result = {
-    catalogUrl: '',
+    catalogUrl: defaultCatalogUrl,
     selectedCourses: [],
     forbiddenGroups: [],
+    filterSettings: {
+      forbiddenGroups: [],
+      noCollisions: true,
+      noRunning: false,
+    },
   };
 
   if (s.ttime3_settings) {
-    result = /** @type {Settings} */ (JSON.parse(s.ttime3_settings));
-  }
-
-  if (!result.catalogUrl) {
-    result.catalogUrl = defaultCatalogUrl;
-  }
-  if (!result.selectedCourses) {
-    result.selectedCourses = [];
-  }
-  if (!result.filters) {
-    result.filters = ['noCollisions'];
+    // TODO(lutzky): Use Object.assign to merge here; this obviates the
+    // later checks for !result.*...
+    result = /** @type {Settings} */ (Object.assign(
+      result,
+      /** @type {Settings} */ (JSON.parse(s.ttime3_settings))
+    ));
   }
 
   console.info('Loaded settings:', result);
 
-  document.getElementById('catalog-url').value = result.catalogUrl;
+  dgebid('catalog-url').value = result.catalogUrl;
 
-  result.filters.forEach(function(filter) {
-    document.getElementById('filter.' + filter).checked = true;
-  });
+  dgebid('filter.noCollisions').checked = result.filterSettings.noCollisions;
+  dgebid('filter.noRunning').checked = result.filterSettings.noRunning;
 
   return result;
 }
@@ -598,8 +613,8 @@ function loadSettings(s) {
  * @param {boolean} show - Whether or not the settings div should be visible
  */
 function showSettingsDiv(show) {
-  let toggleLink = document.getElementById('toggle-settings-div');
-  let settingsDiv = document.getElementById('settings-div');
+  let toggleLink = dgebid('toggle-settings-div');
+  let settingsDiv = dgebid('settings-div');
 
   toggleLink.innerHTML = show ? downArrow : rightArrow;
   settingsDiv.hidden = !show;
@@ -610,7 +625,7 @@ showSettingsDiv(false);
 
 let settings = loadSettings(window.localStorage);
 
-forbiddenGroups = new Set(settings.forbiddenGroups);
+forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();
 
 loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(

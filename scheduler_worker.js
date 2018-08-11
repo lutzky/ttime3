@@ -9,13 +9,6 @@ onmessage = function(e) {
     JSON.stringify(e.data, null, '  ')
   );
 
-  let courses = Array.from(e.data.courses);
-  let filters = Array.from(e.data.filters);
-
-  let filterSettings = {
-    forbiddenGroups: new Set(e.data.forbiddenGroups),
-  };
-
-  let schedules = generateSchedules(courses, filters, filterSettings);
+  let schedules = generateSchedules(e.data.courses, e.data.filterSettings);
   postMessage(schedules);
 };
