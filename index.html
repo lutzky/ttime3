@@ -35,6 +35,16 @@
         <li><input type="checkbox" onchange="saveSettings()" id="filter.noCollisions" /> No collisions</li>
         <li><input type="checkbox" onchange="saveSettings()" id="filter.noRunning" /> No running (no
           consecutive classes in different buildings)</li>
+        <li><input type="checkbox" onchange="saveSettings()"
+                                   id="filter.freeDays" />
+          Free days (Minimum of
+          <input type="number" id="filter.freeDays.min"
+                               placeholder="0"
+                               onchange="saveSettings()"/>
+          and maximum of
+          <input type="number" id="filter.freeDays.max"
+                               placeholder="5"
+                               onchange="saveSettings()"/>
       </ul>
 
       <h4>Forbidden groups</h4>

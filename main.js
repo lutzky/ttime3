@@ -336,11 +336,32 @@ function saveSettings() {
     forbiddenGroups: Array.from(forbiddenGroups),
     noCollisions: dgebid('filter.noCollisions').checked,
     noRunning: dgebid('filter.noRunning').checked,
+    freeDays: {
+      enabled: dgebid('filter.freeDays').checked,
+      min: getNumInputValueWithDefault(dgebid('filter.freeDays.min'), 0),
+      max: getNumInputValueWithDefault(dgebid('filter.freeDays.max'), 5),
+    },
   };
 
   window.localStorage.ttime3_settings = JSON.stringify(settings);
 
   console.info('Saved settings:', settings);
+}
+
+/**
+ * Get the numeric value in the given field, or return the default if
+ * it's empty.
+ *
+ * @param {Element} input - Input field containing the number
+ * @param {number} defaultValue - Number to return if input is empty
+ *
+ * @returns {number}
+ */
+function getNumInputValueWithDefault(input, defaultValue) {
+  if (input.value == '') {
+    return defaultValue;
+  }
+  return Number(input.value);
 }
 
 /**
@@ -585,12 +606,15 @@ function loadSettings(s) {
       forbiddenGroups: [],
       noCollisions: true,
       noRunning: false,
+      freeDays: {
+        enabled: false,
+        min: 0,
+        max: 5,
+      },
     },
   };
 
   if (s.ttime3_settings) {
-    // TODO(lutzky): Use Object.assign to merge here; this obviates the
-    // later checks for !result.*...
     result = /** @type {Settings} */ (Object.assign(
       result,
       /** @type {Settings} */ (JSON.parse(s.ttime3_settings))

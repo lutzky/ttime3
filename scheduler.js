@@ -116,6 +116,11 @@ function cartesian(...a) {
  *   noRunning: boolean,
  *   noCollisions: boolean,
  *   forbiddenGroups: Array<string>,
+ *   freeDays: {
+ *     enabled: boolean,
+ *     min: number,
+ *     max: number,
+ *   }
  * }}
  */
 let FilterSettings;
@@ -186,7 +191,37 @@ function runAllFilters(schedules, settings) {
     result = filterWithDelta(result, filterNoRunning, 'noRunning');
   }
 
+  if (settings.freeDays.enabled) {
+    result = filterWithDelta(
+      result,
+      schedule => filterFreeDays(schedule, settings),
+      'freeDays'
+    );
+  }
+
   return result;
+}
+
+/**
+ * Returns true iff the schedule has free days within settings.freeDays
+ *
+ * @param {Schedule} schedule - Schedule to examine
+ * @param {FilterSettings} settings - Fitler settings
+ *
+ * @returns {boolean}
+ */
+function filterFreeDays(schedule, settings) {
+  let hasClasses = [false, false, false, false, false];
+
+  schedule.events.forEach(function(event) {
+    hasClasses[event.day] = true;
+  });
+
+  let numFreeDays = hasClasses.filter(x => x == false).length;
+
+  return (
+    numFreeDays >= settings.freeDays.min && numFreeDays <= settings.freeDays.max
+  );
 }
 
 /**
