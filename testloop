@@ -1,3 +1,3 @@
 #!/bin/bash
 
-exec npx supervisor -n exit -x 'npm' test
+exec npx supervisor -n exit -x make all

@@ -17,9 +17,7 @@
     "tern-jasmine": "^0.3.0"
   },
   "scripts": {
-    "test": "npm run closure && eslint *.js jasmine/spec/*.js && jasmine",
-    "fix": "eslint --fix *.js jasmine/spec/*.js",
-    "closure": "google-closure-compiler --js=*.js --externs=externs/externs.js --compilation_level=ADVANCED --checks_only --jscomp_error=*"
+    "test": "make"
   },
   "repository": {
     "type": "git",
