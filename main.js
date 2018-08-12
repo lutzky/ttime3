@@ -444,31 +444,33 @@ function refreshSelectedCourses() {
   });
 }
 
+let schedulerWorker = new Worker('scheduler_worker.js');
+
+/**
+ * Respond to scheduling result from worker
+ *
+ * @param {MessageEvent} e - blabbity boop
+ */
+schedulerWorker.onmessage = function(e) {
+  console.info('Received message from worker:', e);
+  dgebid('generate-schedules').disabled = false;
+  dgebid('spinner').style.visibility = 'hidden';
+  if (e.data == null) {
+    dgebid('exception-occurred').style.display = 'initial';
+  }
+  setPossibleSchedules(e.data);
+};
+
 /**
  * Start a worker to generate schedules
  */
 function getSchedules() {
   /* exported getSchedules */
-  let genButton = dgebid('generate-schedules');
-  let spinner = dgebid('spinner');
-  genButton.disabled = true;
-  spinner.style.visibility = 'visible';
-
-  let w = new Worker('scheduler_worker.js');
-  // TODO(lutzky): Wrap worker with a Promise
+  dgebid('generate-schedules').disabled = true;
+  dgebid('spinner').visibility = 'visible';
   dgebid('exception-occurred').style.display = 'none';
-  w.onmessage = function(e) {
-    console.info('Received message from worker:', e);
-    genButton.disabled = false;
-    spinner.style.visibility = 'hidden';
-    w.terminate();
-    if (e.data == null) {
-      dgebid('exception-occurred').style.display = 'initial';
-    }
-    setPossibleSchedules(e.data);
-  };
 
-  w.postMessage({
+  schedulerWorker.postMessage({
     courses: selectedCourses,
     filterSettings: settings.filterSettings,
   });
