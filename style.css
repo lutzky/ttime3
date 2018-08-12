@@ -104,3 +104,12 @@
   background: #fdd;
   color: #500;
 }
+
+.info {
+  border: thin solid #003;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  background: #ddf;
+  color: #005;
+}

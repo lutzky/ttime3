@@ -74,6 +74,15 @@ const defaultCatalogUrl =
 function setCatalogUrl(url) {
   /* exported setCatalogUrl */
   dgebid('catalog-url').value = url;
+  catalogUrlChanged();
+}
+
+/**
+ * Handler for changes to the catalog URL field
+ */
+function catalogUrlChanged() {
+  /* exported catalogUrlChanged */
+  dgebid('reload-please').style.display = 'initial';
   saveSettings();
 }
 
