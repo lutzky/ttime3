@@ -456,11 +456,15 @@ function getSchedules() {
 
   let w = new Worker('scheduler_worker.js');
   // TODO(lutzky): Wrap worker with a Promise
+  dgebid('exception-occurred').style.display = 'none';
   w.onmessage = function(e) {
     console.info('Received message from worker:', e);
     genButton.disabled = false;
     spinner.style.visibility = 'hidden';
     w.terminate();
+    if (e.data == null) {
+      dgebid('exception-occurred').style.display = 'initial';
+    }
     setPossibleSchedules(e.data);
   };
 

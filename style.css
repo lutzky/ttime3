@@ -94,3 +94,12 @@
 .event .event-type {
   font-size: xx-small;
 }
+
+.error {
+  border: thin solid #300;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  background: #fdd;
+  color: #500;
+}
