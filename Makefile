@@ -18,4 +18,7 @@ closure:
 		--checks_only \
 		--jscomp_error='*'
 
-.PHONY: test lint closure all
+fix:
+	eslint --fix *.js jasmine/spec/*.js
+
+.PHONY: test lint closure all fix

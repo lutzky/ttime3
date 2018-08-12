@@ -4,7 +4,7 @@ Yet another rewrite of ttime. This version reads JSON files as exported by https
 
 ## Dev notes
 
-* Run `npm test`, it'll perform lint tests and such. Run `./testloop` to get that to automatically run on file changes.
-* Run `npm run fix` to fix formatting
+* Run `make`, it'll perform lint tests and such. Run `./testloop` to get that to automatically run on file changes.
+* Run `make fix` to fix formatting
 
 Powered by [![VanillaJS](http://vanilla-js.com/assets/button.png)](http://vanilla-js.com)
