@@ -1,13 +1,36 @@
 const algebraCourseID = 104166;
 
-if (typeof require == 'undefined') {
-  // Not running in Node
-  loadTestCatalog = () => loadCatalog('../testdata.json');
-} else {
-  // loadTestCatalog is defined in NodeHelpers.js.
+if (typeof require != 'undefined') {
+  let common = require('../../common');
+  let formatting = require('../../formatting');
+  let render = require('../../render');
+  let scheduler = require('../../scheduler');
+
+  cartesian = scheduler.cartesian;
+  eventsCollide = common.eventsCollide;
+  filterNoRunning = scheduler.filterNoRunning;
+  generateSchedules = scheduler.generateSchedules;
+  layoutLayeredEvents = render.layoutLayeredEvents;
+  loadTestCatalog = common.loadTestCatalog;
+  minutesToTime = formatting.minutesToTime;
+  sortEvents = common.sortEvents;
 }
 
 describe('Scheduler', function() {
+  /**
+   * Return a copy of default filter settings
+   *
+   * @returns {FilterSettings}
+   */
+  function getDefaultFilterSettings() {
+    return {
+      forbiddenGroups: [],
+      freeDays: { enabled: false, max: 5, min: 0 },
+      noRunning: false,
+      noCollisions: false,
+    };
+  }
+
   describe('Cartesian products', function() {
     it('should calculate correctly in trivial cases', function() {
       let a = [[1, 2]];
@@ -63,22 +86,22 @@ describe('Scheduler', function() {
     });
 
     it('should get the right amount of different schedules', function() {
-      let schedules = generateSchedules([algebra], {
-        noCollisions: true,
-        freeDays: {},
-      });
+      let settings = getDefaultFilterSettings();
+      settings.noCollisions = true;
+
+      let schedules = generateSchedules(new Set([algebra]), settings);
       expect(schedules.length).toBe(33);
     });
 
     it('should have one lecture and one tutorial in each schedule', function() {
-      let schedules = generateSchedules([algebra], {
-        noCollisions: true,
-        freeDays: {},
-      });
+      let settings = getDefaultFilterSettings();
+      settings.noCollisions = true;
+
+      let schedules = generateSchedules(new Set([algebra]), settings);
       let want = new Map([['lecture', 1], ['tutorial', 1]]);
       schedules.forEach(function(schedule) {
         expect(schedule.events.length).toBe(2);
-        typeCounts = new Map();
+        let typeCounts = new Map();
         schedule.events.forEach(function(ev) {
           let type = ev.group.type;
           if (!typeCounts.has(type)) {

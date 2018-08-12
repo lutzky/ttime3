@@ -11,7 +11,9 @@ test:
 closure:
 	google-closure-compiler \
 		--js='*.js' \
+		--js='jasmine/spec/*.js' \
 		--externs=externs/externs.js \
+		--externs=node_modules/google-closure-compiler/contrib/externs/jasmine-2.0.js \
 		--compilation_level=ADVANCED \
 		--checks_only \
 		--jscomp_error='*'

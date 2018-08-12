@@ -103,10 +103,24 @@ function fixRawCatalog(catalog) {
   });
 }
 
+/**
+ * Load the test catalog from local data
+ *
+ * @returns {Promise<Catalog>}
+ */
+function loadTestCatalog() {
+  if (typeof require != 'undefined') {
+    return loadCatalog('testdata.json', true);
+  } else {
+    return loadCatalog('../testdata.json', false);
+  }
+}
+
 if (typeof module != 'undefined') {
   module.exports = {
     eventsCollide: eventsCollide,
     sortEvents: sortEvents,
     loadCatalog: loadCatalog,
+    loadTestCatalog: loadTestCatalog,
   };
 }
