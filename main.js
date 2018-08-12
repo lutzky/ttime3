@@ -469,6 +469,7 @@ function getSchedules() {
   dgebid('generate-schedules').disabled = true;
   dgebid('spinner').visibility = 'visible';
   dgebid('exception-occurred').style.display = 'none';
+  dgebid('no-schedules').style.display = 'none';
 
   schedulerWorker.postMessage({
     courses: selectedCourses,
@@ -493,11 +494,12 @@ function setPossibleSchedules(schedules) {
   let div = dgebid('schedule-browser');
   dgebid('num-schedules').textContent = schedules.length;
   if (schedules.length > 0) {
-    div.style.display = 'block';
+    div.style.display = 'initial';
+    goToSchedule(0);
   } else {
     div.style.display = 'none';
+    dgebid('no-schedules').style.display = 'initial';
   }
-  goToSchedule(0);
 }
 
 /**
