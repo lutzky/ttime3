@@ -644,6 +644,9 @@ function loadSettings(s) {
 
   dgebid('filter.noCollisions').checked = result.filterSettings.noCollisions;
   dgebid('filter.noRunning').checked = result.filterSettings.noRunning;
+  dgebid('filter.freeDays').checked = result.filterSettings.freeDays.enabled;
+  dgebid('filter.freeDays.min').value = result.filterSettings.freeDays.min;
+  dgebid('filter.freeDays.max').value = result.filterSettings.freeDays.max;
 
   return result;
 }
