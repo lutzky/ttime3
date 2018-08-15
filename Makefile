@@ -21,4 +21,7 @@ closure:
 fix:
 	eslint --fix *.js jasmine/spec/*.js
 
-.PHONY: test lint closure all fix
+serve:
+	http-server
+
+.PHONY: test lint closure all fix serve
