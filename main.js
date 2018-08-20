@@ -17,6 +17,7 @@ function dgebid(id) {
  *   events: Array<AcademicEvent>,
  *   id: number,
  *   type: string,
+ *   teachers: Array<string>,
  * }}
  */
 let Group;
@@ -120,7 +121,10 @@ function elementWithHTML(tagName, innerHTML) {
 function groupHeaderForCatalog(group) {
   let result = document.createElement('li');
   let groupName = document.createElement('b');
-  groupName.innerText = `Group ${group.id} (type: ${group.type}) `;
+  groupName.innerText = `Group ${group.id} (${group.type}) `;
+  if (group.teachers.length > 0) {
+    groupName.innerText += `(${group.teachers.join(', ')}) `;
+  }
   result.appendChild(groupName);
 
   let forbidLink = document.createElement('a');
