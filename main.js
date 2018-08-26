@@ -479,7 +479,7 @@ schedulerWorker.onmessage = function(e) {
 function getSchedules() {
   /* exported getSchedules */
   dgebid('generate-schedules').disabled = true;
-  dgebid('spinner').visibility = 'visible';
+  dgebid('spinner').style.visibility = 'visible';
   dgebid('exception-occurred').style.display = 'none';
   dgebid('no-schedules').style.display = 'none';
 
