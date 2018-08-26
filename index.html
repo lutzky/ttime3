@@ -1,9 +1,16 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="style.css">
+
     <title>TTime3</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40939561-2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -14,103 +21,164 @@
     </script>
   </head>
   <body>
-    <h1>TTime3</h1>
-    <h2>Settings <a href="#/" class="expando" id="toggle-settings-div"></a></h2>
-    <div id="settings-div" hidden>
-      <div style="display: flex">
-        <label for="catalog-url">Catalog URL</label>
-        <input style="flex:1" type="url" id="catalog-url"
-        onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#"> <img src="ttime.svg" width="30"
+        height="30" class="d-inline-block align-top" alt="">
+        TTime3
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                                   data-target="#navbarNav"
+                                                   aria-controls="navbarNav"
+                                                   aria-expanded="false"
+                                                   aria-label="Toggle
+                                                   navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="nav navbar-nav" role="tablist">
+          <li class="nav-item active">
+            <a class="nav-link" id="schedules-tab" data-toggle="tab"
+              href="#schedules" role="tab" aria-controls="schedules"
+              aria-selected="true">Schedules <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="catalog-tab" data-toggle="tab"
+            href="#catalog" role="tab" aria-controls="catalog"
+            aria-selected="false">Catalog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="settings-tab" data-toggle="tab"
+            href="#settings" role="tab" aria-controls="settings"
+            aria-selected="false">Settings</a>
+          </li>
+        </ul>
       </div>
+    </nav>
 
-      <div id="reload-please" class="info" style="display: none">
-        Catalog URL changed. Please reload for this to take effect.
+    <div class="container-fluid">
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="schedules" role="tabpanel" aria-labelledby="schedules-tab">
+          <div class="row">
+            <div class="col-md-8">
+              <div id="no-schedules" style="display: none" class="alert
+                alert-warning">
+                No schedules are possible given the selected courses and constraints.
+                <!-- TODO(lutzky): This also looks badly cropped on mobile -->
+              </div>
+              <div id="rendered-schedule-container">
+                <table id="day-headers">
+                  <tr>
+                    <th>&nbsp;<!-- Time column --></th>
+                    <th>Sunday</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                  </tr>
+                </table>
+                <div id="rendered-schedule"></div>
+              </div>
+            </div>
+            <div class="col-md-4" id="selected-courses-container">
+              <div id="schedule-browser" style="display: none">
+                <h4>Schedules</h4>
+                <button onclick="prevSchedule()">&laquo;</button>Schedule <span id="current-schedule-id">?</span>
+                of <span id="num-schedules">?</span><button onclick="nextSchedule()">&raquo;</button>
+                <ul id="schedule-contents"></ul>
+              </div>
+              <div id="schedules"></div>
+              <h4>Selected courses</h4>
+              <div id="selected-courses"></div>
+              <a href="#catalog" onclick="$('#catalog-tab').tab('show')">
+                Add courses in Catalog
+              </a>
+              <div id="exception-occurred" style="display: none" class="error">
+                An error has occurred while generating schedules. Please open your
+                browser's javascript console and examine the error there. If reporting
+                a bug, please include that output.
+              </div>
+              <div id="gen-schedules-button">
+                <button id="generate-schedules" onclick="getSchedules()">Generate schedules</button>
+                <img id="spinner" src="spinner.gif" style="visibility: hidden" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="catalog" role="tabpanel" aria-labelledby="catalog-tab">
+          <h2>Catalog</h2>
+          <div id="catalog">(Loading courses)</div>
+        </div>
+        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+          <div class="form-group">
+            <label for="catalog-url">Catalog URL</label>
+            <input class="form-control" type="url" id="catalog-url"
+            onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
+          </div>
+
+          <div id="reload-please" class="alert alert-primary" style="display:
+          none" role="alert">
+            <!-- TODO(lutzky): This looks bad on mobile UI if it starts out
+              hidden :/ -->
+            Catalog URL changed. Please reload for this to take effect.
+          </div>
+
+          <h3>Preset catalog URLs</h3>
+          <ul>
+            <li><a href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a></li>
+            <li><a href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a></li>
+            <li><a href="#/"
+                   onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/981f009466c6007441b9833c326f40059f9c6433.json')">
+                Final Winter 2018 Catalog</li>
+            <li><a href="#/"
+                   onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/42e7f28aa5c6e02597256dd81a25d55118e9e1ac.json')">
+                Final Spring 2018 Catalog</li>
+            <li><a href="https://repy-176217.appspot.com/">Catalog of Catalogs</a>
+              (copy JSON link into Catalog URL)</li>
+          </ul>
+
+          <p>Reload for settings to take effect.</p>
+
+          <h3>Filters</h3>
+          <ul>
+            <li><input type="checkbox" onchange="saveSettings()" id="filter.noCollisions" /> No collisions</li>
+            <li><input type="checkbox" onchange="saveSettings()" id="filter.noRunning" /> No running (no
+              consecutive classes in different buildings)</li>
+            <li><input type="checkbox" onchange="saveSettings()"
+                                       id="filter.freeDays" />
+              Free days (Minimum of
+              <input type="number" id="filter.freeDays.min"
+                                   placeholder="0"
+                                   onchange="saveSettings()"/>
+              and maximum of
+              <input type="number" id="filter.freeDays.max"
+                                   placeholder="5"
+                                   onchange="saveSettings()"/>
+          </ul>
+
+          <h4>Forbidden groups</h4>
+
+          <ul id="forbidden-groups"></ul>
+
+          <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the
+          catalog.</p>
+
+          <h3>Developers</h3>
+          <ul>
+            <li><a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)"
+                   href="#/">Add sample courses</a></li>
+            <li><a href="http://github.com/lutzky/ttime3">Repository</a></li>
+            <li><a href="jasmine/SpecRunner.html">Run tests</a></li>
+          </ul>
+        </div>
       </div>
-
-      <h3>Preset catalog URLs</h3>
-      <ul>
-        <li><a href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a></li>
-        <li><a href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a></li>
-        <li><a href="#/"
-               onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/981f009466c6007441b9833c326f40059f9c6433.json')">
-            Final Winter 2018 Catalog</li>
-        <li><a href="#/"
-               onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/42e7f28aa5c6e02597256dd81a25d55118e9e1ac.json')">
-            Final Spring 2018 Catalog</li>
-        <li><a href="https://repy-176217.appspot.com/">Catalog of Catalogs</a>
-          (copy JSON link into Catalog URL)</li>
-      </ul>
-
-      <p>Reload for settings to take effect.</p>
-
-      <h3>Filters</h3>
-      <ul>
-        <li><input type="checkbox" onchange="saveSettings()" id="filter.noCollisions" /> No collisions</li>
-        <li><input type="checkbox" onchange="saveSettings()" id="filter.noRunning" /> No running (no
-          consecutive classes in different buildings)</li>
-        <li><input type="checkbox" onchange="saveSettings()"
-                                   id="filter.freeDays" />
-          Free days (Minimum of
-          <input type="number" id="filter.freeDays.min"
-                               placeholder="0"
-                               onchange="saveSettings()"/>
-          and maximum of
-          <input type="number" id="filter.freeDays.max"
-                               placeholder="5"
-                               onchange="saveSettings()"/>
-      </ul>
-
-      <h4>Forbidden groups</h4>
-
-      <ul id="forbidden-groups"></ul>
-
-      <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the
-      catalog.</p>
-
-      <h3>Developers</h3>
-      <ul>
-        <li><a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)"
-               href="#/">Add sample courses</a></li>
-        <li><a href="http://github.com/lutzky/ttime3">Repository</a></li>
-        <li><a href="jasmine/SpecRunner.html">Run tests</a></li>
-      </ul>
     </div>
-    <h2>Selected courses</h2>
-    <div id="selected-courses"></div>
-    <div id="exception-occurred" style="display: none" class="error">
-      An error has occurred while generating schedules. Please open your
-      browser's javascript console and examine the error there. If reporting
-      a bug, please include that output.
-    </div>
-    <div id="gen-schedules-button">
-      <button id="generate-schedules" onclick="getSchedules()">Generate schedules</button>
-      <img id="spinner" src="spinner.gif" style="visibility: hidden" />
-    </div>
-    <h2>Schedules</h2>
-    <div id="no-schedules" style="display: none" class="info">
-      No schedules are possible given the selected courses and constraints.
-    </div>
-    <div id="schedule-browser" style="display: none">
-      <button onclick="prevSchedule()">&laquo;</button>Schedule <span id="current-schedule-id">?</span>
-      of <span id="num-schedules">?</span><button onclick="nextSchedule()">&raquo;</button>
-      <ul id="schedule-contents"></ul>
-      <div id="rendered-schedule-container">
-        <table id="day-headers">
-          <tr>
-            <th>&nbsp;<!-- Time column --></th>
-            <th>Sunday</th>
-            <th>Monday</th>
-            <th>Tuesday</th>
-            <th>Wednesday</th>
-            <th>Thursday</th>
-          </tr>
-        </table>
-        <div id="rendered-schedule"></div>
-      </div>
-    </div>
-    <div id="schedules"></div>
-    <h2>Catalog</h2>
-    <div id="catalog">(Loading courses)</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
     <script src="common.js"></script>
     <script src="formatting.js"></script>
     <script src="render.js"></script>

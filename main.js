@@ -655,22 +655,6 @@ function loadSettings(s) {
   return result;
 }
 
-/**
- * Show or hide the settings div. Updates shape of toggle button appropriately.
- *
- * @param {boolean} show - Whether or not the settings div should be visible
- */
-function showSettingsDiv(show) {
-  let toggleLink = dgebid('toggle-settings-div');
-  let settingsDiv = dgebid('settings-div');
-
-  toggleLink.innerHTML = show ? downArrow : rightArrow;
-  settingsDiv.hidden = !show;
-  toggleLink.onclick = () => showSettingsDiv(!show);
-}
-
-showSettingsDiv(false);
-
 let settings = loadSettings(window.localStorage);
 
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
