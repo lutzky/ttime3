@@ -83,7 +83,6 @@ function setCatalogUrl(url) {
  */
 function catalogUrlChanged() {
   /* exported catalogUrlChanged */
-  dgebid('reload-please').style.display = 'initial';
   saveSettings();
 }
 

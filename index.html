@@ -110,16 +110,15 @@
         </div>
         <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
           <div class="form-group">
-            <label for="catalog-url">Catalog URL</label>
-            <input class="form-control" type="url" id="catalog-url"
-            onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
-          </div>
-
-          <div id="reload-please" class="alert alert-primary" style="display:
-          none" role="alert">
-            <!-- TODO(lutzky): This looks bad on mobile UI if it starts out
-              hidden :/ -->
-            Catalog URL changed. Please reload for this to take effect.
+            <div class="input-group mb-3">
+              <label for="catalog-url">Catalog URL</label>
+              <input class="form-control" type="url" id="catalog-url"
+              onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary"
+                        type="button" onclick="location.reload()">Apply</button>
+              </div>
+            </div>
           </div>
 
           <h3>Preset catalog URLs</h3>
