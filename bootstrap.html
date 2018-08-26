@@ -8,6 +8,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
+    <link rel="stylesheet" href="style.css">
+
     <title>TTime3</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40939561-2"></script>
     <script>
@@ -58,15 +60,50 @@
         <div class="tab-pane fade show active" id="schedules" role="tabpanel" aria-labelledby="schedules-tab">
           <div class="row">
             <div class="col-md-8">
-              This shold have a nice big schedule view
+              <div id="no-schedules" style="display: none" class="alert
+                alert-warning">
+                No schedules are possible given the selected courses and constraints.
+                <!-- TODO(lutzky): This also looks badly cropped on mobile -->
+              </div>
+              <div id="rendered-schedule-container">
+                <table id="day-headers">
+                  <tr>
+                    <th>&nbsp;<!-- Time column --></th>
+                    <th>Sunday</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                  </tr>
+                </table>
+                <div id="rendered-schedule"></div>
+              </div>
             </div>
-            <div class="col-md-4">
-              This should have the list of courses and the next/prev controls
+            <div class="col-md-4" id="selected-courses-container">
+              <div id="schedule-browser" style="display: none">
+                <h4>Schedules</h4>
+                <button onclick="prevSchedule()">&laquo;</button>Schedule <span id="current-schedule-id">?</span>
+                of <span id="num-schedules">?</span><button onclick="nextSchedule()">&raquo;</button>
+                <ul id="schedule-contents"></ul>
+              </div>
+              <div id="schedules"></div>
+              <h4>Selected courses</h4>
+              <div id="selected-courses"></div>
+              <div id="exception-occurred" style="display: none" class="error">
+                An error has occurred while generating schedules. Please open your
+                browser's javascript console and examine the error there. If reporting
+                a bug, please include that output.
+              </div>
+              <div id="gen-schedules-button">
+                <button id="generate-schedules" onclick="getSchedules()">Generate schedules</button>
+                <img id="spinner" src="spinner.gif" style="visibility: hidden" />
+              </div>
             </div>
           </div>
         </div>
         <div class="tab-pane fade" id="catalog" role="tabpanel" aria-labelledby="catalog-tab">
-          You are now viewing the Catalog tab
+          <h2>Catalog</h2>
+          <div id="catalog">(Loading courses)</div>
         </div>
         <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
           <div class="form-group">

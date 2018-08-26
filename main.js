@@ -664,6 +664,11 @@ function showSettingsDiv(show) {
   let toggleLink = dgebid('toggle-settings-div');
   let settingsDiv = dgebid('settings-div');
 
+  if (!toggleLink) {
+    console.warn('Toggle link missing - probably running in bootstrap');
+    return;
+  }
+
   toggleLink.innerHTML = show ? downArrow : rightArrow;
   settingsDiv.hidden = !show;
   toggleLink.onclick = () => showSettingsDiv(!show);
