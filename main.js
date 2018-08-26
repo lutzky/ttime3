@@ -578,7 +578,9 @@ function writeScheduleContents(target, days) {
       let endTime = minutesToTime(e.endMinute);
       eventEntry.innerHTML = `${startTime}-${endTime} ${rtlSpan(
         e.group.course.name
-      )} at ${rtlSpan(e.location || '[unknown]')}`;
+      )} at ${rtlSpan(e.location || '[unknown]')} with ${rtlSpan(
+        e.group.teachers.join(',')
+      ) || '[unknown]'}`;
       eventList.appendChild(eventEntry);
     });
   });
