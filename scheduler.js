@@ -14,7 +14,9 @@ let AcademicEvent;
 // Called AcademicEvent because Event is a google-closure-compiler builtin
 
 /**
- * @typedef {{events: Array<AcademicEvent>}}
+ * @typedef {{
+ *   events: Array<AcademicEvent>
+ * }}
  */
 let Schedule;
 /* exported Schedule */

@@ -505,12 +505,15 @@ function setPossibleSchedules(schedules) {
   currentSchedule = 0;
   let div = dgebid('schedule-browser');
   dgebid('num-schedules').textContent = schedules.length;
-  if (schedules.length > 0) {
-    div.style.display = 'initial';
-    goToSchedule(0);
-  } else {
+  if (
+    schedules.length == 0 ||
+    (schedules.length == 1 && schedules[0].events.length == 0)
+  ) {
     div.style.display = 'none';
     dgebid('no-schedules').style.display = 'initial';
+  } else {
+    div.style.display = 'initial';
+    goToSchedule(0);
   }
 }
 
