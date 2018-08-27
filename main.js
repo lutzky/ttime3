@@ -3,6 +3,8 @@
 /**
  * Shorthand for document.getElementById
  *
+ * TODO(lutzky): Remove this function by replacing all usages with jquery.
+ *
  * @param {string} id - Element ID
  *
  * @returns {Element}
@@ -74,7 +76,7 @@ const defaultCatalogUrl =
  */
 function setCatalogUrl(url) {
   /* exported setCatalogUrl */
-  dgebid('catalog-url').value = url;
+  $('#catalog-url').val(url);
   catalogUrlChanged();
 }
 
@@ -552,39 +554,39 @@ function goToSchedule(i) {
   let max = possibleSchedules.length;
   i = (i + max) % max;
   currentSchedule = i;
-  dgebid('current-schedule-id').textContent = i + 1;
+  $('#current-schedule-id').text(i + 1);
   let schedule = possibleSchedules[i];
   let days = byDay(possibleSchedules[i]);
 
-  writeScheduleContents(dgebid('schedule-contents'), days);
+  writeScheduleContents($('#schedule-contents'), days);
   renderSchedule(dgebid('rendered-schedule'), schedule);
 }
 
 /**
  * Write the schedule contents, as described by days, to target
  *
- * @param {Element} target - Target to write schedule to
+ * @param {jQuery} target - Target to write schedule to
  * @param {Array<Array<AcademicEvent>>} days - List of events for each day
  */
 function writeScheduleContents(target, days) {
-  target.innerHTML = '';
+  target.empty();
 
   days.forEach(function(dayEvents) {
-    let dayEntry = document.createElement('li');
-    target.appendChild(dayEntry);
-    dayEntry.textContent = dayNames[dayEvents[0].day];
-    let eventList = document.createElement('ul');
-    dayEntry.appendChild(eventList);
+    let dayEntry = $('<li>');
+    target.append(dayEntry);
+    dayEntry.text(dayNames[dayEvents[0].day]);
+    let eventList = $('<ul>');
+    dayEntry.append(eventList);
     dayEvents.forEach(function(e) {
-      let eventEntry = document.createElement('li');
+      let eventEntry = $('<li>');
       let startTime = minutesToTime(e.startMinute);
       let endTime = minutesToTime(e.endMinute);
-      eventEntry.innerHTML = `${startTime}-${endTime} ${rtlSpan(
-        e.group.course.name
-      )} at ${rtlSpan(e.location || '[unknown]')} with ${rtlSpan(
-        e.group.teachers.join(',')
-      ) || '[unknown]'}`;
-      eventList.appendChild(eventEntry);
+      eventEntry.html(
+        `${startTime}-${endTime} ${rtlSpan(e.group.course.name)} at ${rtlSpan(
+          e.location || '[unknown]'
+        )} with ${rtlSpan(e.group.teachers.join(',')) || '[unknown]'}`
+      );
+      eventList.append(eventEntry);
     });
   });
 }
