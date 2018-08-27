@@ -503,16 +503,16 @@ let currentSchedule = 0;
 function setPossibleSchedules(schedules) {
   possibleSchedules = schedules;
   currentSchedule = 0;
-  let div = dgebid('schedule-browser');
-  dgebid('num-schedules').textContent = schedules.length;
+  let divs = $('#schedule-browser, #rendered-schedule-container');
+  $('#num-schedules').text(schedules.length);
   if (
     schedules.length == 0 ||
     (schedules.length == 1 && schedules[0].events.length == 0)
   ) {
-    div.style.display = 'none';
-    dgebid('no-schedules').style.display = 'initial';
+    divs.hide();
+    $('#no-schedules').show();
   } else {
-    div.style.display = 'initial';
+    divs.show();
     goToSchedule(0);
   }
 }
