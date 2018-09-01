@@ -117,25 +117,30 @@ function elementWithHTML(tagName, innerHTML) {
  *
  * @param {Group} group - Group to create header for
  *
- * @returns {!Element}
+ * @returns {!jQuery}
  */
 function groupHeaderForCatalog(group) {
-  let result = document.createElement('li');
-  let groupName = document.createElement('b');
-  groupName.innerText = `Group ${group.id} (${group.type}) `;
+  let result = $('<li>');
+  let groupNameText = `Group ${group.id} (${group.type}) `;
   if (group.teachers.length > 0) {
-    groupName.innerText += `(${group.teachers.join(', ')}) `;
+    groupNameText += `(${group.teachers.join(', ')}) `;
   }
-  result.appendChild(groupName);
 
-  let forbidLink = document.createElement('a');
-  forbidLink.className = 'forbid-link';
-  forbidLink.innerText = '[forbid]';
-  forbidLink.href = '#/';
-  forbidLink.onclick = function() {
+  let groupName = $('<b>', {
+    text: groupNameText,
+  });
+  result.append(groupName);
+
+  let forbidLink = $('<a>', {
+    class: 'forbid-link',
+    text: '[forbid]',
+    href: '#/',
+  });
+
+  forbidLink.on('click', function() {
     addForbiddenGroup(group);
-  };
-  result.appendChild(forbidLink);
+  });
+  result.append(forbidLink);
 
   return result;
 }
@@ -223,7 +228,7 @@ function htmlDescribeCourse(course) {
   let groups = document.createElement('ul');
   if (course.groups) {
     course.groups.forEach(function(g) {
-      groups.appendChild(groupHeaderForCatalog(g));
+      groups.appendChild(groupHeaderForCatalog(g)[0]);
       let events = document.createElement('ul');
       if (g.events) {
         g.events.forEach(function(e) {
