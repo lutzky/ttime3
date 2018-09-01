@@ -126,6 +126,15 @@ function groupHeaderForCatalog(group) {
     groupNameText += `(${group.teachers.join(', ')}) `;
   }
 
+  /**
+   * Updates forblink according to its data('forbidden')
+   *
+   * @param {jQuery} fl - forbidLink
+   */
+  function updateForbidLinkText(fl) {
+    fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
+  }
+
   let groupName = $('<b>', {
     text: groupNameText,
   });
@@ -133,12 +142,20 @@ function groupHeaderForCatalog(group) {
 
   let forbidLink = $('<a>', {
     class: 'forbid-link',
-    text: '[forbid]',
     href: '#/',
+    data: { forbidden: isGroupForbidden(group), groupID: groupIDString(group) },
   });
 
+  updateForbidLinkText(forbidLink);
+
   forbidLink.on('click', function() {
-    addForbiddenGroup(group);
+    if (forbidLink.data('forbidden')) {
+      delForbiddenGroup(group);
+    } else {
+      addForbiddenGroup(group);
+    }
+    forbidLink.data('forbidden', !forbidLink.data('forbidden'));
+    updateForbidLinkText(forbidLink);
   });
   result.append(forbidLink);
 
@@ -146,11 +163,24 @@ function groupHeaderForCatalog(group) {
 }
 
 /**
- * Format: 'course_id.group_id'
+ * Forbidden groups, as formatted using groupIDString
  *
  * @type {!Set<string>}
  */
 let forbiddenGroups = new Set();
+
+/**
+ * A string identifier representing a given group. Used in forbiddenGroups.
+ *
+ * Format: 'course_id.group_id'
+ *
+ * @param {Group} group - Group to represent
+ *
+ * @returns {string}
+ */
+function groupIDString(group) {
+  return `${group.course.id}.${group.id}`;
+}
 
 /**
  * Add the given group to the forbidden groups
@@ -158,10 +188,33 @@ let forbiddenGroups = new Set();
  * @param {Group} group - Group to forbid
  */
 function addForbiddenGroup(group) {
-  forbiddenGroups.add(`${group.course.id}.${group.id}`);
+  forbiddenGroups.add(groupIDString(group));
   saveSettings();
 
   updateForbiddenGroups();
+}
+
+/**
+ * Remove the given group from the forbidden groups
+ *
+ * @param {Group} group - Group to unforbid
+ */
+function delForbiddenGroup(group) {
+  forbiddenGroups.delete(groupIDString(group));
+  saveSettings();
+
+  updateForbiddenGroups();
+}
+
+/**
+ * Check whether group is forbidden
+ *
+ * @param {Group} group - Group to check
+ *
+ * @returns {boolean}
+ */
+function isGroupForbidden(group) {
+  return forbiddenGroups.has(groupIDString(group));
 }
 
 /**
@@ -186,6 +239,9 @@ function updateForbiddenGroups() {
     li.appendChild(unforbidLink);
     ul.appendChild(li);
   });
+
+  // TODO(github.com/lutzky/ttime3#6): Iterate over $('a.forbid-link') and
+  // update them
 }
 
 /**
