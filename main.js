@@ -113,6 +113,21 @@ function elementWithHTML(tagName, innerHTML) {
 }
 
 /**
+ * Updates forblink according to its data('forbidden')
+ *
+ * @param {jQuery} fl - forbidLink
+ */
+function updateForbidLinkText(fl) {
+  console.info(
+    'updateForbidLinkText for',
+    fl.data('groupID'),
+    'which has forbidden',
+    fl.data('forbidden')
+  );
+  fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
+}
+
+/**
  * Creates a header for the given group, for displaying in the catalog
  *
  * @param {Group} group - Group to create header for
@@ -124,15 +139,6 @@ function groupHeaderForCatalog(group) {
   let groupNameText = `Group ${group.id} (${group.type}) `;
   if (group.teachers.length > 0) {
     groupNameText += `(${group.teachers.join(', ')}) `;
-  }
-
-  /**
-   * Updates forblink according to its data('forbidden')
-   *
-   * @param {jQuery} fl - forbidLink
-   */
-  function updateForbidLinkText(fl) {
-    fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
   }
 
   let groupName = $('<b>', {
@@ -154,8 +160,6 @@ function groupHeaderForCatalog(group) {
     } else {
       addForbiddenGroup(group);
     }
-    forbidLink.data('forbidden', !forbidLink.data('forbidden'));
-    updateForbidLinkText(forbidLink);
   });
   result.append(forbidLink);
 
@@ -240,8 +244,16 @@ function updateForbiddenGroups() {
     ul.appendChild(li);
   });
 
-  // TODO(github.com/lutzky/ttime3#6): Iterate over $('a.forbid-link') and
-  // update them
+  $('a.forbid-link').each(
+    /** @this {HTMLElement} */
+    function() {
+      let groupID = /** @type {string} */ ($(this).data('groupID'));
+
+      let isForbidden = forbiddenGroups.has(groupID);
+      $(this).data('forbidden', isForbidden);
+      updateForbidLinkText($(this));
+    }
+  );
 }
 
 /**
