@@ -1,19 +1,6 @@
 'use strict';
 
 /**
- * Shorthand for document.getElementById
- *
- * TODO(lutzky): Remove this function by replacing all usages with jquery.
- *
- * @param {string} id - Element ID
- *
- * @returns {Element}
- */
-function dgebid(id) {
-  return document.getElementById(id);
-}
-
-/**
  * @typedef {{
  *   course: Course,
  *   events: Array<AcademicEvent>,
@@ -225,23 +212,25 @@ function isGroupForbidden(group) {
  * Update the list of currently forbidden groups
  */
 function updateForbiddenGroups() {
-  let ul = dgebid('forbidden-groups');
-  ul.innerHTML = '';
+  let ul = $('#forbidden-groups');
+  ul.empty();
 
   forbiddenGroups.forEach(function(fg) {
-    let li = document.createElement('li');
-    li.innerText = fg + ' ';
+    let li = $('<li>');
+    li.text(fg + ' ');
 
-    let unforbidLink = document.createElement('a');
-    unforbidLink.href = '#/';
-    unforbidLink.innerText = '[unforbid]';
-    unforbidLink.onclick = function() {
-      forbiddenGroups.delete(fg);
-      saveSettings();
-      updateForbiddenGroups();
-    };
-    li.appendChild(unforbidLink);
-    ul.appendChild(li);
+    let unforbidLink = $('<a>', {
+      href: '#/',
+      text: '[unforbid]',
+      click: function() {
+        forbiddenGroups.delete(fg);
+        saveSettings();
+        updateForbiddenGroups();
+      },
+    });
+
+    li.append(unforbidLink);
+    ul.append(li);
   });
 
   $('a.forbid-link').each(
@@ -376,41 +365,61 @@ let courseAddLabels = new Map();
  * Write catalog selector to page.
  */
 function writeCatalogSelector() {
-  let facultiesDiv = dgebid('catalog');
+  let facultiesDiv = $('#catalog');
 
-  facultiesDiv.innerHTML = '';
+  facultiesDiv.empty();
   currentCatalog.forEach(function(faculty) {
-    let facultyDetails = document.createElement('details');
+    let facultyDetails = $('<details>');
 
-    let summary = document.createElement('summary');
-    summary.innerHTML = `<strong>${faculty.name}</strong> `;
-    let semesterTag = document.createElement('span');
-    semesterTag.className = 'semester-tag';
-    semesterTag.textContent = faculty.semester;
-    summary.appendChild(semesterTag);
-    facultyDetails.appendChild(summary);
-    facultiesDiv.appendChild(facultyDetails);
+    let summary = $('<summary>');
+    summary.html(`<strong>${faculty.name}</strong> `);
+    let semesterTag = $('<span>', {
+      class: 'semester-tag',
+      text: faculty.semester,
+    });
+    summary.append(semesterTag);
+    facultyDetails.append(summary);
+    facultiesDiv.append(facultyDetails);
 
-    let courseList = document.createElement('ul');
-    courseList.className = 'course-list';
-    facultyDetails.appendChild(courseList);
+    let courseList = $('<ul>', { class: 'course-list' });
+    facultyDetails.append(courseList);
 
     faculty.courses.forEach(function(course) {
-      let btn = document.createElement('button');
+      let btn = $('<button>', {
+        text: '+',
+        click: function() {
+          addSelectedCourse(course);
+        },
+      });
       courseAddButtons.set(course.id, btn);
       let label = courseLabel(course);
       courseAddLabels.set(course.id, label);
-      btn.textContent = '+';
-      let courseLi = document.createElement('li');
-      courseLi.appendChild(btn);
-      courseLi.appendChild(label);
-      courseList.appendChild(courseLi);
-
-      btn.onclick = function() {
-        addSelectedCourse(course);
-      };
+      let courseLi = $('<li>');
+      courseLi.append(btn).append(label);
+      courseList.append(courseLi);
     });
   });
+}
+
+/**
+ * Returns whether or not a checkbox with the given ID is checked
+ *
+ * @param {string} id - ID of checkbox
+ *
+ * @returns {boolean}
+ */
+function getCheckboxValueById(id) {
+  return document.getElementById(id).checked;
+}
+
+/**
+ * Sets whether or not a checkbox with the given ID is checked
+ *
+ * @param {string} id - ID of checkbox
+ * @param {boolean} checked - Whether or not checkbox should be checked
+ */
+function setCheckboxValueById(id, checked) {
+  document.getElementById(id).checked = checked;
 }
 
 /**
@@ -418,15 +427,15 @@ function writeCatalogSelector() {
  */
 function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
-  settings.catalogUrl = dgebid('catalog-url').value;
+  settings.catalogUrl = /** @type {string} */ ($('#catalog-url').val());
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
-    noCollisions: dgebid('filter.noCollisions').checked,
-    noRunning: dgebid('filter.noRunning').checked,
+    noCollisions: getCheckboxValueById('filter.noCollisions'),
+    noRunning: getCheckboxValueById('filter.noRunning'),
     freeDays: {
-      enabled: dgebid('filter.freeDays').checked,
-      min: getNumInputValueWithDefault(dgebid('filter.freeDays.min'), 0),
-      max: getNumInputValueWithDefault(dgebid('filter.freeDays.max'), 5),
+      enabled: getCheckboxValueById('filter.freeDays'),
+      min: getNumInputValueWithDefault($('#filter\\.freeDays\\.min')[0], 0),
+      max: getNumInputValueWithDefault($('#filter\\.freeDays\\.max')[0], 5),
     },
   };
 
@@ -512,22 +521,21 @@ function delSelectedCourse(course) {
  * something neater.
  */
 function refreshSelectedCourses() {
-  let div = dgebid('selected-courses');
-  div.innerHTML = '';
-  let ul = document.createElement('ul');
-  ul.className = 'course-list';
-  div.appendChild(ul);
+  let div = $('#selected-courses');
+  div.empty();
+  let ul = $('<ul>', { class: 'course-list' });
+  div.append(ul);
   selectedCourses.forEach(function(course) {
-    let li = document.createElement('li');
+    let li = $('<li>');
     let label = courseLabel(course);
-    let btn = document.createElement('button');
-    btn.innerText = '-';
-    btn.onclick = function() {
-      delSelectedCourse(course);
-    };
-    li.appendChild(btn);
-    li.appendChild(label);
-    ul.appendChild(li);
+    let btn = $('<button>', {
+      text: '-',
+      click: function() {
+        delSelectedCourse(course);
+      },
+    });
+    li.append(btn).append(label);
+    ul.append(li);
   });
 }
 
@@ -540,10 +548,10 @@ let schedulerWorker = new Worker('scheduler_worker.js');
  */
 schedulerWorker.onmessage = function(e) {
   console.info('Received message from worker:', e);
-  dgebid('generate-schedules').disabled = false;
-  dgebid('spinner').style.visibility = 'hidden';
+  $('#generate-schedules').prop('disabled', false);
+  $('#spinner').hide();
   if (e.data == null) {
-    dgebid('exception-occurred').style.display = 'initial';
+    $('#exception-occurred').show();
   }
   setPossibleSchedules(e.data);
 };
@@ -553,10 +561,10 @@ schedulerWorker.onmessage = function(e) {
  */
 function getSchedules() {
   /* exported getSchedules */
-  dgebid('generate-schedules').disabled = true;
-  dgebid('spinner').style.visibility = 'visible';
-  dgebid('exception-occurred').style.display = 'none';
-  dgebid('no-schedules').style.display = 'none';
+  $('#generate-schedules').prop('disabled', true);
+  $('#spinner').show();
+  $('#exception-occurred').hide();
+  $('#no-schedules').hide();
 
   schedulerWorker.postMessage({
     courses: selectedCourses,
@@ -632,7 +640,7 @@ function goToSchedule(i) {
   let days = byDay(possibleSchedules[i]);
 
   writeScheduleContents($('#schedule-contents'), days);
-  renderSchedule(dgebid('rendered-schedule'), schedule);
+  renderSchedule($('#rendered-schedule')[0], schedule);
 }
 
 /**
@@ -723,13 +731,16 @@ function loadSettings(s) {
 
   console.info('Loaded settings:', result);
 
-  dgebid('catalog-url').value = result.catalogUrl;
+  $('#catalog-url').val(result.catalogUrl);
 
-  dgebid('filter.noCollisions').checked = result.filterSettings.noCollisions;
-  dgebid('filter.noRunning').checked = result.filterSettings.noRunning;
-  dgebid('filter.freeDays').checked = result.filterSettings.freeDays.enabled;
-  dgebid('filter.freeDays.min').value = result.filterSettings.freeDays.min;
-  dgebid('filter.freeDays.max').value = result.filterSettings.freeDays.max;
+  {
+    let fs = result.filterSettings;
+    setCheckboxValueById('filter.noCollisions', fs.noCollisions);
+    setCheckboxValueById('filter.noRunning', fs.noRunning);
+    setCheckboxValueById('filter.freeDays', fs.freeDays.enabled);
+    $('#filter\\.freeDays\\.min').val(String(fs.freeDays.min));
+    $('#filter\\.freeDays\\.max').val(String(fs.freeDays.max));
+  }
 
   return result;
 }
