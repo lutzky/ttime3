@@ -6,15 +6,6 @@
   color: #999;
 }
 
-.semester-tag {
-  color: #333;
-  background-color: #dde;
-  font-size: x-small;
-  border: 1px solid black;
-  border-radius: 5px;
-  padding: 1px;
-}
-
 .expando {
   text-decoration: none;
 }

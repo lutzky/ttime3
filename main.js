@@ -374,7 +374,7 @@ function writeCatalogSelector() {
     let summary = $('<summary>');
     summary.html(`<strong>${faculty.name}</strong> `);
     let semesterTag = $('<span>', {
-      class: 'semester-tag',
+      class: 'badge badge-secondary',
       text: faculty.semester,
     });
     summary.append(semesterTag);
