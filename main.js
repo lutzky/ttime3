@@ -84,6 +84,12 @@ let selectedCourses = new Set();
 let currentCatalog = null;
 
 /**
+ * Mapping from course IDs to courses
+ * @type {Map<number, Course>}
+ */
+let currentCatalogByCourseID = null;
+
+/**
  * Creates an element with the given HTML.
  *
  * TODO(lutzky): There must be some builtin that does this...
@@ -482,19 +488,11 @@ function addSelectedCourse(course) {
 function addSelectedCourseByID(...ids) {
   /* exported addSelectedCourseByID */
   ids.forEach(function(id) {
-    let found = false;
-    currentCatalog.forEach(function(faculty) {
-      if (!found) {
-        faculty.courses.forEach(function(course) {
-          if (course.id == id) {
-            addSelectedCourse(course);
-            found = true;
-            return;
-          }
-        });
-      }
-    });
-    if (!found) {
+    let course = getCourseByID(id);
+
+    if (course) {
+      addSelectedCourse(course);
+    } else {
       throw new Error('No course with ID ' + id);
     }
   });
@@ -699,6 +697,46 @@ function byDay(schedule) {
 }
 
 /**
+ * Find a course by its ID
+ *
+ * @param {number} id - Course ID
+ *
+ * @returns {Course}
+ */
+function getCourseByID(id) {
+  return currentCatalogByCourseID.get(id);
+}
+
+/**
+ * Set up the course selection selectize.js box
+ */
+function coursesSelectizeSetup() {
+  let selectBox = $('#courses-selectize');
+  currentCatalog.forEach(function(faculty) {
+    let grp = $('<optgroup>', { label: faculty.name });
+    selectBox.append(grp);
+    faculty.courses.forEach(function(course) {
+      grp.append(
+        $('<option>', {
+          value: course.id,
+          text: `${course.id} - ${course.name}`,
+        })
+      );
+    });
+  });
+  selectBox.selectize({
+    onItemAdd: function(courseID) {
+      if (courseID == '') {
+        return;
+      }
+      let course = getCourseByID(Number(courseID));
+      addSelectedCourse(course);
+      selectBox[0].selectize.clear();
+    },
+  });
+}
+
+/**
  * Load settings from localStorage
  *
  * @param {Object} s - The window.localStorage object to load from
@@ -754,6 +792,14 @@ loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
   function(catalog) {
     console.log('Loaded catalog:', catalog);
     currentCatalog = catalog;
+    currentCatalogByCourseID = new Map();
+
+    currentCatalog.forEach(function(faculty) {
+      faculty.courses.forEach(function(course) {
+        currentCatalogByCourseID.set(course.id, course);
+      });
+    });
+
     writeCatalogSelector();
     settings.selectedCourses.forEach(function(id) {
       try {
@@ -762,6 +808,7 @@ loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
         console.error(`Failed to add course ${id}:`, error);
       }
     });
+    coursesSelectizeSetup();
   },
   function(error) {
     console.error('Failed!', error);
