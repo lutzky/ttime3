@@ -715,14 +715,22 @@ function getCourseByID(id) {
  * @returns {string}
  */
 function getNicknames(course) {
+  let result = [];
+
   if (course.name.includes('חשבון דיפרנציאלי ואינטגרלי')) {
-    return 'חדו"א חדוא';
+    result.push('חדוא', 'חדו"א');
   }
   if (course.name.includes('מדעי המחשב')) {
-    return 'מדמ"ח מדמח';
+    result.push('מדמח', 'מדמ"ח');
+  }
+  if (course.name.includes('פיסיקה')) {
+    result.push('פיזיקה');
+  }
+  if (course.name.includes('אנליזה נומרית')) {
+    result.push('נומריזה');
   }
 
-  return '';
+  return result.join(' ');
 }
 
 /**
