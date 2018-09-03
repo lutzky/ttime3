@@ -708,23 +708,47 @@ function getCourseByID(id) {
 }
 
 /**
+ * Gets nicknames or abbreviations for a course
+ *
+ * @param {Course} course - Course to get nicknames for
+ *
+ * @returns {string}
+ */
+function getNicknames(course) {
+  if (course.name.includes('חשבון דיפרנציאלי ואינטגרלי')) {
+    return 'חדו"א חדוא';
+  }
+  if (course.name.includes('מדעי המחשב')) {
+    return 'מדמ"ח מדמח';
+  }
+
+  return '';
+}
+
+/**
  * Set up the course selection selectize.js box
  */
 function coursesSelectizeSetup() {
   let selectBox = $('#courses-selectize');
+  let opts = [];
+  let optgroups = [];
+
   currentCatalog.forEach(function(faculty) {
-    let grp = $('<optgroup>', { label: faculty.name });
-    selectBox.append(grp);
+    optgroups.push({ label: faculty.name, value: faculty.name });
     faculty.courses.forEach(function(course) {
-      grp.append(
-        $('<option>', {
-          value: course.id,
-          text: `${course.id} - ${course.name}`,
-        })
-      );
+      opts.push({
+        optgroup: faculty.name,
+        value: course.id,
+        text: `${course.id} - ${course.name}`,
+        nicknames: getNicknames(course),
+      });
     });
   });
+
   selectBox.selectize({
+    options: opts,
+    optgroups: optgroups,
+    searchField: ['text', 'nicknames'],
     onItemAdd: function(courseID) {
       if (courseID == '') {
         return;
