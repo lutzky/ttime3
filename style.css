@@ -6,6 +6,16 @@
   .hide-narrow {
     display: none;
   }
+
+  .event {
+    font-size: x-small;
+  }
+}
+
+@media (min-width: 768px) {
+  .event {
+    font-size: small;
+  }
 }
 
 .disabled-course-label {
@@ -70,12 +80,17 @@
   color: #666;
 }
 
+.event {
+  line-height: 1.2;
+  overflow: hidden;
+  padding: 3px;
+}
+
 .event .course-name {
   font-weight: bold;
 }
 
 .event .location {
-  font-size: x-small;
 }
 
 .event .location::after {
