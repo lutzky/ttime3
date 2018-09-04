@@ -521,18 +521,19 @@ function delSelectedCourse(course) {
 function refreshSelectedCourses() {
   let div = $('#selected-courses');
   div.empty();
-  let ul = $('<ul>', { class: 'course-list' });
+  let ul = $('<ul>', { class: 'list-group' });
   div.append(ul);
   selectedCourses.forEach(function(course) {
-    let li = $('<li>');
+    let li = $('<li>', { class: 'list-group-item' });
     let label = courseLabel(course);
     let btn = $('<button>', {
-      text: '-',
+      class: 'btn btn-sm btn-danger float-right',
+      text: 'x',
       click: function() {
         delSelectedCourse(course);
       },
     });
-    li.append(btn).append(label);
+    li.append(label).append(btn);
     ul.append(li);
   });
 }
