@@ -519,6 +519,7 @@ function delSelectedCourse(course) {
  * something neater.
  */
 function refreshSelectedCourses() {
+  $('#generate-schedules').prop('disabled', selectedCourses.size == 0);
   let div = $('#selected-courses');
   div.empty();
   let ul = $('<ul>', { class: 'list-group' });
