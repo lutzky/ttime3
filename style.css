@@ -2,6 +2,12 @@
   vertical-align: middle;
 }
 
+@media (max-width: 768px) {
+  .hide-narrow {
+    display: none;
+  }
+}
+
 .disabled-course-label {
   color: #999;
 }
