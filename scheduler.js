@@ -140,7 +140,8 @@ let FilterSettings;
 function generateSchedules(courses, settings) {
   console.time('generateSchedules');
   let groupBins = Array.from(courses)
-    .map(c => groupsByType(c))
+    .map(c => removeForbiddenGroups(c, settings))
+    .map(groupsByType)
     .reduce((a, b) => a.concat(b), []);
 
   let groupProduct = cartesian(...groupBins);
@@ -152,6 +153,22 @@ function generateSchedules(courses, settings) {
 
   console.timeEnd('generateSchedules');
   return schedules;
+}
+
+/**
+ * Remove forbidden groups from course. Modifies course and returns modified
+ * course as well.
+ *
+ * @param {Course} course - Course to remove forbidden groups from
+ * @param {FilterSettings} settings - Filter settings
+ *
+ * @returns {Course}
+ */
+function removeForbiddenGroups(course, settings) {
+  course.groups = course.groups.filter(
+    g => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`)
+  );
+  return course;
 }
 
 /**
@@ -182,8 +199,6 @@ function filterWithDelta(src, filter, filterName) {
  */
 function runAllFilters(schedules, settings) {
   let result = schedules.slice();
-
-  result = filterForbiddenGroups(result, settings);
 
   if (settings.noCollisions) {
     result = filterWithDelta(result, filterNoCollisions, 'noCollisions');
@@ -223,30 +238,6 @@ function filterFreeDays(schedule, settings) {
 
   return (
     numFreeDays >= settings.freeDays.min && numFreeDays <= settings.freeDays.max
-  );
-}
-
-/**
- * Remove forbidden groups
- *
- * @param {!Array<Schedule>} schedules - Schedules to filter
- * @param {FilterSettings} settings - Filter settings
- *
- * @returns {!Array<Schedule>}
- */
-function filterForbiddenGroups(schedules, settings) {
-  if (!settings.forbiddenGroups || settings.forbiddenGroups.length == 0) {
-    return schedules;
-  }
-
-  let forbiddenGroupsSet = new Set(settings.forbiddenGroups);
-
-  return schedules.filter(
-    schedule =>
-      !schedule.events.some(function(event) {
-        let groupId = `${event.group.course.id}.${event.group.id}`;
-        return forbiddenGroupsSet.has(groupId);
-      })
   );
 }
 
