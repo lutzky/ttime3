@@ -67,11 +67,14 @@
         <div class="tab-pane fade show active" id="schedules" role="tabpanel" aria-labelledby="schedules-tab">
           <div class="row">
             <div class="col-md-8">
+              <div id="initial-instructions" class="alert alert-info">
+                Add desired courses and click "Generate Schedules".
+              </div>
               <div id="no-schedules" style="display: none" class="alert
                 alert-warning">
                 No schedules are possible given the selected courses and constraints.
               </div>
-              <div id="rendered-schedule-container">
+              <div id="rendered-schedule-container" style="display:none">
                 <table id="day-headers">
                   <tr>
                     <th>&nbsp;<!-- Time column --></th>

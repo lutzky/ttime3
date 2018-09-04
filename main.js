@@ -564,6 +564,7 @@ function getSchedules() {
   $('#spinner').show();
   $('#exception-occurred').hide();
   $('#no-schedules').hide();
+  $('#initial-instructions').hide();
 
   schedulerWorker.postMessage({
     courses: selectedCourses,
