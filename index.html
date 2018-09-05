@@ -130,19 +130,18 @@
           <div id="catalog">(Loading courses)</div>
         </div>
         <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-          <div class="form-group">
-            <div class="input-group mb-3">
-              <label for="catalog-url">Catalog URL</label>
-              <input class="form-control" type="url" id="catalog-url"
-              onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
-              <div class="input-group-append">
-                <button class="btn btn-outline-secondary"
-                        type="button" onclick="location.reload()">Apply</button>
-              </div>
+          <form>
+            <div class="form-group">
+                <label for="catalog-url">Catalog URL</label>
+                <input class="form-control" type="url" id="catalog-url"
+                onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
             </div>
-          </div>
+                
+            <button class="btn btn-primary"
+                    type="button" onclick="location.reload()">Apply</button>
+          </form>
 
-          <h3>Preset catalog URLs</h3>
+          <h5>Preset catalog URLs</h5>
           <ul>
             <li><a href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a></li>
             <li><a href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a></li>
@@ -155,8 +154,6 @@
             <li><a href="https://repy-176217.appspot.com/">Catalog of Catalogs</a>
               (copy JSON link into Catalog URL)</li>
           </ul>
-
-          <p>Reload for settings to take effect.</p>
 
           <h3>Filters</h3>
           <div class="form-check">
