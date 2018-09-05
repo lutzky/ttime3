@@ -318,8 +318,8 @@ function htmlDescribeCourse(course) {
   return result;
 }
 
-const rightArrow = '&#9656;';
-const downArrow = '&#9662;';
+const expandInfoSymbol = '<i class="fas fa-info-circle"></i>';
+const collapseInfoSymbol = '<i class="fas fa-minus-circle"></i>';
 
 /**
  * Wrap s with a right-to-left span
@@ -341,7 +341,7 @@ function rtlSpan(s) {
 function courseLabel(course) {
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
-  infoLink.innerHTML = rightArrow;
+  infoLink.innerHTML = expandInfoSymbol;
   infoLink.className = 'expando';
   infoLink.href = '#/';
   span.innerHTML = ` ${course.id} ${rtlSpan(course.name)} `;
@@ -352,10 +352,10 @@ function courseLabel(course) {
       infoDiv.appendChild(htmlDescribeCourse(course));
       // showCourseDebugInfo(course);
       span.appendChild(infoDiv);
-      infoLink.innerHTML = downArrow;
+      infoLink.innerHTML = collapseInfoSymbol;
       span.ttime3_expanded = true;
     } else {
-      infoLink.innerHTML = rightArrow;
+      infoLink.innerHTML = expandInfoSymbol;
       span.ttime3_expanded = false;
       span.removeChild(span.infoDiv);
     }
@@ -529,7 +529,7 @@ function refreshSelectedCourses() {
     let label = courseLabel(course);
     let btn = $('<button>', {
       class: 'btn btn-sm btn-danger float-right',
-      text: 'x',
+      html: '<i class="fas fa-trash-alt"></i>',
       click: function() {
         delSelectedCourse(course);
       },
