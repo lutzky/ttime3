@@ -15,11 +15,23 @@ let AcademicEvent;
 
 /**
  * @typedef {{
- *   events: Array<AcademicEvent>
+ *   events: Array<AcademicEvent>,
+ *   rating: ScheduleRating,
  * }}
  */
 let Schedule;
 /* exported Schedule */
+
+/**
+ * @typedef {{
+ *   earliestStart: number,
+ *   latestFinish: number,
+ *   numRuns: number,
+ *   freeDays: number,
+ * }}
+ */
+let ScheduleRating;
+/* exported ScheduleRating */
 
 /**
  * Return course's groups as an array of arrays, split by type
@@ -60,6 +72,32 @@ function eventBuilding(ev) {
 }
 
 /**
+ * Count instances in which events involve running between different buildings
+ * in adjacent classes.
+ *
+ * @param {Array<AcademicEvent>} events - Events to check for running
+ *
+ * @returns {number}
+ */
+function countRuns(events) {
+  let e = events.slice();
+  let result = 0;
+  sortEvents(e);
+  for (let i = 0; i < e.length - 1; i++) {
+    if (e[i].day == e[i + 1].day) {
+      if (e[i + 1].startMinute == e[i].endMinute) {
+        let b1 = eventBuilding(e[i]);
+        let b2 = eventBuilding(e[i + 1]);
+        if (b1 && b2 && b1 != b2) {
+          result++;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+/**
  * Filter schedules in which events involve running between different buildings
  * in adjacent classes.
  *
@@ -68,20 +106,7 @@ function eventBuilding(ev) {
  * @returns {boolean}
  */
 function filterNoRunning(schedule) {
-  let e = schedule.events.slice();
-  sortEvents(e);
-  for (let i = 0; i < e.length - 1; i++) {
-    if (e[i].day == e[i + 1].day) {
-      if (e[i + 1].startMinute == e[i].endMinute) {
-        let b1 = eventBuilding(e[i]);
-        let b2 = eventBuilding(e[i + 1]);
-        if (b1 && b2 && b1 != b2) {
-          return false;
-        }
-      }
-    }
-  }
-  return true;
+  return countRuns(schedule.events) == 0;
 }
 
 /**
@@ -220,6 +245,23 @@ function runAllFilters(schedules, settings) {
 }
 
 /**
+ * Returns the number of free days given an event set
+ *
+ * @param {Array<AcademicEvent>} events - Events to examine
+ *
+ * @returns {number}
+ */
+function countFreeDays(events) {
+  let hasClasses = [false, false, false, false, false];
+
+  events.forEach(function(event) {
+    hasClasses[event.day] = true;
+  });
+
+  return hasClasses.filter(x => x == false).length;
+}
+
+/**
  * Returns true iff the schedule has free days within settings.freeDays
  *
  * @param {Schedule} schedule - Schedule to examine
@@ -228,17 +270,27 @@ function runAllFilters(schedules, settings) {
  * @returns {boolean}
  */
 function filterFreeDays(schedule, settings) {
-  let hasClasses = [false, false, false, false, false];
-
-  schedule.events.forEach(function(event) {
-    hasClasses[event.day] = true;
-  });
-
-  let numFreeDays = hasClasses.filter(x => x == false).length;
+  let numFreeDays = countFreeDays(schedule.events);
 
   return (
     numFreeDays >= settings.freeDays.min && numFreeDays <= settings.freeDays.max
   );
+}
+
+/**
+ * Rate the given events as a schedule
+ *
+ * @param {Array<AcademicEvent>} events - Events to rate
+ *
+ * @returns {ScheduleRating}
+ */
+function rate(events) {
+  return {
+    earliestStart: Math.min(...events.map(e => e.startMinute / 60.0)),
+    latestFinish: Math.max(...events.map(e => e.endMinute / 60.0)),
+    numRuns: countRuns(events),
+    freeDays: countFreeDays(events),
+  };
 }
 
 /**
@@ -249,13 +301,16 @@ function filterFreeDays(schedule, settings) {
  */
 function groupsToSchedule(groups) {
   let e = groups.reduce((a, b) => a.concat(b.events), []);
-  return { events: e };
+  return {
+    events: e,
+    rating: rate(e),
+  };
 }
 
 if (typeof module != 'undefined') {
   module.exports = {
     generateSchedules: generateSchedules,
     cartesian: cartesian,
-    filterNoRunning: filterNoRunning,
+    countRuns: countRuns,
   };
 }

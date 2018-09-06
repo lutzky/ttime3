@@ -8,7 +8,7 @@ if (typeof require != 'undefined') {
 
   cartesian = scheduler.cartesian;
   eventsCollide = common.eventsCollide;
-  filterNoRunning = scheduler.filterNoRunning;
+  countRuns = scheduler.countRuns;
   generateSchedules = scheduler.generateSchedules;
   layoutLayeredEvents = render.layoutLayeredEvents;
   loadTestCatalog = common.loadTestCatalog;
@@ -114,20 +114,24 @@ describe('Scheduler', function() {
     });
   });
 
-  describe('no-running filter', function() {
+  describe('run counter', function() {
     let eventA = { startMinute: 0, endMinute: 60, location: 'Ulman 105' };
     let eventB = { startMinute: 60, endMinute: 120, location: 'Ulman 350' };
     let eventC = { startMinute: 120, endMinute: 180, location: 'Meyer 750' };
     let eventD = { startMinute: 120, endMinute: 180, location: 'Ulman 200' };
     let eventE = { startMinute: 120, endMinute: 180 /* no location */ };
-    it('should return false if events have different buildings', function() {
-      expect(filterNoRunning({ events: [eventA, eventB, eventC] })).toBe(false);
+    let eventF = { startMinute: 180, endMinute: 240, location: 'Taub 1' };
+    it('should count if events have different buildings', function() {
+      expect(countRuns([eventA, eventB, eventC])).toEqual(1);
     });
-    it('should return true if everything is in the same building', function() {
-      expect(filterNoRunning({ events: [eventA, eventB, eventD] })).toBe(true);
+    it('should count 0 if everything is in the same building', function() {
+      expect(countRuns([eventA, eventB, eventD])).toEqual(0);
     });
     it('should not count missing locations as different', function() {
-      expect(filterNoRunning({ events: [eventA, eventB, eventE] })).toBe(true);
+      expect(countRuns([eventA, eventB, eventE])).toEqual(0);
+    });
+    it('should count multiple runs', function() {
+      expect(countRuns([eventB, eventC, eventF])).toEqual(2);
     });
   });
 });
