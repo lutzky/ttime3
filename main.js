@@ -638,24 +638,42 @@ function goToSchedule(i) {
   currentSchedule = i;
   $('#current-schedule-id').text(i + 1);
   let schedule = possibleSchedules[i];
-  let days = byDay(possibleSchedules[i]);
 
-  writeScheduleContents($('#schedule-contents'), days);
+  writeScheduleContents($('#schedule-contents'), schedule);
   renderSchedule($('#rendered-schedule')[0], schedule);
 }
 
 /**
- * Write the schedule contents, as described by days, to target
+ * Write the schedule contents to target
  *
  * @param {jQuery} target - Target to write schedule to
- * @param {Array<Array<AcademicEvent>>} days - List of events for each day
+ * @param {Schedule} schedule - Schedule to write
  */
-function writeScheduleContents(target, days) {
+function writeScheduleContents(target, schedule) {
   target.empty();
 
-  days.forEach(function(dayEvents) {
+  [
+    `Earliest start: ${schedule.rating.earliestStart}`,
+    `Latest finish: ${schedule.rating.latestFinish}`,
+    `${schedule.rating.numRuns} runs`,
+    `${schedule.rating.freeDays} free days`,
+  ].forEach(text =>
+    target
+      .append(
+        $('<span>', {
+          class: 'badge badge-info',
+          text: text,
+        })
+      )
+      .append(' ')
+  );
+
+  let ul = $('<ul>');
+  target.append(ul);
+
+  byDay(schedule).forEach(function(dayEvents) {
     let dayEntry = $('<li>');
-    target.append(dayEntry);
+    ul.append(dayEntry);
     dayEntry.text(dayNames[dayEvents[0].day]);
     let eventList = $('<ul>');
     dayEntry.append(eventList);
