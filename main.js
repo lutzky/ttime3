@@ -668,25 +668,54 @@ function writeScheduleContents(target, schedule) {
       .append(' ')
   );
 
-  let ul = $('<ul>');
+  let ul = $('<ul>', { class: 'list-group' });
   target.append(ul);
 
   byDay(schedule).forEach(function(dayEvents) {
-    let dayEntry = $('<li>');
+    let dayEntry = $('<li>', {
+      class: 'list-group-item',
+      css: { 'padding-top': '2px', 'padding-bottom': '2px' },
+      html: $('<small>', {
+        class: 'font-weight-bold',
+        text: dayNames[dayEvents[0].day],
+      }),
+    });
     ul.append(dayEntry);
-    dayEntry.text(dayNames[dayEvents[0].day]);
-    let eventList = $('<ul>');
-    dayEntry.append(eventList);
+    // let eventList = $('<ul>');
+    //    dayEntry.append(eventList);
     dayEvents.forEach(function(e) {
-      let eventEntry = $('<li>');
+      let eventEntry = $('<li>', {
+        class: 'list-group-item',
+      });
       let startTime = minutesToTime(e.startMinute);
+      let location = e.location || '[unknown]';
       let endTime = minutesToTime(e.endMinute);
+      let teachers = e.group.teachers.join(',') || '[unknown]';
       eventEntry.html(
-        `${startTime}-${endTime} ${rtlSpan(e.group.course.name)} at ${rtlSpan(
-          e.location || '[unknown]'
-        )} with ${rtlSpan(e.group.teachers.join(',')) || '[unknown]'}`
+        `
+        <div class="d-flex w-100 justify-content-between">
+           <small class="text-muted">
+             <i class="far fa-clock"></i>
+             ${startTime}-${endTime}
+           </small>
+           <small>
+             <i class="fas fa-map-marker"></i>
+             <span dir="rtl">${location}</span>
+           </small>
+        </div>
+        <div dir="rtl">${e.group.course.name}</div>
+        <div class="d-flex w-100 justify-content-between">
+          <small>
+            <i class="fas fa-chalkboard-teacher"></i>
+            <span dir="rtl">${teachers}</span>
+          </small>
+          <small class="text-muted">
+            ${e.group.course.id}, group ${e.group.id}
+          </small>
+        </div>
+        `
       );
-      eventList.append(eventEntry);
+      ul.append(eventEntry);
     });
   });
 }
