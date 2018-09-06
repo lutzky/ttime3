@@ -100,8 +100,20 @@
             <div class="col-md-4" id="selected-courses-container">
               <div id="schedule-browser" style="display: none">
                 <h4>Schedules</h4>
-                <button onclick="prevSchedule()">&laquo;</button>Schedule <span id="current-schedule-id">?</span>
-                of <span id="num-schedules">?</span><button onclick="nextSchedule()">&raquo;</button>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary" onclick="prevSchedule()">&laquo;</button>
+                  </div>
+                  <label class="input-group-text">
+                    Schedule&nbsp;
+                    <span id="current-schedule-id">?</span>
+                    &nbsp;of&nbsp;
+                    <span id="num-schedules">?</span>
+                  </label>
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" onclick="nextSchedule()">&raquo;</button>
+                  </div>
+                </div>
                 <div id="schedule-contents"></div>
               </div>
 
