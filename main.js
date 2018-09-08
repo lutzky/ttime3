@@ -246,6 +246,19 @@ function updateForbiddenGroups() {
 }
 
 /**
+ * Format a course ID as a 6-digit number
+ *
+ * For example, 18420 should be presented (and searchable) as 018420.
+ *
+ * @param {number} id - Course ID
+ *
+ * @returns {string}
+ */
+function formatCourseId(id) {
+  return String(id).padStart(6, '0');
+}
+
+/**
  * Return an HTML description for a course
  *
  * @param {Course} course - Course to describe
@@ -257,7 +270,10 @@ function htmlDescribeCourse(course) {
   console.info('Rendering description of course:', course);
   let ul = document.createElement('ul');
   ul.appendChild(
-    elementWithHTML('li', `<b>Full name</b> ${course.id} ${course.name}`)
+    elementWithHTML(
+      'li',
+      `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`
+    )
   );
   ul.appendChild(
     elementWithHTML('li', `<b>Academic points:</b> ${course.academicPoints}`)
@@ -338,7 +354,7 @@ function courseLabel(course) {
   infoLink.innerHTML = expandInfoSymbol;
   infoLink.className = 'expando';
   infoLink.href = '#/';
-  span.innerHTML = ` ${course.id} ${rtlSpan(course.name)} `;
+  span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
     if (!span.ttime3_expanded) {
       let infoDiv = document.createElement('div');
@@ -779,7 +795,7 @@ function writeScheduleContents(target, schedule) {
             <span dir="rtl">${teachers}</span>
           </small>
           <small class="text-muted">
-            ${e.group.course.id}, group ${e.group.id}
+            ${formatCourseId(e.group.course.id)}, group ${e.group.id}
           </small>
         </div>
         `
@@ -866,7 +882,7 @@ function coursesSelectizeSetup() {
       opts.push({
         optgroup: faculty.name,
         value: course.id,
-        text: `${course.id} - ${course.name}`,
+        text: `${formatCourseId(course.id)} - ${course.name}`,
         nicknames: getNicknames(course),
       });
     });
