@@ -153,23 +153,52 @@
                 onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
             </div>
                 
-            <button class="btn btn-primary"
-                    type="button" onclick="location.reload()">Apply</button>
+            <div class="dropdown form-group">
+              <button class="btn btn-secondary dropdown-toggle" type="button"
+                      id="catalog-preset-dropdown-button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">
+                Presets
+              </button>
+              <div class="dropdown-menu"
+                   aria-labelledby="catalog-preset-dropdown-button">
+                <a class="dropdown-item" href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a></li>
+                <a class="dropdown-item" href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a></li>
+                <a class="dropdown-item" href="#/"
+                   class="dropdown-item" onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/981f009466c6007441b9833c326f40059f9c6433.json')">
+                  Final Winter 2018 Catalog
+                </a>
+                <a class="dropdown-item" href="#/"
+                     onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/42e7f28aa5c6e02597256dd81a25d55118e9e1ac.json')">
+                  Final Spring 2018 Catalog
+                </a>
+              </div>
+              <a class="btn btn-info" role="button"
+                 data-toggle="collapse" aria-expanded="false"
+                 aria-controls="metacatalog-info" href="#metacatalog-info">
+                <i class="fas fa-info-circle"></i> More info
+              </a>
+            </div>
+            <div id="metacatalog-info" class="collapse">
+              <div class="card card-body">
+                <h5 class="card-title">Custom REPY Catalogs</h5>
+
+                Catalogs comes from REPY. Older catalogs are parsed available at
+                the REPY app, as the Catalog of Catalogs.  To use a given catalog,
+                copy the JSON link into the "Catalog URL" field above.
+
+                <a href="https://repy-176217.appspot.com" class="card-link">REPY
+                  Catalog of Catalogs</a>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button class="btn btn-primary"
+                      type="button" onclick="location.reload()">Apply</button>
+            </div>
           </form>
 
-          <h5>Preset catalog URLs</h5>
-          <ul>
-            <li><a href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a></li>
-            <li><a href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a></li>
-            <li><a href="#/"
-                   onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/981f009466c6007441b9833c326f40059f9c6433.json')">
-                Final Winter 2018 Catalog</li>
-            <li><a href="#/"
-                   onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/42e7f28aa5c6e02597256dd81a25d55118e9e1ac.json')">
-                Final Spring 2018 Catalog</li>
-            <li><a href="https://repy-176217.appspot.com/">Catalog of Catalogs</a>
-              (copy JSON link into Catalog URL)</li>
-          </ul>
 
           <h3>Filters</h3>
           <div class="form-check">
