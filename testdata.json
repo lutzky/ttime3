@@ -250,6 +250,29 @@
         ]
       },
       {
+        "id": 123,
+        "name": "קורס ללא קבוצות",
+        "academicPoints": 3,
+        "lecturerInCharge": "",
+        "weeklyHours": {
+          "lecture": 2,
+          "tutorial": 1
+        },
+        "testDates": [
+          {
+            "year": 2016,
+            "month": 2,
+            "day": 11
+          },
+          {
+            "year": 2016,
+            "month": 3,
+            "day": 8
+          }
+        ],
+        "groups": null
+      },
+      {
         "id": 234322,
         "name": "מערכות אחסון מידע",
         "academicPoints": 3,
