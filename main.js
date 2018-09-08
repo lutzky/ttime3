@@ -643,6 +643,63 @@ function goToSchedule(i) {
   renderSchedule($('#rendered-schedule')[0], schedule);
 }
 
+/** @type {string} */
+let sortedByRating = '';
+
+const allRatings = ['earliestStart', 'latestFinish', 'numRuns', 'freeDays'];
+
+/**
+ * Sort current schedule by rating
+ *
+ * @param {string} rating - Rating name to sort by
+ */
+function sortByRating(rating) {
+  sortedByRating = rating;
+  possibleSchedules.sort(function(a, b) {
+    return a.rating[rating] - b.rating[rating];
+  });
+
+  goToSchedule(0);
+  allRatings.forEach(function(rating) {
+    $(`#rating-badge-${rating}`).replaceWith(
+      getRatingBadge(rating, possibleSchedules[0])
+    );
+  });
+}
+
+/**
+ * Get a badge for the given rating according to the schedule type
+ *
+ * @param {string} rating - Name of rating
+ * @param {Schedule} schedule - Schedule to fetch rating from
+ *
+ * @returns {jQuery}
+ */
+function getRatingBadge(rating, schedule) {
+  let text = {
+    earliestStart: `Earliest start: ${schedule.rating.earliestStart}`,
+    latestFinish: `Latest finish: ${schedule.rating.latestFinish}`,
+    numRuns: `${schedule.rating.numRuns} runs`,
+    freeDays: `${schedule.rating.freeDays} free days`,
+  }[rating];
+
+  let result = $('<a>', {
+    class: 'badge badge-info',
+    id: `rating-badge-${rating}`,
+    text: text,
+    href: '#/',
+    click: function() {
+      sortByRating(rating);
+    },
+  });
+
+  if (sortedByRating == rating) {
+    result.append(' <i class="fas fa-sort-up"></i>');
+  }
+
+  return result;
+}
+
 /**
  * Write the schedule contents to target
  *
@@ -652,21 +709,11 @@ function goToSchedule(i) {
 function writeScheduleContents(target, schedule) {
   target.empty();
 
-  [
-    `Earliest start: ${schedule.rating.earliestStart}`,
-    `Latest finish: ${schedule.rating.latestFinish}`,
-    `${schedule.rating.numRuns} runs`,
-    `${schedule.rating.freeDays} free days`,
-  ].forEach(text =>
-    target
-      .append(
-        $('<span>', {
-          class: 'badge badge-info',
-          text: text,
-        })
-      )
-      .append(' ')
-  );
+  allRatings
+    .map(rating => getRatingBadge(rating, schedule))
+    .forEach(function(badge) {
+      target.append(badge).append(' ');
+    });
 
   let ul = $('<ul>', { class: 'list-group' });
   target.append(ul);
