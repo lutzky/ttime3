@@ -10,6 +10,7 @@ onmessage = function(e) {
     let schedules = generateSchedules(e.data.courses, e.data.filterSettings);
     postMessage(schedules);
   } catch (err) {
+    console.error('Caught exception in worker:', err);
     postMessage(null);
   }
 };
