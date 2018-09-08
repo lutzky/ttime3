@@ -190,6 +190,10 @@ function generateSchedules(courses, settings) {
  * @returns {Course}
  */
 function removeForbiddenGroups(course, settings) {
+  if (course.groups == null) {
+    console.warn('Scheduling with groupless course', course);
+    return course;
+  }
   course.groups = course.groups.filter(
     g => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`)
   );
