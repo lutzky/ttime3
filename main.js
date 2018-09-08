@@ -528,7 +528,18 @@ function refreshSelectedCourses() {
         delSelectedCourse(course);
       },
     });
-    li.append(label).append(btn);
+    li.append(label);
+
+    if (course.groups == null || course.groups.length == 0) {
+      li.append(
+        $('<i>', {
+          class: 'text-warning fas fa-exclamation-triangle',
+          title: 'Course has no groups',
+        })
+      );
+    }
+
+    li.append(btn);
     ul.append(li);
   });
 }
