@@ -690,10 +690,18 @@ function getRatingBadge(rating, schedule) {
     freeDays: `${schedule.rating.freeDays} free days`,
   }[rating];
 
+  let explanation = {
+    earliestStart: 'Hour at which the earliest class of the week start',
+    latestFinish: 'Hour at which the latest class of the week finishes',
+    numRuns: 'Number of adjacent classes in different buildings',
+    freeDays: 'Number of days with no classes',
+  }[rating];
+
   let result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
     text: text,
+    title: explanation,
     href: '#/',
     click: function() {
       sortByRating(rating);
