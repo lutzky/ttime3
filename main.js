@@ -557,8 +557,9 @@ schedulerWorker.onmessage = function(e) {
   $('#spinner').hide();
   if (e.data == null) {
     $('#exception-occurred').show();
+  } else {
+    setPossibleSchedules(e.data);
   }
-  setPossibleSchedules(e.data);
 };
 
 /**
