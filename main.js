@@ -646,6 +646,9 @@ function goToSchedule(i) {
 /** @type {string} */
 let sortedByRating = '';
 
+/** @type {boolean} */
+let sortedByRatingAsc = true;
+
 const allRatings = ['earliestStart', 'latestFinish', 'numRuns', 'freeDays'];
 
 /**
@@ -654,9 +657,13 @@ const allRatings = ['earliestStart', 'latestFinish', 'numRuns', 'freeDays'];
  * @param {string} rating - Rating name to sort by
  */
 function sortByRating(rating) {
+  if (sortedByRating == rating) {
+    sortedByRatingAsc = !sortedByRatingAsc;
+  }
+
   sortedByRating = rating;
   possibleSchedules.sort(function(a, b) {
-    return a.rating[rating] - b.rating[rating];
+    return (sortedByRatingAsc ? 1 : -1) * (a.rating[rating] - b.rating[rating]);
   });
 
   goToSchedule(0);
@@ -694,7 +701,8 @@ function getRatingBadge(rating, schedule) {
   });
 
   if (sortedByRating == rating) {
-    result.append(' <i class="fas fa-sort-up"></i>');
+    let icon = sortedByRatingAsc ? 'fa-sort-up' : 'fa-sort-down';
+    result.append(` <i class="fas ${icon}"></i>`);
   }
 
   return result;
