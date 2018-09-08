@@ -111,12 +111,6 @@ function elementWithHTML(tagName, innerHTML) {
  * @param {jQuery} fl - forbidLink
  */
 function updateForbidLinkText(fl) {
-  console.info(
-    'updateForbidLinkText for',
-    fl.data('groupID'),
-    'which has forbidden',
-    fl.data('forbidden')
-  );
   fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
 }
 
