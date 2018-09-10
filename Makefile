@@ -1,6 +1,12 @@
 export PATH := node_modules/.bin:$(PATH)
 
-all: closure test lint
+ALL_TARGETS = closure test lint
+
+ifdef TESTLOOP_FIX
+	ALL_TARGETS := fix $(ALL_TARGETS)
+endif
+
+all: $(ALL_TARGETS)
 
 lint:
 	eslint *.js spec/*.js
