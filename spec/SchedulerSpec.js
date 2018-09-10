@@ -16,6 +16,8 @@ if (typeof require != 'undefined') {
   sortEvents = common.sortEvents;
 }
 
+const THOROUGH_TEST_MODE = false;
+
 describe('Scheduler', function() {
   /**
    * Return a copy of default filter settings
@@ -49,19 +51,21 @@ describe('Scheduler', function() {
         [2, 6],
       ]);
     });
-    xit('should not crash with large inputs', function() {
-      // Disabled because this is a slow test. CARTESIAN_SLOW_TEST
-      let a = [
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      ];
-      expect(() => cartesian(...a)).not.toThrow();
-    });
+    if (THOROUGH_TEST_MODE) {
+      it('should not crash with large inputs', function() {
+        // Disabled because this is a slow test. CARTESIAN_SLOW_TEST
+        let a = [
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        ];
+        expect(() => cartesian(...a)).not.toThrow();
+      });
+    }
   });
 
   it('should have one faculty', function(done) {
