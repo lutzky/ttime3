@@ -116,6 +116,62 @@ describe('Scheduler', function() {
         expect(typeCounts).toEqual(want);
       });
     });
+
+    it('should have the expected number of schdules', function() {
+      let settings = getDefaultFilterSettings();
+      settings.noCollisions = true;
+
+      let schedules = generateSchedules(new Set([algebra]), settings);
+      expect(schedules.length).toEqual(33);
+    });
+
+    it('should schedule with 104166.11 if not forbidden', function() {
+      let settings = getDefaultFilterSettings();
+      settings.noCollisions = true;
+      let schedules = generateSchedules(new Set([algebra]), settings);
+
+      let schedulesWithGroup = schedules.filter(schedule =>
+        schedule.events.map(x => x.group.id).includes(11)
+      );
+
+      expect(schedulesWithGroup.length).toBeGreaterThan(0);
+    });
+
+    it('should not schedule with 104166.11 if not forbidden', function() {
+      let settings = getDefaultFilterSettings();
+      settings.noCollisions = true;
+      settings.forbiddenGroups = ['104166.11'];
+      let schedules = generateSchedules(new Set([algebra]), settings);
+
+      let schedulesWithGroup = schedules.filter(schedule =>
+        schedule.events.map(x => x.group.id).includes(11)
+      );
+
+      expect(schedulesWithGroup.length).toBe(0);
+    });
+
+    it('should schedule just lectures if all tutorials forbidden', function() {
+      let settings = getDefaultFilterSettings();
+      settings.noCollisions = true;
+      settings.forbiddenGroups = [
+        '104166.11',
+        '104166.12',
+        '104166.13',
+        '104166.14',
+        '104166.21',
+        '104166.22',
+        '104166.23',
+        '104166.24',
+        '104166.31',
+        '104166.32',
+        '104166.33',
+        '104166.34',
+      ];
+
+      let schedules = generateSchedules(new Set([algebra]), settings);
+      expect(schedules.length).toEqual(3);
+      expect(schedules.map(x => x.events.length)).toEqual([1, 1, 1]);
+    });
   });
 
   describe('run counter', function() {
