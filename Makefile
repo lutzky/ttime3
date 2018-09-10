@@ -3,7 +3,7 @@ export PATH := node_modules/.bin:$(PATH)
 all: closure test lint
 
 lint:
-	eslint *.js jasmine/spec/*.js
+	eslint *.js spec/*.js
 
 test:
 	jasmine
@@ -11,7 +11,7 @@ test:
 closure:
 	google-closure-compiler \
 		--js='*.js' \
-		--js='jasmine/spec/*.js' \
+		--js='spec/*.js' \
 		--externs=externs/externs.js \
 		--externs=node_modules/google-closure-compiler/contrib/externs/jasmine-2.0.js \
 		--externs=node_modules/google-closure-compiler/contrib/externs/jquery-3.3.js \
@@ -20,7 +20,7 @@ closure:
 		--jscomp_error='*'
 
 fix:
-	eslint --fix *.js jasmine/spec/*.js
+	eslint --fix *.js spec/*.js
 
 serve:
 	http-server

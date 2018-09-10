@@ -1,10 +1,10 @@
 const algebraCourseID = 104166;
 
 if (typeof require != 'undefined') {
-  let common = require('../../common');
-  let formatting = require('../../formatting');
-  let render = require('../../render');
-  let scheduler = require('../../scheduler');
+  let common = require('../common');
+  let formatting = require('../formatting');
+  let render = require('../render');
+  let scheduler = require('../scheduler');
 
   cartesian = scheduler.cartesian;
   eventsCollide = common.eventsCollide;
