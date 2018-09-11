@@ -672,6 +672,12 @@ let sortedByRating = '';
 let sortedByRatingAsc = true;
 
 const allRatings = ['earliestStart', 'latestFinish', 'numRuns', 'freeDays'];
+const ratingNames = {
+  earliestStart: 'Earliest Start',
+  latestFinish: 'Latest finish',
+  numRuns: 'Number of runs',
+  freeDays: 'Free days',
+};
 
 /**
  * Sort current schedule by rating
@@ -949,6 +955,45 @@ function loadSettings(s) {
 
   return result;
 }
+
+/**
+ * Build the limit-by-ratings form for the settings subpage
+ */
+function buildRatingsLimitFormIGNORED() {
+  let form = $('#rating-limits-form');
+  allRatings.forEach(function(r) {
+    let row = $('<div>', { class: 'row' });
+    form.append(row);
+    row.append($('<div>', { class: 'col', text: ratingNames[r] }));
+    row.append(
+      $('<div>', {
+        class: 'col',
+        html: $('<input>', {
+          id: `rating-${r}-min`,
+          type: 'number',
+          class: 'form-control',
+          placeholder: 'Min',
+        }),
+      })
+    );
+    row.append(
+      $('<div>', {
+        class: 'col',
+        html: $('<input>', {
+          id: `rating-${r}-max`,
+          type: 'number',
+          class: 'form-control',
+          placeholder: 'Max',
+        }),
+      })
+    );
+  });
+}
+
+/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "IGNORED" }]*/
+
+// TODO(lutzky): Enable this
+// buildRatingsLimitForm();
 
 let settings = loadSettings(window.localStorage);
 
