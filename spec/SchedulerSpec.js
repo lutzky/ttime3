@@ -25,10 +25,17 @@ describe('Scheduler', function() {
    * @returns {FilterSettings}
    */
   function getDefaultFilterSettings() {
+    let nullRating = {
+      earliestStart: null,
+      freeDays: null,
+      latestFinish: null,
+      numRuns: null,
+    };
+
     return {
       forbiddenGroups: [],
-      freeDays: { enabled: false, max: 5, min: 0 },
-      noRunning: false,
+      ratingMin: nullRating,
+      ratingMax: nullRating,
       noCollisions: false,
     };
   }

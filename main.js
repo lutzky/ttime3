@@ -447,11 +447,21 @@ function saveSettings() {
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
     noCollisions: getCheckboxValueById('filter.noCollisions'),
-    noRunning: getCheckboxValueById('filter.noRunning'),
-    freeDays: {
-      enabled: getCheckboxValueById('filter.freeDays'),
-      min: getNumInputValueWithDefault($('#filter\\.freeDays\\.min')[0], 0),
-      max: getNumInputValueWithDefault($('#filter\\.freeDays\\.max')[0], 5),
+    ratingMax: {
+      numRuns: getCheckboxValueById('filter.noRunning') ? 0 : null,
+      freeDays: getCheckboxValueById('filter.freeDays')
+        ? getNumInputValueWithDefault($('#filter\\.freeDays\\.max')[0], null)
+        : null,
+      earliestStart: null,
+      latestFinish: null,
+    },
+    ratingMin: {
+      numRuns: null,
+      freeDays: getCheckboxValueById('filter.freeDays')
+        ? getNumInputValueWithDefault($('#filter\\.freeDays\\.min')[0], null)
+        : null,
+      earliestStart: null,
+      latestFinish: null,
     },
   };
 
@@ -465,9 +475,9 @@ function saveSettings() {
  * it's empty.
  *
  * @param {Element} input - Input field containing the number
- * @param {number} defaultValue - Number to return if input is empty
+ * @param {number?} defaultValue - Number to return if input is empty
  *
- * @returns {number}
+ * @returns {number?}
  */
 function getNumInputValueWithDefault(input, defaultValue) {
   if (input.value == '') {
@@ -916,6 +926,14 @@ function coursesSelectizeSetup() {
  * @returns {Settings}
  */
 function loadSettings(s) {
+  /** @type {ScheduleRating} */
+  let nullRating = {
+    earliestStart: null,
+    freeDays: null,
+    latestFinish: null,
+    numRuns: null,
+  };
+
   /** @type {Settings} */
   let result = {
     catalogUrl: defaultCatalogUrl,
@@ -924,17 +942,17 @@ function loadSettings(s) {
     filterSettings: {
       forbiddenGroups: [],
       noCollisions: true,
-      noRunning: false,
-      freeDays: {
-        enabled: false,
-        min: 0,
-        max: 5,
-      },
+      ratingMin: /** @type {ScheduleRating} */ (Object.assign({}, nullRating)),
+      ratingMax: /** @type {ScheduleRating} */ (Object.assign({}, nullRating)),
     },
   };
 
+  // TODO(lutzky): This errors out with "Cannot read property 'numRuns' of
+  // undefined". Maybe deserializing old settings overrides our default :/
+
   if (s.ttime3_settings) {
-    result = /** @type {Settings} */ (Object.assign(
+    result = /** @type {Settings} */ ($.extend(
+      true /* deep */,
       result,
       /** @type {Settings} */ (JSON.parse(s.ttime3_settings))
     ));
@@ -947,10 +965,17 @@ function loadSettings(s) {
   {
     let fs = result.filterSettings;
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
-    setCheckboxValueById('filter.noRunning', fs.noRunning);
-    setCheckboxValueById('filter.freeDays', fs.freeDays.enabled);
-    $('#filter\\.freeDays\\.min').val(String(fs.freeDays.min));
-    $('#filter\\.freeDays\\.max').val(String(fs.freeDays.max));
+    setCheckboxValueById('filter.noRunning', fs.ratingMax.numRuns != null);
+    setCheckboxValueById(
+      'filter.freeDays',
+      fs.ratingMin.freeDays != null || fs.ratingMax.freeDays != null
+    );
+    $('#filter\\.freeDays\\.min').val(
+      fs.ratingMin.freeDays ? String(fs.ratingMin.freeDays) : null
+    );
+    $('#filter\\.freeDays\\.max').val(
+      fs.ratingMax.freeDays ? String(fs.ratingMax.freeDays) : null
+    );
   }
 
   return result;

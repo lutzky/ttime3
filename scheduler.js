@@ -24,10 +24,10 @@ let Schedule;
 
 /**
  * @typedef {{
- *   earliestStart: number,
- *   latestFinish: number,
- *   numRuns: number,
- *   freeDays: number,
+ *   earliestStart: number?,
+ *   latestFinish: number?,
+ *   numRuns: number?,
+ *   freeDays: number?,
  * }}
  */
 let ScheduleRating;
@@ -98,18 +98,6 @@ function countRuns(events) {
 }
 
 /**
- * Filter schedules in which events involve running between different buildings
- * in adjacent classes.
- *
- * @param {Schedule} schedule - Schedule to check for running
- *
- * @returns {boolean}
- */
-function filterNoRunning(schedule) {
-  return countRuns(schedule.events) == 0;
-}
-
-/**
  * Returns true iff schedule has no collisions
  *
  * @param {Schedule} schedule - Schedule to check for collisions
@@ -140,14 +128,10 @@ function cartesian(...a) {
 
 /**
  * @typedef {{
- *   noRunning: boolean,
  *   noCollisions: boolean,
  *   forbiddenGroups: Array<string>,
- *   freeDays: {
- *     enabled: boolean,
- *     min: number,
- *     max: number,
- *   }
+ *   ratingMin: ScheduleRating,
+ *   ratingMax: ScheduleRating,
  * }}
  */
 let FilterSettings;
@@ -233,19 +217,48 @@ function runAllFilters(schedules, settings) {
     result = filterWithDelta(result, filterNoCollisions, 'noCollisions');
   }
 
-  if (settings.noRunning) {
-    result = filterWithDelta(result, filterNoRunning, 'noRunning');
-  }
-
-  if (settings.freeDays.enabled) {
-    result = filterWithDelta(
-      result,
-      schedule => filterFreeDays(schedule, settings),
-      'freeDays'
-    );
-  }
+  result = filterByRatings(result, settings);
 
   return result;
+}
+
+/**
+ * Filter schedules by ratingMin and ratingMax
+ *
+ * @param {Array<Schedule>} schedules - Schedules to filter
+ * @param {FilterSettings} settings - Filter settings
+ *
+ * @returns {Array<Schedule>}
+ */
+function filterByRatings(schedules, settings) {
+  Object.keys(settings.ratingMin).forEach(function(r) {
+    if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
+      return;
+    }
+
+    schedules = filterWithDelta(
+      schedules,
+      function(schedule) {
+        if (
+          settings.ratingMin[r] != null &&
+          schedule.rating[r] < settings.ratingMin[r]
+        ) {
+          return false;
+        }
+        if (
+          settings.ratingMax[r] != null &&
+          schedule.rating[r] > settings.ratingMax[r]
+        ) {
+          return false;
+        }
+
+        return true;
+      },
+      `Rating '${r}'`
+    );
+  });
+
+  return schedules;
 }
 
 /**
@@ -263,22 +276,6 @@ function countFreeDays(events) {
   });
 
   return hasClasses.filter(x => x == false).length;
-}
-
-/**
- * Returns true iff the schedule has free days within settings.freeDays
- *
- * @param {Schedule} schedule - Schedule to examine
- * @param {FilterSettings} settings - Fitler settings
- *
- * @returns {boolean}
- */
-function filterFreeDays(schedule, settings) {
-  let numFreeDays = countFreeDays(schedule.events);
-
-  return (
-    numFreeDays >= settings.freeDays.min && numFreeDays <= settings.freeDays.max
-  );
 }
 
 /**
