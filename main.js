@@ -682,18 +682,22 @@ const allRatings = {
   earliestStart: {
     name: 'Earliest start',
     explanation: 'Hour at which the earliest class of the week start',
+    badgeTextFunc: s => `Earliest start: ${s}`,
   },
   latestFinish: {
     name: 'Latest finish',
     explanation: 'Hour at which the latest class of the week finishes',
+    badgeTextFunc: s => `Latest finish: ${s}`,
   },
   numRuns: {
     name: 'Number of runs',
     explanation: 'Number of adjacent classes in different buildings',
+    badgeTextFunc: s => `${s} runs`,
   },
   freeDays: {
     name: 'Free days',
     explanation: 'Number of days with no classes',
+    badgeTextFunc: s => `${s} free days`,
   },
 };
 
@@ -729,17 +733,10 @@ function sortByRating(rating) {
  * @returns {jQuery}
  */
 function getRatingBadge(rating, schedule) {
-  let text = {
-    earliestStart: `Earliest start: ${schedule.rating.earliestStart}`,
-    latestFinish: `Latest finish: ${schedule.rating.latestFinish}`,
-    numRuns: `${schedule.rating.numRuns} runs`,
-    freeDays: `${schedule.rating.freeDays} free days`,
-  }[rating];
-
   let result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
-    text: text,
+    text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
     title: allRatings[rating].explanation,
     href: '#/',
     click: function() {
