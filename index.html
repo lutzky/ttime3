@@ -203,44 +203,14 @@
 
 
           <h3>Filters</h3>
-          <form id="rating-limits-form" style="max-width: 400px"></form>
-
           <div class="form-check">
             <input class="form-check-input" type="checkbox" onchange="saveSettings()" id="filter.noCollisions">
             <label class="form-check-label" for="filter.noCollisions">
               No collisions
             </label>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" onchange="saveSettings()" id="filter.noRunning">
-            <label class="form-check-label" for="filter.noRunning">
-              No running (no consecutive classes in different buildings)
-            </label>
-          </div>
 
-          <form class="form-inline">
-              <div class="form-check mb-2 mr-sm-2">
-                  <input class="form-check-input" type="checkbox" id="filter.freeDays"
-                         onchange="saveSettings()">
-                  <label class="form-check-label" for="filter.freeDays">
-                      Free days
-                  </label>
-              </div>
-              <div class="input-group mb-2 mr-sm-2">
-                  <div class="input-group-prepend">
-                      <div class="input-group-text">Min</div>
-                  </div>
-                  <input type="text" class="form-control" id="filter.freeDays.min"
-                         placeholder="0" onchange="saveSettings()">
-              </div>
-              <div class="input-group mb-2 mr-sm-2">
-                  <div class="input-group-prepend">
-                      <div class="input-group-text">Max</div>
-                  </div>
-                  <input type="text" class="form-control" id="filter.freeDays.max"
-                         placeholder="5" onchange="saveSettings()">
-              </div>
-          </form>
+          <form id="rating-limits-form" style="max-width: 400px"></form>
 
           <h4>Forbidden groups</h4>
 

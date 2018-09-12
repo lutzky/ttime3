@@ -447,23 +447,20 @@ function saveSettings() {
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
     noCollisions: getCheckboxValueById('filter.noCollisions'),
-    ratingMax: {
-      numRuns: getCheckboxValueById('filter.noRunning') ? 0 : null,
-      freeDays: getCheckboxValueById('filter.freeDays')
-        ? getNumInputValueWithDefault($('#filter\\.freeDays\\.max')[0], null)
-        : null,
-      earliestStart: null,
-      latestFinish: null,
-    },
-    ratingMin: {
-      numRuns: null,
-      freeDays: getCheckboxValueById('filter.freeDays')
-        ? getNumInputValueWithDefault($('#filter\\.freeDays\\.min')[0], null)
-        : null,
-      earliestStart: null,
-      latestFinish: null,
-    },
+    ratingMax: getNullRating(),
+    ratingMin: getNullRating(),
   };
+
+  allRatings.forEach(function(r) {
+    settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
+      $(`#rating-${r}-min`)[0],
+      null
+    );
+    settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
+      $(`#rating-${r}-max`)[0],
+      null
+    );
+  });
 
   window.localStorage.ttime3_settings = JSON.stringify(settings);
 
@@ -920,20 +917,26 @@ function coursesSelectizeSetup() {
 }
 
 /**
+ * Get a null rating
+ *
+ * @returns {ScheduleRating}
+ */
+function getNullRating() {
+  return {
+    earliestStart: null,
+    freeDays: null,
+    latestFinish: null,
+    numRuns: null,
+  };
+}
+
+/**
  * Load settings from localStorage
  *
  * @param {Object} s - The window.localStorage object to load from
  * @returns {Settings}
  */
 function loadSettings(s) {
-  /** @type {ScheduleRating} */
-  let nullRating = {
-    earliestStart: null,
-    freeDays: null,
-    latestFinish: null,
-    numRuns: null,
-  };
-
   /** @type {Settings} */
   let result = {
     catalogUrl: defaultCatalogUrl,
@@ -942,13 +945,10 @@ function loadSettings(s) {
     filterSettings: {
       forbiddenGroups: [],
       noCollisions: true,
-      ratingMin: /** @type {ScheduleRating} */ (Object.assign({}, nullRating)),
-      ratingMax: /** @type {ScheduleRating} */ (Object.assign({}, nullRating)),
+      ratingMin: getNullRating(),
+      ratingMax: getNullRating(),
     },
   };
-
-  // TODO(lutzky): This errors out with "Cannot read property 'numRuns' of
-  // undefined". Maybe deserializing old settings overrides our default :/
 
   if (s.ttime3_settings) {
     result = /** @type {Settings} */ ($.extend(
@@ -965,17 +965,11 @@ function loadSettings(s) {
   {
     let fs = result.filterSettings;
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
-    setCheckboxValueById('filter.noRunning', fs.ratingMax.numRuns != null);
-    setCheckboxValueById(
-      'filter.freeDays',
-      fs.ratingMin.freeDays != null || fs.ratingMax.freeDays != null
-    );
-    $('#filter\\.freeDays\\.min').val(
-      fs.ratingMin.freeDays ? String(fs.ratingMin.freeDays) : null
-    );
-    $('#filter\\.freeDays\\.max').val(
-      fs.ratingMax.freeDays ? String(fs.ratingMax.freeDays) : null
-    );
+
+    allRatings.forEach(function(r) {
+      $(`#rating-${r}-min`).val(fs.ratingMin[r]);
+      $(`#rating-${r}-max`).val(fs.ratingMax[r]);
+    });
   }
 
   return result;
@@ -984,12 +978,14 @@ function loadSettings(s) {
 /**
  * Build the limit-by-ratings form for the settings subpage
  */
-function buildRatingsLimitFormIGNORED() {
+function buildRatingsLimitForm() {
   let form = $('#rating-limits-form');
   allRatings.forEach(function(r) {
     let row = $('<div>', { class: 'row' });
     form.append(row);
-    row.append($('<div>', { class: 'col', text: ratingNames[r] }));
+    row.append(
+      $('<div>', { class: 'col col-form-label', text: ratingNames[r] })
+    );
     row.append(
       $('<div>', {
         class: 'col',
@@ -997,7 +993,8 @@ function buildRatingsLimitFormIGNORED() {
           id: `rating-${r}-min`,
           type: 'number',
           class: 'form-control',
-          placeholder: 'Min',
+          placeholder: '-∞',
+          change: saveSettings,
         }),
       })
     );
@@ -1008,17 +1005,15 @@ function buildRatingsLimitFormIGNORED() {
           id: `rating-${r}-max`,
           type: 'number',
           class: 'form-control',
-          placeholder: 'Max',
+          placeholder: '∞',
+          change: saveSettings,
         }),
       })
     );
   });
 }
 
-/* eslint no-unused-vars: ["error", { "varsIgnorePattern": "IGNORED" }]*/
-
-// TODO(lutzky): Enable this
-// buildRatingsLimitForm();
+buildRatingsLimitForm();
 
 let settings = loadSettings(window.localStorage);
 
