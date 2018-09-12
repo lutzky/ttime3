@@ -451,7 +451,7 @@ function saveSettings() {
     ratingMin: getNullRating(),
   };
 
-  allRatings.forEach(function(r) {
+  Object.keys(allRatings).forEach(function(r) {
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
       $(`#rating-${r}-min`)[0],
       null
@@ -678,12 +678,23 @@ let sortedByRating = '';
 /** @type {boolean} */
 let sortedByRatingAsc = true;
 
-const allRatings = ['earliestStart', 'latestFinish', 'numRuns', 'freeDays'];
-const ratingNames = {
-  earliestStart: 'Earliest Start',
-  latestFinish: 'Latest finish',
-  numRuns: 'Number of runs',
-  freeDays: 'Free days',
+const allRatings = {
+  earliestStart: {
+    name: 'Earliest start',
+    explanation: 'Hour at which the earliest class of the week start',
+  },
+  latestFinish: {
+    name: 'Latest finish',
+    explanation: 'Hour at which the latest class of the week finishes',
+  },
+  numRuns: {
+    name: 'Number of runs',
+    explanation: 'Number of adjacent classes in different buildings',
+  },
+  freeDays: {
+    name: 'Free days',
+    explanation: 'Number of days with no classes',
+  },
 };
 
 /**
@@ -702,7 +713,7 @@ function sortByRating(rating) {
   });
 
   goToSchedule(0);
-  allRatings.forEach(function(rating) {
+  Object.keys(allRatings).forEach(function(rating) {
     $(`#rating-badge-${rating}`).replaceWith(
       getRatingBadge(rating, possibleSchedules[0])
     );
@@ -725,18 +736,11 @@ function getRatingBadge(rating, schedule) {
     freeDays: `${schedule.rating.freeDays} free days`,
   }[rating];
 
-  let explanation = {
-    earliestStart: 'Hour at which the earliest class of the week start',
-    latestFinish: 'Hour at which the latest class of the week finishes',
-    numRuns: 'Number of adjacent classes in different buildings',
-    freeDays: 'Number of days with no classes',
-  }[rating];
-
   let result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
     text: text,
-    title: explanation,
+    title: allRatings[rating].explanation,
     href: '#/',
     click: function() {
       sortByRating(rating);
@@ -760,7 +764,7 @@ function getRatingBadge(rating, schedule) {
 function writeScheduleContents(target, schedule) {
   target.empty();
 
-  allRatings
+  Object.keys(allRatings)
     .map(rating => getRatingBadge(rating, schedule))
     .forEach(function(badge) {
       target.append(badge).append(' ');
@@ -966,7 +970,7 @@ function loadSettings(s) {
     let fs = result.filterSettings;
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
 
-    allRatings.forEach(function(r) {
+    Object.keys(allRatings).forEach(function(r) {
       $(`#rating-${r}-min`).val(fs.ratingMin[r]);
       $(`#rating-${r}-max`).val(fs.ratingMax[r]);
     });
@@ -980,11 +984,15 @@ function loadSettings(s) {
  */
 function buildRatingsLimitForm() {
   let form = $('#rating-limits-form');
-  allRatings.forEach(function(r) {
+  Object.keys(allRatings).forEach(function(r) {
     let row = $('<div>', { class: 'row' });
     form.append(row);
     row.append(
-      $('<div>', { class: 'col col-form-label', text: ratingNames[r] })
+      $('<div>', {
+        class: 'col col-form-label',
+        text: allRatings[r].name,
+        title: allRatings[r].explanation,
+      })
     );
     row.append(
       $('<div>', {
