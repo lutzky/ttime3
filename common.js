@@ -63,7 +63,12 @@ function loadCatalog(url, isLocal) {
     req.open('GET', url);
     req.onload = function() {
       if (req.status == 200) {
-        let result = JSON.parse(/** @type {string } */ (req.response));
+        let result = null;
+        if (req.response[0] == '{') {
+          result = JSON.parse(/** @type {string } */ (req.response));
+        } else {
+          result = parseCheeseFork(/** @type {string} */ (req.response));
+        }
         fixRawCatalog(/** @type {Catalog} */ (result));
         resolve(result);
       } else {
@@ -78,6 +83,59 @@ function loadCatalog(url, isLocal) {
     console.info('Sending XHR');
     req.send();
   });
+}
+
+/**
+ * Parse cheesefork data
+ *
+ * @param {string} jsData - Cheesefork courses_*.js data
+ *
+ * @returns {Catalog}
+ */
+function parseCheeseFork(jsData) {
+  const cheeseForkPrefix = 'var courses_from_rishum = ';
+
+  const hebrew = {
+    faculty: 'פקולטה',
+    academicPoints: 'נקודות',
+    courseName: 'שם מקצוע',
+    courseId: 'מספר מקצוע',
+  };
+
+  /** @type {Map<string, Faculty>} */
+  let facultiesByName = new Map();
+
+  if (!jsData.startsWith(cheeseForkPrefix)) {
+    throw new Error('Not valid cheesefork jsData - lacks expected prefix');
+  }
+
+  let data = JSON.parse(jsData.substring(cheeseForkPrefix.length));
+
+  data.forEach(function(dataCourse) {
+    let facultyName = dataCourse['general'][hebrew.faculty];
+
+    if (!facultiesByName.has(facultyName)) {
+      facultiesByName.set(facultyName, {
+        name: facultyName,
+        semester: 'cheesefork-unknown-semester',
+        courses: [],
+      });
+    }
+
+    let faculty = facultiesByName.get(facultyName);
+
+    /** @type {Course} */
+    let course = {
+      academicPoints: Number(dataCourse['general'][hebrew.academicPoints]),
+      name: dataCourse['general'][hebrew.courseName],
+      id: Number(dataCourse['general'][hebrew.courseId]),
+      groups: [],
+    };
+
+    faculty.courses.push(course);
+  });
+
+  return Array.from(facultiesByName.values());
 }
 
 /**
