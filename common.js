@@ -86,6 +86,20 @@ function loadCatalog(url, isLocal) {
 }
 
 /**
+ * Parse a cheesefork-format hour
+ *
+ * @param {string} s - "HH:M - HH:M", where M is tens of minutes
+ *
+ * @returns {Array<number>} - Minutes since midnight
+ */
+function parseCheeseForkHour(s) {
+  return s.split(' - ').map(function(hhm) {
+    let [hh, m] = hhm.split(':');
+    return Number(hh) * 60 + Number(m) * 10;
+  });
+}
+
+/**
  * Parse cheesefork data
  *
  * @param {string} jsData - Cheesefork courses_*.js data
@@ -96,11 +110,21 @@ function parseCheeseFork(jsData) {
   const cheeseForkPrefix = 'var courses_from_rishum = ';
 
   const hebrew = {
-    faculty: 'פקולטה',
     academicPoints: 'נקודות',
-    courseName: 'שם מקצוע',
+    building: 'בניין',
     courseId: 'מספר מקצוע',
+    courseName: 'שם מקצוע',
+    day: 'יום',
+    dayLetters: 'אבגדהש',
+    faculty: 'פקולטה',
+    group: 'קבוצה',
+    hour: 'שעה',
+    num: 'מס.',
+    room: 'חדר',
+    type: 'סוג',
   };
+
+  const typeMap = new Map([['הרצאה', 'lecture'], ['תרגול', 'tutorial']]);
 
   /** @type {Map<string, Faculty>} */
   let facultiesByName = new Map();
@@ -110,6 +134,8 @@ function parseCheeseFork(jsData) {
   }
 
   let data = JSON.parse(jsData.substring(cheeseForkPrefix.length));
+
+  console.info('Experimental CheeseFork parser. First course: ', data[0]);
 
   data.forEach(function(dataCourse) {
     let facultyName = dataCourse['general'][hebrew.faculty];
@@ -131,6 +157,56 @@ function parseCheeseFork(jsData) {
       id: Number(dataCourse['general'][hebrew.courseId]),
       groups: [],
     };
+
+    /** @type {Map<number, number>} */
+    let groupFirstAppearedInMetagroup = new Map();
+
+    /** @type {Map<number, Group>} */
+    let groupsById = new Map();
+
+    // TODO(lutzky): Hoo boy, document this and refactor it out.
+
+    dataCourse['schedule'].forEach(function(dataSchedule) {
+      let metaGroupId = dataSchedule[hebrew.group];
+      let groupId = dataSchedule[hebrew.num];
+
+      if (!groupFirstAppearedInMetagroup.has(groupId)) {
+        groupFirstAppearedInMetagroup.set(groupId, metaGroupId);
+      }
+      if (groupFirstAppearedInMetagroup.get(groupId) != metaGroupId) {
+        return;
+      }
+
+      if (!groupsById.has(groupId)) {
+        groupsById.set(groupId, {
+          id: groupId,
+          course: course,
+          teachers: [],
+          type: typeMap.get(dataSchedule[hebrew.type]) || 'unknown',
+          events: [],
+        });
+      }
+
+      let group = groupsById.get(groupId);
+
+      let times = parseCheeseForkHour(dataSchedule[hebrew.hour]);
+
+      /** @type {AcademicEvent} */
+      let event = {
+        group: group,
+        day: hebrew.dayLetters.indexOf(dataSchedule[hebrew.day]),
+        startMinute: times[0],
+        endMinute: times[1],
+        location:
+          dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
+      };
+
+      group.events.push(event);
+    });
+
+    groupsById.forEach(function(group, id) {
+      course.groups.push(group);
+    });
 
     faculty.courses.push(course);
   });
