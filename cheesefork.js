@@ -117,9 +117,19 @@ function parseCheeseFork(jsData) {
     /** @type {Map<number, Group>} */
     let groupsById = new Map();
 
-    // TODO(lutzky): Hoo boy, document this and refactor it out.
-
     dataCourse['schedule'].forEach(function(dataSchedule) {
+      /*
+       * In CheeseFork data, groups are repeated according to
+       * "groups-you-should-sign-up-to". This is denoted as "group" in the data,
+       * whereas what we would consider the actual group number is denoted as
+       * "number". So, for example, "group" 11 might say you should register for
+       * lecture 10 and tutorial 11, and "group" 12 would say you should
+       * register for lecture 10 and tutorial 12. Lecture 10 would be repeated
+       * in the data - once for each "group". So we call these "groups"
+       * metaGroups here, and ignore subsequent instances of any "real group" -
+       * that is, any group with a number we've seen before, but a metagroup we
+       * haven't seen.
+       */
       let metaGroupId = dataSchedule[hebrew.group];
       let groupId = dataSchedule[hebrew.num];
 
