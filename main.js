@@ -1075,6 +1075,6 @@ loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
   },
   function(error) {
     $('#exception-occurred-catalog').show();
-    console.error('Failed!', error);
+    console.error('Failed to load catalog:', error);
   }
 );

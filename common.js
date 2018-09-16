@@ -64,13 +64,17 @@ function loadCatalog(url, isLocal) {
     req.onload = function() {
       if (req.status == 200) {
         let result = null;
-        if (req.response[0] == '[') {
-          result = JSON.parse(/** @type {string } */ (req.response));
-        } else {
-          result = parseCheeseFork(/** @type {string} */ (req.response));
+        try {
+          if (req.response[0] == '[') {
+            result = JSON.parse(/** @type {string } */ (req.response));
+          } else {
+            result = parseCheeseFork(/** @type {string} */ (req.response));
+          }
+          fixRawCatalog(/** @type {Catalog} */ (result));
+          resolve(result);
+        } catch (err) {
+          reject(err);
         }
-        fixRawCatalog(/** @type {Catalog} */ (result));
-        resolve(result);
       } else {
         reject(Error(req.statusText));
       }
