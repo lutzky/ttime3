@@ -99,6 +99,28 @@ function parseCheeseForkHour(s) {
   });
 }
 
+const dateRegex = /([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})/;
+
+/**
+ * Parse a cheesefork-format test date
+ *
+ * @param {string} s - "Bla bla bla DD.MM.YYYY Bla bla bla"
+ *
+ * @returns {DateObj?}
+ */
+function parseCheeseForkTestDate(s) {
+  if (!s) {
+    return null;
+  }
+
+  let r = dateRegex.exec(s);
+  if (r == null) {
+    console.warn('Failed to match date regex with: ', s);
+    return null;
+  }
+  return { day: Number(r[1]), month: Number(r[2]), year: Number(r[3]) };
+}
+
 /**
  * Parse cheesefork data
  *
@@ -119,8 +141,11 @@ function parseCheeseFork(jsData) {
     faculty: 'פקולטה',
     group: 'קבוצה',
     hour: 'שעה',
+    moed_a: 'מועד א',
+    moed_b: 'מועד ב',
     num: 'מס.',
     room: 'חדר',
+    thoseInCharge: 'אחראים',
     type: 'סוג',
   };
 
@@ -155,6 +180,11 @@ function parseCheeseFork(jsData) {
       academicPoints: Number(dataCourse['general'][hebrew.academicPoints]),
       name: dataCourse['general'][hebrew.courseName],
       id: Number(dataCourse['general'][hebrew.courseId]),
+      lecturerInCharge: dataCourse['general'][hebrew.thoseInCharge],
+      testDates: [
+        dataCourse['general'][hebrew.moed_a],
+        dataCourse['general'][hebrew.moed_b],
+      ].map(parseCheeseForkTestDate),
       groups: [],
     };
 

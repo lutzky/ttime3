@@ -18,6 +18,8 @@ let Group;
  *   academicPoints: number,
  *   id: number,
  *   groups: Array<Group>,
+ *   lecturerInCharge: string,
+ *   testDates: Array<DateObj>,
  * }}
  */
 let Course;
