@@ -538,6 +538,10 @@ function delSelectedCourse(course) {
  * something neater.
  */
 function refreshSelectedCourses() {
+  let nscheds = Number(totalPossibleSchedules(selectedCourses));
+  $('#possible-schedules').text(
+    `${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`
+  );
   $('#generate-schedules').prop('disabled', selectedCourses.size == 0);
   let div = $('#selected-courses');
   div.empty();
@@ -976,6 +980,26 @@ function loadSettings(s) {
   }
 
   return result;
+}
+
+/**
+ * Figure out the total number of schedules possible for the set of courses,
+ * disregarding filters.
+ *
+ * @param {Set<Course>} courses - Courses to estimate for
+ *
+ * @returns {number}
+ */
+function totalPossibleSchedules(courses) {
+  let k = Array.from(courses.values());
+
+  return k
+    .map(course =>
+      groupsByType(course)
+        .map(t => t.length)
+        .reduce((a, b) => a * b, 1)
+    )
+    .reduce((a, b) => a * b, 1);
 }
 
 /**

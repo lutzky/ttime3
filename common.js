@@ -121,9 +121,33 @@ function loadTestCatalog() {
   }
 }
 
+/**
+ * Return course's groups as an array of arrays, split by type
+ *
+ * @param {Course} course - Course to get groups from
+ *
+ * @returns {Array<Array<Group>>}
+ */
+function groupsByType(course) {
+  let m = new Map();
+  if (!course.groups) {
+    return [];
+  }
+
+  course.groups.forEach(function(group) {
+    if (!m.has(group.type)) {
+      m.set(group.type, []);
+    }
+    m.get(group.type).push(group);
+  });
+
+  return Array.from(m.values());
+}
+
 if (typeof module != 'undefined') {
   module.exports = {
     eventsCollide: eventsCollide,
+    groupsByType: groupsByType,
     sortEvents: sortEvents,
     loadCatalog: loadCatalog,
     loadTestCatalog: loadTestCatalog,

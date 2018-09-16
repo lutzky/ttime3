@@ -10,6 +10,7 @@ if (typeof require != 'undefined') {
   eventsCollide = common.eventsCollide;
   countRuns = scheduler.countRuns;
   generateSchedules = scheduler.generateSchedules;
+  groupsByType = common.groupsByType;
   layoutLayeredEvents = render.layoutLayeredEvents;
   loadTestCatalog = common.loadTestCatalog;
   minutesToTime = formatting.minutesToTime;
