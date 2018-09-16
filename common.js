@@ -64,7 +64,7 @@ function loadCatalog(url, isLocal) {
     req.onload = function() {
       if (req.status == 200) {
         let result = null;
-        if (req.response[0] == '{') {
+        if (req.response[0] == '[') {
           result = JSON.parse(/** @type {string } */ (req.response));
         } else {
           result = parseCheeseFork(/** @type {string} */ (req.response));
