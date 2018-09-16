@@ -579,7 +579,7 @@ schedulerWorker.onmessage = function(e) {
   $('#generate-schedules').prop('disabled', false);
   $('#spinner').hide();
   if (e.data == null) {
-    $('#exception-occurred').show();
+    $('#exception-occurred-scheduling').show();
   } else {
     setPossibleSchedules(e.data);
   }
@@ -1048,6 +1048,7 @@ loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
     coursesSelectizeSetup();
   },
   function(error) {
+    $('#exception-occurred-catalog').show();
     console.error('Failed!', error);
   }
 );
