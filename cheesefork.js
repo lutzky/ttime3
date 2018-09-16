@@ -166,7 +166,7 @@ function parseCheeseFork(jsData) {
 
       {
         let t = dataSchedule[hebrew.lecturer_tutor];
-        if (t) {
+        if (t && !group.teachers.includes(t)) {
           group.teachers.push(t);
         }
       }
