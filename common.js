@@ -141,6 +141,7 @@ function parseCheeseFork(jsData) {
     faculty: 'פקולטה',
     group: 'קבוצה',
     hour: 'שעה',
+    lecturer_tutor: 'מרצה/מתרגל',
     moed_a: 'מועד א',
     moed_b: 'מועד ב',
     num: 'מס.',
@@ -230,6 +231,13 @@ function parseCheeseFork(jsData) {
         location:
           dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
       };
+
+      {
+        let t = dataSchedule[hebrew.lecturer_tutor];
+        if (t) {
+          group.teachers.push(t);
+        }
+      }
 
       group.events.push(event);
     });
