@@ -662,6 +662,40 @@ const dayNames = [
   'Saturday',
 ];
 
+// Colors are taken from this page, but reordered to maximize contrast:
+// https://getbootstrap.com/docs/4.1/getting-started/theming/
+const courseColors = [
+  ['#007bff', '#fff'], // blue
+  ['#e83e8c', '#fff'], // pink
+  ['#ffc107', '#000'], // yellow
+  ['#6610f2', '#fff'], // indigo
+  ['#dc3545', '#fff'], // red
+  ['#28a745', '#fff'], // green
+  ['#6f42c1', '#fff'], // purple
+  ['#fd7e14', '#000'], // orange
+  ['#20c997', '#fff'], // teal
+  ['#17a2b8', '#fff'], // cyan
+  ['#6c757d', '#fff'], // gray
+  ['#343a40', '#fff'], // dark-gray
+];
+
+/**
+ * Get appropriate colors for courses
+ *
+ * @param {Set<Course>} courses - All courses
+ *
+ * @returns {Map<number, Array<string>>}
+ */
+function getCourseColorMap(courses) {
+  let numbers = Array.from(courses.values())
+    .map(c => c.id)
+    .sort();
+
+  let numsAndColors = numbers.map((num, i) => [num, courseColors[i]]);
+
+  return new Map(numsAndColors);
+}
+
 /**
  * Display schedule i, modulo the possible range 0-(numSchedules - 1)
  *
@@ -675,7 +709,11 @@ function goToSchedule(i) {
   let schedule = possibleSchedules[i];
 
   writeScheduleContents($('#schedule-contents'), schedule);
-  renderSchedule($('#rendered-schedule')[0], schedule);
+  renderSchedule(
+    $('#rendered-schedule')[0],
+    schedule,
+    getCourseColorMap(selectedCourses)
+  );
 }
 
 /** @type {string} */

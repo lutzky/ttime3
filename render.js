@@ -133,8 +133,10 @@ function getLatest(schedule) {
  *
  * @param {Element} target - Target to write schedule to
  * @param {Schedule} schedule - Schedule to render
+ * @param {Map<number, Array<string>>} courseColors - Map from course ID to
+ *                                                    colors
  */
-function renderSchedule(target, schedule) {
+function renderSchedule(target, schedule, courseColors) {
   target.innerHTML = '';
 
   let earliest = getEarliest(schedule);
@@ -147,6 +149,9 @@ function renderSchedule(target, schedule) {
     let eventDiv = document.createElement('div');
     let event = le.event;
     eventDiv.className = 'event';
+    let colors = courseColors.get(event.group.course.id);
+    eventDiv.style['background-color'] = colors[0];
+    eventDiv.style['color'] = colors[1];
     positionElement(
       eventDiv,
       '%',
