@@ -516,9 +516,6 @@ function delSelectedCourse(course) {
 
 /**
  * Redraw the list of selected courses
- *
- * TODO(lutzky): This is actually a bad idea and would cause flicker, better do
- * something neater.
  */
 function refreshSelectedCourses() {
   let nscheds = Number(totalPossibleSchedules(selectedCourses));
