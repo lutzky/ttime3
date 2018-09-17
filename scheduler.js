@@ -119,7 +119,6 @@ let FilterSettings;
  *
  * @param {!Set<Course>} courses - Courses to schedule from
  * @param {FilterSettings} settings - Settings for filters
- * TODO(lutzky): filterSettings should be a more specific type
  *
  * @returns {Array<Schedule>}
  */
