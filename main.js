@@ -92,22 +92,6 @@ let currentCatalog = null;
 let currentCatalogByCourseID = null;
 
 /**
- * Creates an element with the given HTML.
- *
- * TODO(lutzky): There must be some builtin that does this...
- *
- * @param {string} tagName - Tag to build
- * @param {string} innerHTML - HTML to fill tag with
- *
- * @returns {!Element}
- */
-function elementWithHTML(tagName, innerHTML) {
-  let elem = document.createElement(tagName);
-  elem.innerHTML = innerHTML;
-  return elem;
-}
-
-/**
  * Updates forblink according to its data('forbidden')
  *
  * @param {jQuery} fl - forbidLink
@@ -268,66 +252,65 @@ function formatCourseId(id) {
  * @returns {!Element}
  */
 function htmlDescribeCourse(course) {
-  let result = document.createElement('span');
-  console.info('Rendering description of course:', course);
-  let ul = document.createElement('ul');
-  ul.appendChild(
-    elementWithHTML(
-      'li',
-      `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`
-    )
+  let result = $('<span>');
+  let ul = $('<ul>');
+  ul.append(
+    $('<li>', {
+      html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
+    })
   );
-  ul.appendChild(
-    elementWithHTML('li', `<b>Academic points:</b> ${course.academicPoints}`)
+  ul.append(
+    $('<li>', { html: `<b>Academic points:</b> ${course.academicPoints}` })
   );
-  ul.appendChild(
-    elementWithHTML(
-      'li',
-      `<b>Lecturer in charge:</b> ${rtlSpan(
+  ul.append(
+    $('<li>', {
+      html: `<b>Lecturer in charge:</b> ${rtlSpan(
         course.lecturerInCharge || '[unknown]'
-      )}`
-    )
+      )}`,
+    })
   );
-  ul.appendChild(elementWithHTML('li', '<b>Test dates:</b>'));
-  let testDates = document.createElement('ul');
+  ul.append($('<li>', { html: '<b>Test dates:</b>' }));
+  let testDates = $('<ul>');
   if (course.testDates) {
     course.testDates.forEach(function(d) {
-      testDates.appendChild(elementWithHTML('li', formatDate(d)));
+      testDates.append($('<li>', { text: formatDate(d) }));
     });
   } else {
-    testDates.appendChild(elementWithHTML('li', '[unknown]'));
+    testDates.append($('<li>', { text: '[unknown]' }));
   }
-  ul.appendChild(testDates);
+  ul.append(testDates);
 
-  ul.appendChild(elementWithHTML('li', '<b>Groups:</b>'));
-  let groups = document.createElement('ul');
+  ul.append($('<li>', { html: '<b>Groups:</b>' }));
+  let groups = $('<ul>');
   if (course.groups) {
     course.groups.forEach(function(g) {
-      groups.appendChild(groupHeaderForCatalog(g)[0]);
-      let events = document.createElement('ul');
+      groups.append(groupHeaderForCatalog(g)[0]);
+      let events = $('<ul>');
       if (g.events) {
         g.events.forEach(function(e) {
-          events.appendChild(
-            elementWithHTML(
-              'li',
-              `${dayNames[e.day]}, ${minutesToTime(
-                e.startMinute
-              )}-${minutesToTime(e.endMinute)} at ${e.location || '[unknown]'}`
-            )
+          events.append(
+            $('<li>', {
+              text:
+                `${dayNames[e.day]}, ` +
+                minutesToTime(e.startMinute) +
+                '-' +
+                minutesToTime(e.endMinute) +
+                ` at ${e.location || '[unknown]'}`,
+            })
           );
         });
       } else {
-        events.appendChild(elementWithHTML('li', '[unknown]'));
+        events.append($('<li>', { text: '[unknown]' }));
       }
-      groups.appendChild(events);
+      groups.append(events);
     });
   } else {
-    groups.appendChild(elementWithHTML('li', '[unknown]'));
+    groups.append($('<li>', { text: '[unknown]' }));
   }
-  ul.appendChild(groups);
+  ul.append(groups);
 
-  result.appendChild(ul);
-  return result;
+  result.append(ul);
+  return result[0];
 }
 
 const expandInfoSymbol = '<i class="fas fa-info-circle"></i>';
