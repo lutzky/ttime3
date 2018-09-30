@@ -428,6 +428,7 @@ function setCheckboxValueById(id, checked) {
  */
 function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
+  settings.customEvents = $('#custom-events-textarea').val();
   settings.catalogUrl = /** @type {string} */ ($('#catalog-url').val());
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
@@ -572,6 +573,123 @@ schedulerWorker.onmessage = function(e) {
 };
 
 /**
+ * Check if custom-events-textarea has valid events
+ */
+function checkCustomEvents() {
+  /* exported checkCustomEvents */
+  let elem = $('#custom-events-textarea');
+  elem.removeClass('is-invalid');
+  elem.removeClass('is-valid');
+
+  try {
+    let courses = buildCustomEventsCourses(/** @type {string} */ (elem.val()));
+    if (courses.length > 0) {
+      elem.addClass('is-valid');
+    }
+  } catch (e) {
+    elem.addClass('is-invalid');
+  }
+}
+
+const customEventRegex = new RegExp(
+  [
+    /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
+    /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
+    /(.*)/,
+  ]
+    .map(x => x.source)
+    .join('')
+);
+
+const inverseDayIndex = {
+  Sun: 0,
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};
+
+/**
+ * Create a course with a single event
+ *
+ * @param {string} name - Course name
+ * @param {number} day - Day of week index
+ * @param {number} startMinute - Minutes since midnight for start
+ * @param {number} endMinute - Minutes since midnight for end
+ *
+ * @returns {Course}
+ */
+function createSingleEventCourse(name, day, startMinute, endMinute) {
+  /** @type {Course} */
+  let c = {
+    academicPoints: 0,
+    id: 0,
+    lecturerInCharge: '',
+    name: name,
+    testDates: [],
+    groups: [],
+  };
+
+  /** @type {Group} */
+  let g = {
+    course: c,
+    id: 0,
+    teachers: [],
+    type: 'lecture',
+    events: [],
+  };
+
+  c.groups.push(g);
+
+  /** @type {AcademicEvent} */
+  let e = {
+    day: day,
+    startMinute: startMinute,
+    endMinute: endMinute,
+    location: '',
+    group: g,
+  };
+
+  g.events.push(e);
+
+  return c;
+}
+
+/**
+ * Build courses with the configured custom events
+ *
+ * @param {string} s - Custom events, lines matching customEventRegex
+ *
+ * @returns {Array<Course>}
+ */
+function buildCustomEventsCourses(s) {
+  /** @type {Array<Course>} */
+  let result = [];
+
+  if (s == '') {
+    return result;
+  }
+
+  s.split('\n').forEach(function(line) {
+    let m = customEventRegex.exec(line);
+    if (m == null) {
+      throw Error('Invalid custom event line: ' + line);
+    }
+
+    let day = inverseDayIndex[m[1]];
+    let startMinute = Number(Number(m[2]) * 60 + Number(m[3]));
+    let endMinute = Number(Number(m[4]) * 60 + Number(m[5]));
+    let desc = m[6];
+
+    result.push(createSingleEventCourse(desc, day, startMinute, endMinute));
+  });
+
+  return result;
+}
+
+/**
  * Start a worker to generate schedules
  */
 function getSchedules() {
@@ -582,8 +700,16 @@ function getSchedules() {
   $('#no-schedules').hide();
   $('#initial-instructions').hide();
 
+  let coursesToSchedule = new Set(selectedCourses);
+  try {
+    let courses = buildCustomEventsCourses(settings.customEvents);
+    courses.forEach(c => coursesToSchedule.add(c));
+  } catch (error) {
+    console.error('Failed to build custom events course:', error);
+  }
+
   schedulerWorker.postMessage({
-    courses: selectedCourses,
+    courses: coursesToSchedule,
     filterSettings: settings.filterSettings,
   });
 }
@@ -670,6 +796,9 @@ function getCourseColorMap(courses) {
   let numbers = Array.from(courses.values())
     .map(c => c.id)
     .sort();
+
+  // 0 course ID is for custom events
+  numbers.push(0);
 
   let numsAndColors = numbers.map((num, i) => [num, courseColors[i]]);
 
@@ -967,6 +1096,7 @@ function loadSettings(s) {
     catalogUrl: defaultCatalogUrl,
     selectedCourses: [],
     forbiddenGroups: [],
+    customEvents: '',
     filterSettings: {
       forbiddenGroups: [],
       noCollisions: true,
@@ -986,6 +1116,7 @@ function loadSettings(s) {
   console.info('Loaded settings:', result);
 
   $('#catalog-url').val(result.catalogUrl);
+  $('#custom-events-textarea').val(result.customEvents);
 
   {
     let fs = result.filterSettings;

@@ -244,6 +244,19 @@
           <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the
           catalog.</p>
 
+          <h3>Custom events</h3>
+
+          <div class="form-group" style="font-family: monospace">
+            <textarea class="form-control"
+                      onchange="saveSettings(); checkCustomEvents()"
+                      onkeyup="checkCustomEvents()"
+                      id="custom-events-textarea"></textarea>
+          </div>
+          <script>
+            document.getElementById('custom-events-textarea').placeholder =
+              'Mon 10:00-11:00 Some event\nWed 13:00-17:00 Some other event';
+          </script>
+
           <h3>Developers</h3>
           <ul>
             <li><a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)"
