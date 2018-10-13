@@ -29,6 +29,14 @@ let Schedule;
 /* exported Schedule */
 
 /**
+ * earliestStart and latestFinish are in hours (e.g. 1:30PM is 13.5).
+ *
+ * numRuns is the amount of occurences where two adjacent events (endMinute
+ * of the first one equals startMinute of the second, same day) are in the
+ * same room.
+ *
+ * freeDays is the number of days in Sun-Thu with no events.
+ *
  * @typedef {{
  *   earliestStart: number?,
  *   latestFinish: number?,

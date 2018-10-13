@@ -223,5 +223,18 @@ describe('Scheduler', function() {
         expect(rate([evA, evAA, evC, evD, evE]).freeDays).toEqual(1);
       });
     });
+    describe('earliestStart and latestFinish', function() {
+      let evA = { day: 0, startMinute: 30, endMinute: 60 };
+      let evAA = { day: 0, startMinute: 120, endMinute: 190 };
+      let evB = { day: 1, startMinute: 150, endMinute: 300 };
+      let evC = { day: 2, startMinute: 120, endMinute: 190 };
+      let evD = { day: 4, startMinute: 30, endMinute: 31 };
+      it('should correctly compute earliestStart', function() {
+        expect(rate([evA, evAA, evB, evC, evD]).earliestStart).toEqual(0.5);
+      });
+      it('should correctly compute latestFinish', function() {
+        expect(rate([evA, evAA, evB, evC, evD]).latestFinish).toEqual(5);
+      });
+    });
   });
 });
