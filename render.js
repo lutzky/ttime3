@@ -195,7 +195,11 @@ function annotateEvent(target, event) {
   let forbidLink = document.createElement('a');
   forbidLink.innerHTML = '<i class="fas fa-ban"></i>';
   forbidLink.href = '#/';
+  forbidLink.title = 'Forbid this group';
   forbidLink.onclick = function() {
+    $(forbidLink)
+      .fadeOut(100)
+      .fadeIn(100);
     addForbiddenGroup(event.group);
   };
   forbidDiv.appendChild(forbidLink);
