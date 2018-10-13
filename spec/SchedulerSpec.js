@@ -203,5 +203,25 @@ describe('Scheduler', function() {
         expect(rate([eventB, eventC, eventF]).numRuns).toEqual(2);
       });
     });
+    describe('freeDays', function() {
+      let evA = { day: 0 };
+      let evAA = { day: 0 };
+      let evB = { day: 1 };
+      let evC = { day: 2 };
+      let evD = { day: 3 };
+      let evE = { day: 4 };
+      it('should have 5 free days for no events', function() {
+        expect(rate([]).freeDays).toEqual(5);
+      });
+      it('should have 0 free days for one event per day', function() {
+        expect(rate([evA, evB, evC, evD, evE]).freeDays).toEqual(0);
+      });
+      it('should have 3 free days for two events, one per day', function() {
+        expect(rate([evD, evE]).freeDays).toEqual(3);
+      });
+      it('should have 1 free days for 5 events over 4 days', function() {
+        expect(rate([evA, evAA, evC, evD, evE]).freeDays).toEqual(1);
+      });
+    });
   });
 });
