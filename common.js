@@ -84,7 +84,6 @@ function loadCatalog(url, isLocal) {
       reject(Error('Network Error'));
     };
 
-    console.info('Sending XHR');
     req.send();
   });
 }

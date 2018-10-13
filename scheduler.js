@@ -1,6 +1,10 @@
 'use strict';
 
-let debugLogging = false;
+// To enable debugging, go to your JavaScript console, switch the "JavaScript
+// context" to scheduler_worker.js, and type the following into the console:
+//
+//   schedulerDebugLogging = true;
+let schedulerDebugLogging = false;
 
 /**
  * @typedef {{
@@ -125,7 +129,7 @@ let FilterSettings;
  * @returns {Array<Schedule>}
  */
 function generateSchedules(courses, settings) {
-  if (debugLogging) {
+  if (schedulerDebugLogging) {
     console.time('generateSchedules');
   }
   let groupBins = Array.from(courses)
@@ -136,13 +140,13 @@ function generateSchedules(courses, settings) {
   let groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
-  if (debugLogging) {
+  if (schedulerDebugLogging) {
     console.info(`${schedules.length} total schedules`);
   }
 
   schedules = runAllFilters(schedules, settings);
 
-  if (debugLogging) {
+  if (schedulerDebugLogging) {
     console.timeEnd('generateSchedules');
   }
   return schedules;
@@ -180,7 +184,7 @@ function removeForbiddenGroups(course, settings) {
  */
 function filterWithDelta(src, filter, filterName) {
   let result = src.filter(filter);
-  if (debugLogging) {
+  if (schedulerDebugLogging) {
     console.info(
       `Filter ${filterName} removed ${src.length - result.length} schedules`
     );

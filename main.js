@@ -1,5 +1,10 @@
 'use strict';
 
+// To enable debugging, type the following into your Javascript console:
+//
+//   mainDebugLogging = true
+let mainDebugLogging = false;
+
 /**
  * @typedef {{
  *   course: Course,
@@ -450,7 +455,9 @@ function saveSettings() {
 
   window.localStorage.ttime3_settings = JSON.stringify(settings);
 
-  console.info('Saved settings:', settings);
+  if (mainDebugLogging) {
+    console.info('Saved settings:', settings);
+  }
 }
 
 /**
@@ -475,7 +482,9 @@ function getNumInputValueWithDefault(input, defaultValue) {
  * @param {Course} course - Course to select
  */
 function addSelectedCourse(course) {
-  console.info('Selected', course);
+  if (mainDebugLogging) {
+    console.info('Selected', course);
+  }
   selectedCourses.add(course);
   courseAddButtons.get(course.id).disabled = true;
   courseAddLabels.get(course.id).classList.add('disabled-course-label');
@@ -507,7 +516,9 @@ function addSelectedCourseByID(...ids) {
  * @param {Course} course - Course to unselect
  */
 function delSelectedCourse(course) {
-  console.info('Unselected', course);
+  if (mainDebugLogging) {
+    console.info('Unselected', course);
+  }
   selectedCourses.delete(course);
   courseAddButtons.get(course.id).disabled = false;
   courseAddLabels.get(course.id).classList.remove('disabled-course-label');
@@ -562,7 +573,9 @@ let schedulerWorker = new Worker('scheduler_worker.js');
  * @param {MessageEvent} e - blabbity boop
  */
 schedulerWorker.onmessage = function(e) {
-  console.info('Received message from worker:', e);
+  if (mainDebugLogging) {
+    console.info('Received message from worker:', e);
+  }
   $('#generate-schedules').prop('disabled', false);
   $('#spinner').hide();
   if (e.data == null) {
@@ -1113,7 +1126,9 @@ function loadSettings(s) {
     ));
   }
 
-  console.info('Loaded settings:', result);
+  if (mainDebugLogging) {
+    console.info('Loaded settings:', result);
+  }
 
   $('#catalog-url').val(result.catalogUrl);
   $('#custom-events-textarea').val(result.customEvents);
@@ -1202,7 +1217,9 @@ updateForbiddenGroups();
 
 loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
   function(catalog) {
-    console.log('Loaded catalog:', catalog);
+    if (mainDebugLogging) {
+      console.log('Loaded catalog:', catalog);
+    }
     currentCatalog = catalog;
     currentCatalogByCourseID = new Map();
 
