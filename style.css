@@ -109,6 +109,16 @@
   font-size: xx-small;
 }
 
+.event .forbid {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}
+
+.event .forbid a {
+  color: inherit;
+}
+
 .error {
   border: thin solid #300;
   padding: 5px;

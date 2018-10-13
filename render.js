@@ -189,6 +189,17 @@ function annotateEvent(target, event) {
   location.className = 'location';
   location.innerText = event.location;
   target.appendChild(location);
+
+  let forbidDiv = document.createElement('div');
+  forbidDiv.className = 'forbid';
+  let forbidLink = document.createElement('a');
+  forbidLink.innerHTML = '<i class="fas fa-ban"></i>';
+  forbidLink.href = '#/';
+  forbidLink.onclick = function() {
+    addForbiddenGroup(event.group);
+  };
+  forbidDiv.appendChild(forbidLink);
+  target.appendChild(forbidDiv);
 }
 
 const gridDensity = 30;
