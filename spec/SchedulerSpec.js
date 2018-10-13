@@ -8,7 +8,7 @@ if (typeof require != 'undefined') {
 
   cartesian = scheduler.cartesian;
   eventsCollide = common.eventsCollide;
-  countRuns = scheduler.countRuns;
+  rate = scheduler.rate;
   generateSchedules = scheduler.generateSchedules;
   groupsByType = common.groupsByType;
   layoutLayeredEvents = render.layoutLayeredEvents;
@@ -182,24 +182,26 @@ describe('Scheduler', function() {
     });
   });
 
-  describe('run counter', function() {
-    let eventA = { startMinute: 0, endMinute: 60, location: 'Ulman 105' };
-    let eventB = { startMinute: 60, endMinute: 120, location: 'Ulman 350' };
-    let eventC = { startMinute: 120, endMinute: 180, location: 'Meyer 750' };
-    let eventD = { startMinute: 120, endMinute: 180, location: 'Ulman 200' };
-    let eventE = { startMinute: 120, endMinute: 180 /* no location */ };
-    let eventF = { startMinute: 180, endMinute: 240, location: 'Taub 1' };
-    it('should count if events have different buildings', function() {
-      expect(countRuns([eventA, eventB, eventC])).toEqual(1);
-    });
-    it('should count 0 if everything is in the same building', function() {
-      expect(countRuns([eventA, eventB, eventD])).toEqual(0);
-    });
-    it('should not count missing locations as different', function() {
-      expect(countRuns([eventA, eventB, eventE])).toEqual(0);
-    });
-    it('should count multiple runs', function() {
-      expect(countRuns([eventB, eventC, eventF])).toEqual(2);
+  describe('schedule ratings', function() {
+    describe('numRuns', function() {
+      let eventA = { startMinute: 0, endMinute: 60, location: 'Ulman 105' };
+      let eventB = { startMinute: 60, endMinute: 120, location: 'Ulman 350' };
+      let eventC = { startMinute: 120, endMinute: 180, location: 'Meyer 750' };
+      let eventD = { startMinute: 120, endMinute: 180, location: 'Ulman 200' };
+      let eventE = { startMinute: 120, endMinute: 180 /* no location */ };
+      let eventF = { startMinute: 180, endMinute: 240, location: 'Taub 1' };
+      it('should count if events have different buildings', function() {
+        expect(rate([eventA, eventB, eventC]).numRuns).toEqual(1);
+      });
+      it('should count 0 if everything is in the same building', function() {
+        expect(rate([eventA, eventB, eventD]).numRuns).toEqual(0);
+      });
+      it('should not count missing locations as different', function() {
+        expect(rate([eventA, eventB, eventE]).numRuns).toEqual(0);
+      });
+      it('should count multiple runs', function() {
+        expect(rate([eventB, eventC, eventF]).numRuns).toEqual(2);
+      });
     });
   });
 });

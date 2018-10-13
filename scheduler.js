@@ -303,5 +303,6 @@ if (typeof module != 'undefined') {
     generateSchedules: generateSchedules,
     cartesian: cartesian,
     countRuns: countRuns,
+    rate: rate,
   };
 }
