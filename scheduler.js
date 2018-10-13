@@ -1,5 +1,7 @@
 'use strict';
 
+let debugLogging = false;
+
 /**
  * @typedef {{
  *   day: number,
@@ -123,7 +125,9 @@ let FilterSettings;
  * @returns {Array<Schedule>}
  */
 function generateSchedules(courses, settings) {
-  console.time('generateSchedules');
+  if (debugLogging) {
+    console.time('generateSchedules');
+  }
   let groupBins = Array.from(courses)
     .map(c => removeForbiddenGroups(c, settings))
     .map(groupsByType)
@@ -132,11 +136,15 @@ function generateSchedules(courses, settings) {
   let groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
-  console.info(`${schedules.length} total schedules`);
+  if (debugLogging) {
+    console.info(`${schedules.length} total schedules`);
+  }
 
   schedules = runAllFilters(schedules, settings);
 
-  console.timeEnd('generateSchedules');
+  if (debugLogging) {
+    console.timeEnd('generateSchedules');
+  }
   return schedules;
 }
 
@@ -172,9 +180,11 @@ function removeForbiddenGroups(course, settings) {
  */
 function filterWithDelta(src, filter, filterName) {
   let result = src.filter(filter);
-  console.info(
-    `Filter ${filterName} removed ${src.length - result.length} schedules`
-  );
+  if (debugLogging) {
+    console.info(
+      `Filter ${filterName} removed ${src.length - result.length} schedules`
+    );
+  }
   return result;
 }
 
