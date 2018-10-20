@@ -15,8 +15,12 @@
  */
 function parseCheeseForkHour(s) {
   return s.split(' - ').map(function(hhm) {
-    let [hh, m] = hhm.split(':');
-    return Number(hh) * 60 + Number(m) * 10;
+    let splitHour = hhm.split(':');
+    let minute = Number(splitHour[0]) * 60;
+    if (splitHour.length > 1) {
+      minute += splitHour[1] * 10;
+    }
+    return minute;
   });
 }
 
