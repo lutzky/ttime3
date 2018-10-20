@@ -151,7 +151,8 @@ function parseCheeseFork(jsData) {
           id: groupId,
           course: course,
           teachers: [],
-          type: typeMap.get(dataSchedule[hebrew.type]) || 'unknown',
+          type:
+            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type],
           events: [],
         });
       }
