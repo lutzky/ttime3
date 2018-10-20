@@ -107,7 +107,9 @@ function parseCheeseFork(jsData) {
       testDates: [
         dataCourse['general'][hebrew.moed_a],
         dataCourse['general'][hebrew.moed_b],
-      ].map(parseCheeseForkTestDate),
+      ]
+        .map(parseCheeseForkTestDate)
+        .filter(x => x != null),
       groups: [],
     };
 
