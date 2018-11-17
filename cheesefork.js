@@ -63,7 +63,7 @@ function parseCheeseFork(jsData) {
     courseId: 'מספר מקצוע',
     courseName: 'שם מקצוע',
     day: 'יום',
-    dayLetters: 'אבגדהש',
+    dayLetters: 'אבגדהוש',
     faculty: 'פקולטה',
     group: 'קבוצה',
     hour: 'שעה',
