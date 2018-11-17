@@ -8,6 +8,7 @@ let mainDebugLogging = false;
 /**
  * @typedef {{
  *   course: Course,
+ *   description: string,
  *   events: Array<AcademicEvent>,
  *   id: number,
  *   type: string,
@@ -648,6 +649,7 @@ function createSingleEventCourse(name, day, startMinute, endMinute) {
   /** @type {Group} */
   let g = {
     course: c,
+    description: '',
     id: 0,
     teachers: [],
     type: 'lecture',
@@ -968,7 +970,7 @@ function writeScheduleContents(target, schedule) {
              <span dir="rtl">${location}</span>
            </small>
         </div>
-        <div dir="rtl">${e.group.course.name}</div>
+        <div dir="rtl">${displayName(e.group)}</div>
         <div class="d-flex w-100 justify-content-between">
           <small>
             <i class="fas fa-chalkboard-teacher"></i>

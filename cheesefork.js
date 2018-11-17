@@ -72,6 +72,7 @@ function parseCheeseFork(jsData) {
     moed_b: 'מועד ב',
     num: 'מס.',
     room: 'חדר',
+    sport: 'ספורט',
     thoseInCharge: 'אחראים',
     type: 'סוג',
   };
@@ -147,12 +148,22 @@ function parseCheeseFork(jsData) {
       }
 
       if (!groupsById.has(groupId)) {
+        let type = '';
+        let desc = '';
+        if (facultyName == hebrew.sport) {
+          type = 'sport';
+          desc = dataSchedule[hebrew.type];
+        } else {
+          type =
+            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type];
+        }
+
         groupsById.set(groupId, {
           id: groupId,
+          description: desc,
           course: course,
           teachers: [],
-          type:
-            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type],
+          type: type,
           events: [],
         });
       }

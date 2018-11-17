@@ -177,7 +177,7 @@ function annotateEvent(target, event) {
   target.innerHTML = '';
   let courseName = document.createElement('span');
   courseName.className = 'course-name';
-  courseName.innerText = event.group.course.name + ' ';
+  courseName.innerText = displayName(event.group);
   target.appendChild(courseName);
 
   let eventType = document.createElement('span');

@@ -147,8 +147,20 @@ function groupsByType(course) {
   return Array.from(m.values());
 }
 
+/**
+ * Return the appropriate display name for the group
+ *
+ * @param {Group} group - Group to get display name for
+ *
+ * @returns {string}
+ */
+function displayName(group) {
+  return group.description || group.course.name;
+}
+
 if (typeof module != 'undefined') {
   module.exports = {
+    displayName: displayName,
     eventsCollide: eventsCollide,
     groupsByType: groupsByType,
     sortEvents: sortEvents,
