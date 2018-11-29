@@ -4,6 +4,8 @@
   "description": "TTime pure-JS implementation",
   "main": "main.js",
   "dependencies": {
+    "@types/jquery": "^3.3.22",
+    "@types/selectize": "^0.12.33",
     "google-closure-compiler": "^20180716.0.1",
     "typescript": "^3.2.1"
   },
