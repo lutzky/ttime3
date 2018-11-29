@@ -7,32 +7,6 @@ let mainDebugLogging = false;
 
 /**
  * @typedef {{
- *   course: Course,
- *   description: string,
- *   events: Array<AcademicEvent>,
- *   id: number,
- *   type: string,
- *   teachers: Array<string>,
- * }}
- */
-let Group;
-/* exported Group */
-
-/**
- * @typedef {{
- *   name: string,
- *   academicPoints: number,
- *   id: number,
- *   groups: Array<Group>,
- *   lecturerInCharge: string,
- *   testDates: Array<DateObj>,
- * }}
- */
-let Course;
-/* exported Course */
-
-/**
- * @typedef {{
  *   name: string,
  *   semester: string,
  *   courses: Array<Course>
@@ -566,7 +540,7 @@ function refreshSelectedCourses() {
   });
 }
 
-let schedulerWorker = new Worker('scheduler_worker.js');
+let schedulerWorker = new Worker('built/scheduler_worker.js');
 
 /**
  * Respond to scheduling result from worker
