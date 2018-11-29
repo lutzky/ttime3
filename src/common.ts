@@ -1,4 +1,20 @@
-'use strict';
+class Group {
+  course: Course;
+  description: string;
+  events: AcademicEvent[];
+  id: number;
+  type: string;
+  teachers: Array<string>;
+}
+
+class Course {
+  name: string;
+  academicPoints: number;
+  id: number;
+  groups: Array<Group>;
+  lecturerInCharge: string;
+  testDates: Date[];
+}
 
 /**
  * Sorts events by start time
@@ -46,18 +62,19 @@ function eventsCollide(events) {
  */
 function loadCatalog(url, isLocal) {
   return new Promise(function(resolve, reject) {
-    if (isLocal) {
-      require('fs').readFile(url, function(err, data) {
-        if (err) {
-          reject(err);
-        } else {
-          let result = JSON.parse(data);
-          fixRawCatalog(/** @type {Catalog} */ (result));
-          resolve(result);
-        }
-      });
-      return;
-    }
+    // TODO(lutzky): Bring this back for tests
+    // if (isLocal) {
+    //   require('fs').readFile(url, function(err, data) {
+    //     if (err) {
+    //       reject(err);
+    //     } else {
+    //       let result = JSON.parse(data);
+    //       fixRawCatalog(/** @type {Catalog} */ (result));
+    //       resolve(result);
+    //     }
+    //   });
+    //   return;
+    // }
 
     let req = new XMLHttpRequest();
     req.open('GET', url);
@@ -111,18 +128,19 @@ function fixRawCatalog(catalog) {
   });
 }
 
-/**
- * Load the test catalog from local data
- *
- * @returns {Promise<Catalog>}
- */
-function loadTestCatalog() {
-  if (typeof require != 'undefined') {
-    return loadCatalog('testdata.json', true);
-  } else {
-    return loadCatalog('../testdata.json', false);
-  }
-}
+// TODO(lutzky): Bring this back for tests
+// /**
+//  * Load the test catalog from local data
+//  *
+//  * @returns {Promise<Catalog>}
+//  */
+// function loadTestCatalog() {
+//   if (typeof require != 'undefined') {
+//     return loadCatalog('testdata.json', true);
+//   } else {
+//     return loadCatalog('../testdata.json', false);
+//   }
+// }
 
 /**
  * Return course's groups as an array of arrays, split by type
@@ -156,15 +174,4 @@ function groupsByType(course) {
  */
 function displayName(group) {
   return group.description || group.course.name;
-}
-
-if (typeof module != 'undefined') {
-  module.exports = {
-    displayName: displayName,
-    eventsCollide: eventsCollide,
-    groupsByType: groupsByType,
-    sortEvents: sortEvents,
-    loadCatalog: loadCatalog,
-    loadTestCatalog: loadTestCatalog,
-  };
 }

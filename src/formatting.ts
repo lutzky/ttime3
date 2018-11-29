@@ -29,10 +29,3 @@ let DateObj;
 function formatDate(dateObj) {
   return new Date(dateObj.year, dateObj.month, dateObj.day).toDateString();
 }
-
-if (typeof module != 'undefined') {
-  module.exports = {
-    minutesToTime: minutesToTime,
-    formatDate: formatDate,
-  };
-}

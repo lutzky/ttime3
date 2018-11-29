@@ -83,6 +83,7 @@ function layoutLayeredEvents(events) {
           layer.push(s);
           return true;
         }
+        return false;
       });
 
       if (!assignedToLayer) {
@@ -253,11 +254,4 @@ function positionElement(element, units, left, top, width, height) {
   element.style.top = `${top}${units}`;
   element.style.width = `${width}${units}`;
   element.style.height = `${height}${units}`;
-}
-
-if (typeof module != 'undefined') {
-  module.exports = {
-    layoutLayeredEvents: layoutLayeredEvents,
-    renderSchedule: renderSchedule,
-  };
 }

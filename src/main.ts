@@ -314,6 +314,8 @@ function rtlSpan(s) {
  * @returns {!Element}
  */
 function courseLabel(course) {
+  // TODO(lutzky): This function is full of DOM misuse, hence the @ts-ignore
+  // symbols.
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
   infoLink.innerHTML = expandInfoSymbol;
@@ -321,17 +323,22 @@ function courseLabel(course) {
   infoLink.href = '#/';
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
+    // @ts-ignore
     if (!span.ttime3_expanded) {
       let infoDiv = document.createElement('div');
+      // @ts-ignore
       span.infoDiv = infoDiv;
       infoDiv.appendChild(htmlDescribeCourse(course));
       // showCourseDebugInfo(course);
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
+      // @ts-ignore
       span.ttime3_expanded = true;
     } else {
       infoLink.innerHTML = expandInfoSymbol;
+      // @ts-ignore
       span.ttime3_expanded = false;
+      // @ts-ignore
       span.removeChild(span.infoDiv);
     }
   };
@@ -384,23 +391,16 @@ function writeCatalogSelector() {
 
 /**
  * Returns whether or not a checkbox with the given ID is checked
- *
- * @param {string} id - ID of checkbox
- *
- * @returns {boolean}
  */
-function getCheckboxValueById(id) {
-  return document.getElementById(id).checked;
+function getCheckboxValueById(id: string): boolean {
+  return (document.getElementById(id) as HTMLInputElement).checked;
 }
 
 /**
  * Sets whether or not a checkbox with the given ID is checked
- *
- * @param {string} id - ID of checkbox
- * @param {boolean} checked - Whether or not checkbox should be checked
  */
-function setCheckboxValueById(id, checked) {
-  document.getElementById(id).checked = checked;
+function setCheckboxValueById(id: string, checked: boolean) {
+  (document.getElementById(id) as HTMLInputElement).checked = checked;
 }
 
 /**
@@ -408,8 +408,8 @@ function setCheckboxValueById(id, checked) {
  */
 function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
-  settings.customEvents = $('#custom-events-textarea').val();
-  settings.catalogUrl = /** @type {string} */ ($('#catalog-url').val());
+  settings.customEvents = $('#custom-events-textarea').val() as string;
+  settings.catalogUrl = $('#catalog-url').val() as string;
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
     noCollisions: getCheckboxValueById('filter.noCollisions'),
@@ -781,7 +781,7 @@ const courseColors = [
  *
  * @returns {Map<number, Array<string>>}
  */
-function getCourseColorMap(courses) {
+function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
   let numbers = Array.from(courses.values())
     .map(c => c.id)
     .sort();
@@ -789,7 +789,7 @@ function getCourseColorMap(courses) {
   // 0 course ID is for custom events
   numbers.push(0);
 
-  let numsAndColors = numbers.map((num, i) => [num, courseColors[i]]);
+  let numsAndColors = numbers.map((num, i) => [num, courseColors[i]]) as [number, string[]][];
 
   return new Map(numsAndColors);
 }
