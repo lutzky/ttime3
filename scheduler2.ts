@@ -1,32 +1,21 @@
-'use strict';
-
 // To enable debugging, go to your JavaScript console, switch the "JavaScript
 // context" to scheduler_worker.js, and type the following into the console:
 //
 //   schedulerDebugLogging = true;
 let schedulerDebugLogging = false;
 
-/**
- * @typedef {{
- *   day: number,
- *   group: Group,
- *   startMinute: number,
- *   endMinute: number,
- *   location: string,
- * }}
- */
-let AcademicEvent;
-/* exported AcademicEvent */
-// Called AcademicEvent because Event is a google-closure-compiler builtin
+class AcademicEvent {
+    day: number;
+    group: Group;
+    startMinute: number;
+    endMinute: number;
+    location: string;
+}
 
-/**
- * @typedef {{
- *   events: Array<AcademicEvent>,
- *   rating: ScheduleRating,
- * }}
- */
-let Schedule;
-/* exported Schedule */
+class Schedule {
+  events: AcademicEvent[];
+  rating: ScheduleRating;
+}
 
 /**
  * earliestStart and latestFinish are in hours (e.g. 1:30PM is 13.5).
@@ -36,25 +25,18 @@ let Schedule;
  * same room.
  *
  * freeDays is the number of days in Sun-Thu with no events.
- *
- * @typedef {{
- *   earliestStart: number?,
- *   latestFinish: number?,
- *   numRuns: number?,
- *   freeDays: number?,
- * }}
  */
-let ScheduleRating;
-/* exported ScheduleRating */
+class ScheduleRating {
+  earliestStart: number;
+  latestFinish: number;
+  numRuns: number;
+  freeDays: number;
+};
 
 /**
  * Return the building in which ev happens
- *
- * @param {AcademicEvent} ev - Event to consider
- *
- * @returns {string}
  */
-function eventBuilding(ev) {
+function eventBuilding(ev: AcademicEvent): string {
   if (ev.location) {
     return ev.location.split(' ')[0];
   } else {
@@ -65,12 +47,8 @@ function eventBuilding(ev) {
 /**
  * Count instances in which events involve running between different buildings
  * in adjacent classes.
- *
- * @param {Array<AcademicEvent>} events - Events to check for running
- *
- * @returns {number}
  */
-function countRuns(events) {
+function countRuns(events: AcademicEvent[]): number {
   let e = events.slice();
   let result = 0;
   sortEvents(e);
@@ -90,11 +68,8 @@ function countRuns(events) {
 
 /**
  * Returns true iff schedule has no collisions
- *
- * @param {Schedule} schedule - Schedule to check for collisions
- * @returns {boolean}
  */
-function filterNoCollisions(schedule) {
+function filterNoCollisions(schedule: Schedule): boolean {
   return !eventsCollide(schedule.events);
 }
 
@@ -102,11 +77,8 @@ function filterNoCollisions(schedule) {
  * Return a cartesian product of arrays
  *
  * Note: If changing this method, reenable CARTESIAN_SLOW_TEST.
- *
- * @param {...Array<Object>} a - Arrays to multiply
- * @returns {Array.<Array.<Object>>}
  */
-function cartesian(...a) {
+function cartesian<T>(...a: T[][]): T[][] {
   if (a.length == 0) {
     return [[]];
   }
@@ -117,29 +89,21 @@ function cartesian(...a) {
     .reduce((a, b) => a.concat(b));
 }
 
-/**
- * @typedef {{
- *   noCollisions: boolean,
- *   forbiddenGroups: Array<string>,
- *   ratingMin: ScheduleRating,
- *   ratingMax: ScheduleRating,
- * }}
- */
-let FilterSettings;
-/* exported FilterSettings */
+class FilterSettings {
+  noCollisions: boolean;
+  forbiddenGroups: string[];
+  ratingMin: ScheduleRating;
+  ratingMax: ScheduleRating;
+}
 
 /**
  * Return all possible schedules
- *
- * @param {!Set<Course>} courses - Courses to schedule from
- * @param {FilterSettings} settings - Settings for filters
- *
- * @returns {Array<Schedule>}
  */
-function generateSchedules(courses, settings) {
+function generateSchedules(courses: Set<Course>, settings: FilterSettings): Schedule[] {
   if (schedulerDebugLogging) {
     console.time('generateSchedules');
   }
+
   let groupBins = Array.from(courses)
     .map(c => removeForbiddenGroups(c, settings))
     .map(groupsByType)
@@ -163,13 +127,11 @@ function generateSchedules(courses, settings) {
 /**
  * Remove forbidden groups from course. Modifies course and returns modified
  * course as well.
- *
- * @param {Course} course - Course to remove forbidden groups from
- * @param {FilterSettings} settings - Filter settings
- *
- * @returns {Course}
  */
-function removeForbiddenGroups(course, settings) {
+function removeForbiddenGroups(
+  course: Course,
+  settings: FilterSettings
+): Course {
   if (course.groups == null) {
     console.warn('Scheduling with groupless course', course);
     return course;
@@ -183,14 +145,12 @@ function removeForbiddenGroups(course, settings) {
 /**
  * Filter src using filter (named filterName), logging how many schedules
  * it removed.
- *
- * @param {Array<Schedule>} src - Source schedules to filter
- * @param {function(Schedule): boolean} filter - Filter to use
- * @param {string} filterName - Display name of filter
- *
- * @returns {Array<Schedule>}
  */
-function filterWithDelta(src, filter, filterName) {
+function filterWithDelta(
+  src: Schedule[],
+  filter: (Schedule) => boolean,
+  filterName: string
+): Schedule[] {
   let result = src.filter(filter);
   if (schedulerDebugLogging) {
     console.info(
@@ -202,13 +162,11 @@ function filterWithDelta(src, filter, filterName) {
 
 /**
  * Filter using all filters, according to settings
- *
- * @param {Array<Schedule>} schedules - Schedules to filter
- * @param {FilterSettings} settings - Filter settings
- *
- * @returns {Array<Schedule>}
  */
-function runAllFilters(schedules, settings) {
+function runAllFilters(
+  schedules: Schedule[],
+  settings: FilterSettings
+): Schedule[] {
   let result = schedules.slice();
 
   if (settings.noCollisions) {
@@ -222,13 +180,11 @@ function runAllFilters(schedules, settings) {
 
 /**
  * Filter schedules by ratingMin and ratingMax
- *
- * @param {Array<Schedule>} schedules - Schedules to filter
- * @param {FilterSettings} settings - Filter settings
- *
- * @returns {Array<Schedule>}
  */
-function filterByRatings(schedules, settings) {
+function filterByRatings(
+  schedules: Schedule[],
+  settings: FilterSettings
+): Schedule[] {
   Object.keys(settings.ratingMin).forEach(function(r) {
     if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
       return;
@@ -261,12 +217,8 @@ function filterByRatings(schedules, settings) {
 
 /**
  * Returns the number of free days given an event set
- *
- * @param {Array<AcademicEvent>} events - Events to examine
- *
- * @returns {number}
  */
-function countFreeDays(events) {
+function countFreeDays(events: AcademicEvent[]): number {
   let hasClasses = [false, false, false, false, false];
 
   events.forEach(function(event) {
@@ -278,12 +230,8 @@ function countFreeDays(events) {
 
 /**
  * Rate the given events as a schedule
- *
- * @param {Array<AcademicEvent>} events - Events to rate
- *
- * @returns {ScheduleRating}
  */
-function rate(events) {
+function rate(events: AcademicEvent[]): ScheduleRating {
   return {
     earliestStart: Math.min(...events.map(e => e.startMinute / 60.0)),
     latestFinish: Math.max(...events.map(e => e.endMinute / 60.0)),
@@ -294,11 +242,8 @@ function rate(events) {
 
 /**
  * Convert groups to a schedule
- *
- * @param {Array<Group>} groups - Groups to convert
- * @returns {Schedule}
  */
-function groupsToSchedule(groups) {
+function groupsToSchedule(groups: Group[]): Schedule {
   let e = groups.reduce((a, b) => a.concat(b.events), []);
   return {
     events: e,
@@ -306,11 +251,80 @@ function groupsToSchedule(groups) {
   };
 }
 
-if (typeof module != 'undefined') {
-  module.exports = {
-    generateSchedules: generateSchedules,
-    cartesian: cartesian,
-    countRuns: countRuns,
-    rate: rate,
-  };
+///////////////////////////////////////////////////////////////////////////////
+// TODO(lutzky): These are from main.js, should be moved out
+
+class Group {
+  course: Course;
+  description: string;
+  events: AcademicEvent[];
+  id: number;
+  type: string;
+  teachers: Array<string>;
+}
+
+class Course {
+  name: string;
+  academicPoints: number;
+  id: number;
+  groups: Array<Group>;
+  lecturerInCharge: string;
+  testDates: Date[];
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// TODO(lutzky): Everything below should be in common.js
+
+
+/**
+ * Sorts events by start time
+ */
+function sortEvents(events: AcademicEvent[]) {
+  events.sort(function(a, b) {
+    if (a.day != b.day) {
+      return a.day - b.day;
+    }
+    return a.startMinute - b.startMinute;
+  });
+}
+
+/**
+ * Returns false iff two entries in events overlap
+ */
+function eventsCollide(events: AcademicEvent[]): boolean {
+  let e = events.slice();
+  sortEvents(e);
+
+  for (let i = 0; i < e.length - 1; i++) {
+    if (e[i].day == e[i + 1].day) {
+      if (e[i + 1].startMinute < e[i].endMinute) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * Return course's groups as an array of arrays, split by type
+ */
+function groupsByType(course: Course): Group[][] {
+  let m = new Map();
+  if (!course.groups) {
+    return [];
+  }
+
+  course.groups.forEach(function(group) {
+    if (!m.has(group.type)) {
+      m.set(group.type, []);
+    }
+    m.get(group.type).push(group);
+  });
+
+  return Array.from(m.values());
+}
+
+function displayName(group: Group): string {
+  return group.description || group.course.name;
 }

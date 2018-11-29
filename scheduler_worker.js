@@ -1,4 +1,5 @@
-importScripts('common.js', 'scheduler.js');
+// importScripts('common.js', 'scheduler.js');
+importScripts('scheduler2.js');
 
 /**
  * @param {Event} e - Message event

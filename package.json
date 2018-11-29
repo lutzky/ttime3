@@ -4,7 +4,8 @@
   "description": "TTime pure-JS implementation",
   "main": "main.js",
   "dependencies": {
-    "google-closure-compiler": "^20180716.0.1"
+    "google-closure-compiler": "^20180716.0.1",
+    "typescript": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
