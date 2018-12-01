@@ -1,12 +1,7 @@
-'use strict';
-
 /**
  * Convert minutes-from-midnight to HH:MM
- *
- * @param {number} minutes - Minutes from midnight
- * @returns {string} - HH:MM
  */
-function minutesToTime(minutes) {
+function minutesToTime(minutes: number): string {
   let hourString = Math.floor(minutes / 60)
     .toString()
     .padStart(2, '0');
@@ -14,18 +9,15 @@ function minutesToTime(minutes) {
   return hourString + ':' + minuteString;
 }
 
-/**
- * @typedef {{year: number, month: number, day: number}}
- */
-let DateObj;
-/* exported DateObj */
+class DateObj {
+  year: number;
+  month: number;
+  day: number;
+}
 
 /**
  * Format a DateObj as a string
- *
- * @param {DateObj} dateObj - Date to format
- * @returns {string}
  */
-function formatDate(dateObj) {
+function formatDate(dateObj: DateObj): string {
   return new Date(dateObj.year, dateObj.month, dateObj.day).toDateString();
 }

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * This module implements support for importing data from cheeseFork
  *

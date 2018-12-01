@@ -1,5 +1,3 @@
-'use strict';
-
 // To enable debugging, type the following into your Javascript console:
 //
 //   mainDebugLogging = true

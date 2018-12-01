@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @typedef {{
  *   event: AcademicEvent,
