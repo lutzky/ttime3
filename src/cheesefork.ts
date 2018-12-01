@@ -7,16 +7,16 @@
 /**
  * Parse a cheesefork-format hour
  *
- * @param {string} s - "HH:M - HH:M", where M is tens of minutes
+ * @param s - "HH:M - HH:M", where M is tens of minutes
  *
- * @returns {Array<number>} - Minutes since midnight
+ * @returns Minutes since midnight
  */
-function parseCheeseForkHour(s) {
+function parseCheeseForkHour(s: string): number[] {
   return s.split(' - ').map(function(hhm) {
     let splitHour = hhm.split(':');
     let minute = Number(splitHour[0]) * 60;
     if (splitHour.length > 1) {
-      minute += splitHour[1] * 10;
+      minute += Number(splitHour[1]) * 10;
     }
     return minute;
   });
@@ -27,11 +27,9 @@ const dateRegex = /([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})/;
 /**
  * Parse a cheesefork-format test date
  *
- * @param {string} s - "Bla bla bla DD.MM.YYYY Bla bla bla"
- *
- * @returns {DateObj?}
+ * @param s - "Bla bla bla DD.MM.YYYY Bla bla bla"
  */
-function parseCheeseForkTestDate(s) {
+function parseCheeseForkTestDate(s: string): DateObj {
   if (!s) {
     return null;
   }
@@ -47,12 +45,9 @@ function parseCheeseForkTestDate(s) {
 /**
  * Parse cheesefork data
  *
- * @param {string} jsData - Cheesefork courses_*.js data
- *
- * @returns {Catalog}
+ * @param jsData - Cheesefork courses_*.js data
  */
-function parseCheeseFork(jsData) {
-  /* exported parseCheeseFork */
+function parseCheeseFork(jsData: string): Catalog {
   const cheeseForkPrefix = 'var courses_from_rishum = ';
 
   const hebrew = {
@@ -77,8 +72,7 @@ function parseCheeseFork(jsData) {
 
   const typeMap = new Map([['הרצאה', 'lecture'], ['תרגול', 'tutorial']]);
 
-  /** @type {Map<string, Faculty>} */
-  let facultiesByName = new Map();
+  let facultiesByName = new Map() as Map<string, Faculty>;
 
   if (!jsData.startsWith(cheeseForkPrefix)) {
     throw new Error('Not valid cheesefork jsData - lacks expected prefix');
@@ -104,6 +98,7 @@ function parseCheeseFork(jsData) {
     /** @type {Course} */
     let course = {
       academicPoints: Number(dataCourse['general'][hebrew.academicPoints]),
+      faculty: faculty,
       name: dataCourse['general'][hebrew.courseName],
       id: Number(dataCourse['general'][hebrew.courseId]),
       lecturerInCharge: dataCourse['general'][hebrew.thoseInCharge],

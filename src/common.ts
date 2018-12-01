@@ -13,15 +13,14 @@ class Course {
   id: number;
   groups: Array<Group>;
   lecturerInCharge: string;
-  testDates: Date[];
+  testDates: DateObj[];
+  faculty: Faculty;
 }
 
 /**
  * Sorts events by start time
- *
- * @param {Array<AcademicEvent>} events - Events to sort
  */
-function sortEvents(events) {
+function sortEvents(events: AcademicEvent[]) {
   events.sort(function(a, b) {
     if (a.day != b.day) {
       return a.day - b.day;
@@ -32,12 +31,8 @@ function sortEvents(events) {
 
 /**
  * Returns false iff two entries in events overlap
- *
- * @param {Array<AcademicEvent>} events - Events to check for collisions
- *
- * @returns {boolean}
  */
-function eventsCollide(events) {
+function eventsCollide(events: AcademicEvent[]): boolean {
   let e = events.slice();
   sortEvents(e);
 
@@ -54,13 +49,8 @@ function eventsCollide(events) {
 
 /**
  * Load the catalog object from url.
- *
- * @param {string} url - URL to download catalog from.
- * @param {boolean} isLocal - Load from local FS using Node rather than XHR
- *
- * @returns {Promise<Catalog>}
  */
-function loadCatalog(url, isLocal) {
+function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
   return new Promise(function(resolve, reject) {
     // TODO(lutzky): Bring this back for tests
     // if (isLocal) {
@@ -107,10 +97,8 @@ function loadCatalog(url, isLocal) {
 
 /**
  * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
- *
- * @param {Catalog} catalog - Catalog to add back-links to
  */
-function fixRawCatalog(catalog) {
+function fixRawCatalog(catalog: Catalog) {
   catalog.forEach(function(faculty) {
     faculty.courses.forEach(function(course) {
       course.faculty = faculty;

@@ -3,46 +3,32 @@
 //   mainDebugLogging = true
 let mainDebugLogging = false;
 
-/**
- * @typedef {{
- *   name: string,
- *   semester: string,
- *   courses: Array<Course>
- *  }}
- */
-let Faculty;
-/* exported Faculty */
+class Faculty {
+  name: string;
+  semester: string;
+  courses: Course[];
+}
 
-/**
- * @typedef {Array<Faculty>}
- */
-let Catalog;
-/* exported Catalog */
+type Catalog = Faculty[];
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
  * so Settings and all of the types of its member variables can't have maps
  * nor sets.
- *
- * @typedef {{
- *   selectedCourses: Array<number>,
- *   catalogUrl: string,
- *   filterSettings: FilterSettings,
- * }}
  */
-let Settings;
-/* exported Settings */
+class Settings {
+  selectedCourses: number[];
+  catalogUrl: string;
+  filterSettings: FilterSettings;
+}
 
 const defaultCatalogUrl =
   'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
 
 /**
  * Set the given catalog URL and save settings. For use from HTML.
- *
- * @param {string} url - URL to set
  */
-function setCatalogUrl(url) {
-  /* exported setCatalogUrl */
+function setCatalogUrl(url: string) {
   $('#catalog-url').val(url);
   catalogUrlChanged();
 }
@@ -51,7 +37,6 @@ function setCatalogUrl(url) {
  * Handler for changes to the catalog URL field
  */
 function catalogUrlChanged() {
-  /* exported catalogUrlChanged */
   saveSettings();
 }
 
@@ -467,11 +452,8 @@ function addSelectedCourse(course) {
 
 /**
  * Add a course with a given ID
- *
- * @param {...number} ids - Course IDS
  */
-function addSelectedCourseByID(...ids) {
-  /* exported addSelectedCourseByID */
+function addSelectedCourseByID(...ids: number[]) {
   ids.forEach(function(id) {
     let course = getCourseByID(id);
 
@@ -485,10 +467,8 @@ function addSelectedCourseByID(...ids) {
 
 /**
  * Mark course as unselected.
- *
- * @param {Course} course - Course to unselect
  */
-function delSelectedCourse(course) {
+function delSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Unselected', course);
   }
@@ -542,10 +522,8 @@ let schedulerWorker = new Worker('built/scheduler_worker.js');
 
 /**
  * Respond to scheduling result from worker
- *
- * @param {MessageEvent} e - blabbity boop
  */
-schedulerWorker.onmessage = function(e) {
+schedulerWorker.onmessage = function(e: MessageEvent) {
   if (mainDebugLogging) {
     console.info('Received message from worker:', e);
   }
@@ -562,13 +540,12 @@ schedulerWorker.onmessage = function(e) {
  * Check if custom-events-textarea has valid events
  */
 function checkCustomEvents() {
-  /* exported checkCustomEvents */
   let elem = $('#custom-events-textarea');
   elem.removeClass('is-invalid');
   elem.removeClass('is-valid');
 
   try {
-    let courses = buildCustomEventsCourses(/** @type {string} */ (elem.val()));
+    let courses = buildCustomEventsCourses(elem.val() as string);
     if (courses.length > 0) {
       elem.addClass('is-valid');
     }
@@ -680,7 +657,6 @@ function buildCustomEventsCourses(s) {
  * Start a worker to generate schedules
  */
 function getSchedules() {
-  /* exported getSchedules */
   $('#generate-schedules').prop('disabled', true);
   $('#spinner').show();
   $('#exception-occurred').hide();
@@ -733,7 +709,6 @@ function setPossibleSchedules(schedules) {
  * Increment the current displayed schedule
  */
 function nextSchedule() {
-  /* exported nextSchedule */
   goToSchedule(currentSchedule + 1);
 }
 
@@ -741,7 +716,6 @@ function nextSchedule() {
  * Decrement the current displayed schedule
  */
 function prevSchedule() {
-  /* exported prevSchedule */
   goToSchedule(currentSchedule - 1);
 }
 

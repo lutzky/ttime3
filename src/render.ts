@@ -1,9 +1,5 @@
 /**
- * @typedef {{
- *   event: AcademicEvent,
- *   layer: number,
- *   numLayers: number,
- * }}
+ * Layered events for rendering on screen
  *
  * Explanation: Suppose you have events A, B, C, that collide like so (time
  * being horizontal):
@@ -28,22 +24,20 @@
  *
  * In this case the numLayers for all events is 3, and B, C, and A are on layers
  * 0, 1, and 2 respectively.
- *
  */
-let LayeredEvent;
-/* exported LayeredEvent */
+class LayeredEvent {
+  event: AcademicEvent;
+  layer: number;
+  numLayers: number;
+}
 
 /**
  * Sort events into buckets of colliding events.
  *
  * Shamelessly lifted from boazg at
  * https://github.com/lutzky/ttime/blob/master/lib/ttime/tcal/tcal.rb
- *
- * @param {Array<AcademicEvent>} events - Events to layer
- *
- * @returns {Array<LayeredEvent>}
  */
-function layoutLayeredEvents(events) {
+function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
   /** @type {Array<LayeredEvent>} */
   let result = [];
 
@@ -107,35 +101,22 @@ function layoutLayeredEvents(events) {
 
 /**
  * Get the start time of the earliest event in the schedule
- *
- * @param {Schedule} schedule - Schedule
- *
- * @returns {number}
  */
-function getEarliest(schedule) {
+function getEarliest(schedule: Schedule): number {
   return Math.min(...schedule.events.map(x => x.startMinute));
 }
 
 /**
  * Get the end time of the latest event in the schedule
- *
- * @param {Schedule} schedule - Schedule
- *
- * @returns {number}
  */
-function getLatest(schedule) {
+function getLatest(schedule: Schedule): number {
   return Math.max(...schedule.events.map(x => x.endMinute));
 }
 
 /**
  * Render a schedule to target
- *
- * @param {Element} target - Target to write schedule to
- * @param {Schedule} schedule - Schedule to render
- * @param {Map<number, Array<string>>} courseColors - Map from course ID to
- *                                                    colors
  */
-function renderSchedule(target, schedule, courseColors) {
+function renderSchedule(target: HTMLElement, schedule: Schedule, courseColors: Map<number, string[]>) {
   target.innerHTML = '';
 
   let earliest = getEarliest(schedule);
@@ -168,11 +149,8 @@ function renderSchedule(target, schedule, courseColors) {
 
 /**
  * Annotate the div with the actualy contents of the event
- *
- * @param {Element} target - Div to annotate
- * @param {AcademicEvent} event - Event details to show
  */
-function annotateEvent(target, event) {
+function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   target.innerHTML = '';
   let courseName = document.createElement('span');
   courseName.className = 'course-name';
@@ -209,11 +187,8 @@ const gridDensity = 30;
 
 /**
  * Render grid lines on target
- *
- * @param {Element} target - Target to draw grid lines on
- * @param {Schedule} schedule - Schedule being rendered
  */
-function addGridLines(target, schedule) {
+function addGridLines(target: HTMLElement, schedule: Schedule) {
   let earliest = getEarliest(schedule);
   let latest = getLatest(schedule);
   let scale = 100.0 / (latest - earliest);
@@ -239,15 +214,8 @@ function addGridLines(target, schedule) {
 
 /**
  * Position element using the given units
- *
- * @param {Element} element - Element to position
- * @param {string} units - Units, appended to all coordinates
- * @param {number} left - Left coordinate
- * @param {number} top - Top coordinate
- * @param {number} width - Width
- * @param {number} height - Height
  */
-function positionElement(element, units, left, top, width, height) {
+function positionElement(element: HTMLElement, units: string, left: number, top: number, width: number, height: number) {
   element.style.left = `${left}${units}`;
   element.style.top = `${top}${units}`;
   element.style.width = `${width}${units}`;
