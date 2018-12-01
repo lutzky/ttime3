@@ -72,7 +72,7 @@ function parseCheeseFork(jsData: string): Catalog {
 
   const typeMap = new Map([['הרצאה', 'lecture'], ['תרגול', 'tutorial']]);
 
-  let facultiesByName = new Map() as Map<string, Faculty>;
+  let facultiesByName: Map<string, Faculty> = new Map();
 
   if (!jsData.startsWith(cheeseForkPrefix)) {
     throw new Error('Not valid cheesefork jsData - lacks expected prefix');
@@ -95,8 +95,7 @@ function parseCheeseFork(jsData: string): Catalog {
 
     let faculty = facultiesByName.get(facultyName);
 
-    /** @type {Course} */
-    let course = {
+    let course: Course = {
       academicPoints: Number(dataCourse['general'][hebrew.academicPoints]),
       faculty: faculty,
       name: dataCourse['general'][hebrew.courseName],
@@ -111,11 +110,9 @@ function parseCheeseFork(jsData: string): Catalog {
       groups: [],
     };
 
-    /** @type {Map<number, number>} */
-    let groupFirstAppearedInMetagroup = new Map();
+    let groupFirstAppearedInMetagroup: Map<number, number> = new Map();
 
-    /** @type {Map<number, Group>} */
-    let groupsById = new Map();
+    let groupsById: Map<number, Group> = new Map();
 
     dataCourse['schedule'].forEach(function(dataSchedule) {
       /*
@@ -165,8 +162,7 @@ function parseCheeseFork(jsData: string): Catalog {
 
       let times = parseCheeseForkHour(dataSchedule[hebrew.hour]);
 
-      /** @type {AcademicEvent} */
-      let event = {
+      let event: AcademicEvent = {
         group: group,
         day: hebrew.dayLetters.indexOf(dataSchedule[hebrew.day]),
         startMinute: times[0],

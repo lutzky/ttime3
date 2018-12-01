@@ -14,7 +14,7 @@ class Course {
   groups: Array<Group>;
   lecturerInCharge: string;
   testDates: DateObj[];
-  faculty: Faculty;
+  faculty?: Faculty;
 }
 
 /**
@@ -59,7 +59,7 @@ function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
     //       reject(err);
     //     } else {
     //       let result = JSON.parse(data);
-    //       fixRawCatalog(/** @type {Catalog} */ (result));
+    //       fixRawCatalog(result as Catalog);
     //       resolve(result);
     //     }
     //   });
@@ -70,14 +70,14 @@ function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
     req.open('GET', url);
     req.onload = function() {
       if (req.status == 200) {
-        let result = null;
+        let result: Catalog = null;
         try {
           if (req.response[0] == '[') {
-            result = JSON.parse(/** @type {string } */ (req.response));
+            result = JSON.parse(req.response as string);
           } else {
-            result = parseCheeseFork(/** @type {string} */ (req.response));
+            result = parseCheeseFork(req.response as string);
           }
-          fixRawCatalog(/** @type {Catalog} */ (result));
+          fixRawCatalog(result);
           resolve(result);
         } catch (err) {
           reject(err);
@@ -119,10 +119,8 @@ function fixRawCatalog(catalog: Catalog) {
 // TODO(lutzky): Bring this back for tests
 // /**
 //  * Load the test catalog from local data
-//  *
-//  * @returns {Promise<Catalog>}
 //  */
-// function loadTestCatalog() {
+// function loadTestCatalog(): Promise<Catalog> {
 //   if (typeof require != 'undefined') {
 //     return loadCatalog('testdata.json', true);
 //   } else {
@@ -132,12 +130,8 @@ function fixRawCatalog(catalog: Catalog) {
 
 /**
  * Return course's groups as an array of arrays, split by type
- *
- * @param {Course} course - Course to get groups from
- *
- * @returns {Array<Array<Group>>}
  */
-function groupsByType(course) {
+function groupsByType(course: Course): Group[][] {
   let m = new Map();
   if (!course.groups) {
     return [];
@@ -155,11 +149,7 @@ function groupsByType(course) {
 
 /**
  * Return the appropriate display name for the group
- *
- * @param {Group} group - Group to get display name for
- *
- * @returns {string}
  */
-function displayName(group) {
+function displayName(group: Group): string {
   return group.description || group.course.name;
 }

@@ -1,9 +1,6 @@
 importScripts('common.js', 'scheduler.js');
 
-/**
- * @param {Event} e - Message event
- */
-onmessage = function(e) {
+onmessage = function(e: MessageEvent) {
   try {
     let schedules = generateSchedules(e.data.courses, e.data.filterSettings);
     // TODO(lutzky): For some reason, both TypeScript and the documentation at

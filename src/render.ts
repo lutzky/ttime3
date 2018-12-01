@@ -38,8 +38,7 @@ class LayeredEvent {
  * https://github.com/lutzky/ttime/blob/master/lib/ttime/tcal/tcal.rb
  */
 function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
-  /** @type {Array<LayeredEvent>} */
-  let result = [];
+  let result: LayeredEvent[] = [];
 
   let remaining = events.slice();
 
@@ -64,8 +63,7 @@ function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
       remaining = remaining.filter(x => !selected.has(x));
     }
 
-    /** @type {Array<Array<AcademicEvent>>} */
-    let layers = [];
+    let layers: AcademicEvent[][] = [];
 
     selected.forEach(function(s) {
       let assignedToLayer = false;
