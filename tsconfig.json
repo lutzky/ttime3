@@ -2,7 +2,6 @@
   "compilerOptions": {
     "outDir": "./built",
     "alwaysStrict": true,
-    "allowJs": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "target": "es2018"
