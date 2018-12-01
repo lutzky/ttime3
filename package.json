@@ -6,8 +6,10 @@
   "dependencies": {
     "@types/jquery": "^3.3.22",
     "@types/selectize": "^0.12.33",
+    "clang-format": "^1.2.4",
     "google-closure-compiler": "^20180716.0.1",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.1",
+    "typescript-formatter": "^7.2.2"
   },
   "devDependencies": {
     "eslint": "^4.19.1",

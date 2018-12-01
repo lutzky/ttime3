@@ -25,7 +25,7 @@ class Settings {
 }
 
 const defaultCatalogUrl =
-  'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
+    'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
 
 /**
  * Set the given catalog URL and save settings. For use from HTML.
@@ -79,7 +79,7 @@ function groupHeaderForCatalog(group: Group): JQuery {
   let forbidLink = $('<a>', {
     class: 'forbid-link',
     href: '#/',
-    data: { forbidden: isGroupForbidden(group), groupID: groupIDString(group) },
+    data: {forbidden: isGroupForbidden(group), groupID: groupIDString(group)},
   });
 
   updateForbidLinkText(forbidLink);
@@ -162,15 +162,13 @@ function updateForbiddenGroups() {
     ul.append(li);
   });
 
-  $('a.forbid-link').each(
-    function() {
-      let groupID: string = $(this).data('groupID');
+  $('a.forbid-link').each(function() {
+    let groupID: string = $(this).data('groupID');
 
-      let isForbidden = forbiddenGroups.has(groupID);
-      $(this).data('forbidden', isForbidden);
-      updateForbidLinkText($(this));
-    }
-  );
+    let isForbidden = forbiddenGroups.has(groupID);
+    $(this).data('forbidden', isForbidden);
+    updateForbidLinkText($(this));
+  });
 }
 
 /**
@@ -188,33 +186,27 @@ function formatCourseId(id: number): string {
 function htmlDescribeCourse(course: Course): HTMLElement {
   let result = $('<span>');
   let ul = $('<ul>');
+  ul.append($('<li>', {
+    html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
+  }));
   ul.append(
-    $('<li>', {
-      html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
-    })
-  );
-  ul.append(
-    $('<li>', { html: `<b>Academic points:</b> ${course.academicPoints}` })
-  );
-  ul.append(
-    $('<li>', {
-      html: `<b>Lecturer in charge:</b> ${rtlSpan(
-        course.lecturerInCharge || '[unknown]'
-      )}`,
-    })
-  );
-  ul.append($('<li>', { html: '<b>Test dates:</b>' }));
+      $('<li>', {html: `<b>Academic points:</b> ${course.academicPoints}`}));
+  ul.append($('<li>', {
+    html: `<b>Lecturer in charge:</b> ${
+        rtlSpan(course.lecturerInCharge || '[unknown]')}`,
+  }));
+  ul.append($('<li>', {html: '<b>Test dates:</b>'}));
   let testDates = $('<ul>');
   if (course.testDates) {
     course.testDates.forEach(function(d) {
-      testDates.append($('<li>', { text: formatDate(d) }));
+      testDates.append($('<li>', {text: formatDate(d)}));
     });
   } else {
-    testDates.append($('<li>', { text: '[unknown]' }));
+    testDates.append($('<li>', {text: '[unknown]'}));
   }
   ul.append(testDates);
 
-  ul.append($('<li>', { html: '<b>Groups:</b>' }));
+  ul.append($('<li>', {html: '<b>Groups:</b>'}));
   let groups = $('<ul>');
   if (course.groups) {
     course.groups.forEach(function(g) {
@@ -222,24 +214,18 @@ function htmlDescribeCourse(course: Course): HTMLElement {
       let events = $('<ul>');
       if (g.events) {
         g.events.forEach(function(e) {
-          events.append(
-            $('<li>', {
-              text:
-                `${dayNames[e.day]}, ` +
-                minutesToTime(e.startMinute) +
-                '-' +
-                minutesToTime(e.endMinute) +
-                ` at ${e.location || '[unknown]'}`,
-            })
-          );
+          events.append($('<li>', {
+            text: `${dayNames[e.day]}, ` + minutesToTime(e.startMinute) + '-' +
+                minutesToTime(e.endMinute) + ` at ${e.location || '[unknown]'}`,
+          }));
         });
       } else {
-        events.append($('<li>', { text: '[unknown]' }));
+        events.append($('<li>', {text: '[unknown]'}));
       }
       groups.append(events);
     });
   } else {
-    groups.append($('<li>', { text: '[unknown]' }));
+    groups.append($('<li>', {text: '[unknown]'}));
   }
   ul.append(groups);
 
@@ -316,7 +302,7 @@ function writeCatalogSelector() {
     facultyDetails.append(summary);
     facultiesDiv.append(facultyDetails);
 
-    let courseList = $('<ul>', { class: 'course-list' });
+    let courseList = $('<ul>', {class: 'course-list'});
     facultyDetails.append(courseList);
 
     faculty.courses.forEach(function(course) {
@@ -367,14 +353,10 @@ function saveSettings() {
   Object.keys(allRatings).forEach(function(r) {
     // @ts-ignore: allRatings
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
-      ($(`#rating-${r}-min`)[0]) as HTMLInputElement,
-      null
-    );
+        ($(`#rating-${r}-min`)[0]) as HTMLInputElement, null);
     // @ts-ignore: allRatings
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
-      ($(`#rating-${r}-max`)[0]) as HTMLInputElement,
-      null
-    );
+        ($(`#rating-${r}-max`)[0]) as HTMLInputElement, null);
   });
 
   window.localStorage.setItem('ttime3_settings', JSON.stringify(settings));
@@ -388,7 +370,8 @@ function saveSettings() {
  * Get the numeric value in the given field, or return the default if
  * it's empty.
  */
-function getNumInputValueWithDefault(input: HTMLInputElement, defaultValue: number): number {
+function getNumInputValueWithDefault(
+    input: HTMLInputElement, defaultValue: number): number {
   if (input.value == '') {
     return defaultValue;
   }
@@ -443,16 +426,15 @@ function delSelectedCourse(course: Course) {
  */
 function refreshSelectedCourses() {
   let nscheds = Number(totalPossibleSchedules(selectedCourses));
-  $('#possible-schedules').text(
-    `${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`
-  );
+  $('#possible-schedules')
+      .text(`${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`);
   $('#generate-schedules').prop('disabled', selectedCourses.size == 0);
   let div = $('#selected-courses');
   div.empty();
-  let ul = $('<ul>', { class: 'list-group' });
+  let ul = $('<ul>', {class: 'list-group'});
   div.append(ul);
   selectedCourses.forEach(function(course) {
-    let li = $('<li>', { class: 'list-group-item' });
+    let li = $('<li>', {class: 'list-group-item'});
     let label = courseLabel(course);
     let btn = $('<button>', {
       class: 'btn btn-sm btn-danger float-right',
@@ -464,12 +446,10 @@ function refreshSelectedCourses() {
     li.append(label);
 
     if (course.groups == null || course.groups.length == 0) {
-      li.append(
-        $('<i>', {
-          class: 'text-warning fas fa-exclamation-triangle',
-          title: 'Course has no groups',
-        })
-      );
+      li.append($('<i>', {
+        class: 'text-warning fas fa-exclamation-triangle',
+        title: 'Course has no groups',
+      }));
     }
 
     li.append(btn);
@@ -513,15 +493,11 @@ function checkCustomEvents() {
   }
 }
 
-const customEventRegex = new RegExp(
-  [
-    /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
-    /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
-    /(.*)/,
-  ]
-    .map(x => x.source)
-    .join('')
-);
+const customEventRegex = new RegExp([
+  /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
+  /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
+  /(.*)/,
+].map(x => x.source).join(''));
 
 // TODO(lutzky): inverseDayIndex is causing type problems, making us use
 // some ts-ignore.
@@ -538,7 +514,8 @@ const inverseDayIndex = {
 /**
  * Create a course with a single event
  */
-function createSingleEventCourse(name: string, day: number, startMinute: number, endMinute: number): Course {
+function createSingleEventCourse(
+    name: string, day: number, startMinute: number, endMinute: number): Course {
   let c: Course = {
     academicPoints: 0,
     id: 0,
@@ -638,10 +615,8 @@ function setPossibleSchedules(schedules: Schedule[]) {
   currentSchedule = 0;
   let divs = $('#schedule-browser, #rendered-schedule-container');
   $('#num-schedules').text(schedules.length);
-  if (
-    schedules.length == 0 ||
-    (schedules.length == 1 && schedules[0].events.length == 0)
-  ) {
+  if (schedules.length == 0 ||
+      (schedules.length == 1 && schedules[0].events.length == 0)) {
     divs.hide();
     $('#no-schedules').show();
   } else {
@@ -677,32 +652,31 @@ const dayNames = [
 // Colors are taken from this page, but reordered to maximize contrast:
 // https://getbootstrap.com/docs/4.1/getting-started/theming/
 const courseColors = [
-  ['#007bff', '#fff'], // blue
-  ['#e83e8c', '#fff'], // pink
-  ['#ffc107', '#000'], // yellow
-  ['#6610f2', '#fff'], // indigo
-  ['#dc3545', '#fff'], // red
-  ['#28a745', '#fff'], // green
-  ['#6f42c1', '#fff'], // purple
-  ['#fd7e14', '#000'], // orange
-  ['#20c997', '#fff'], // teal
-  ['#17a2b8', '#fff'], // cyan
-  ['#6c757d', '#fff'], // gray
-  ['#343a40', '#fff'], // dark-gray
+  ['#007bff', '#fff'],  // blue
+  ['#e83e8c', '#fff'],  // pink
+  ['#ffc107', '#000'],  // yellow
+  ['#6610f2', '#fff'],  // indigo
+  ['#dc3545', '#fff'],  // red
+  ['#28a745', '#fff'],  // green
+  ['#6f42c1', '#fff'],  // purple
+  ['#fd7e14', '#000'],  // orange
+  ['#20c997', '#fff'],  // teal
+  ['#17a2b8', '#fff'],  // cyan
+  ['#6c757d', '#fff'],  // gray
+  ['#343a40', '#fff'],  // dark-gray
 ];
 
 /**
  * Get appropriate colors for courses
  */
 function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
-  let numbers = Array.from(courses.values())
-    .map(c => c.id)
-    .sort();
+  let numbers = Array.from(courses.values()).map(c => c.id).sort();
 
   // 0 course ID is for custom events
   numbers.push(0);
 
-  let numsAndColors = numbers.map((num, i) => [num, courseColors[i]]) as [number, string[]][];
+  let numsAndColors =
+      numbers.map((num, i) => [num, courseColors[i]]) as [number, string[]][];
 
   return new Map(numsAndColors);
 }
@@ -719,10 +693,7 @@ function goToSchedule(i: number) {
 
   writeScheduleContents($('#schedule-contents'), schedule);
   renderSchedule(
-    $('#rendered-schedule')[0],
-    schedule,
-    getCourseColorMap(selectedCourses)
-  );
+      $('#rendered-schedule')[0], schedule, getCourseColorMap(selectedCourses));
 }
 
 let sortedByRating = '';
@@ -770,9 +741,8 @@ function sortByRating(rating: string) {
 
   goToSchedule(0);
   Object.keys(allRatings).forEach(function(rating) {
-    $(`#rating-badge-${rating}`).replaceWith(
-      getRatingBadge(rating, possibleSchedules[0])
-    );
+    $(`#rating-badge-${rating}`)
+        .replaceWith(getRatingBadge(rating, possibleSchedules[0]));
   });
 }
 
@@ -808,18 +778,18 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
   target.empty();
 
   Object.keys(allRatings)
-    .map(rating => getRatingBadge(rating, schedule))
-    .forEach(function(badge) {
-      target.append(badge).append(' ');
-    });
+      .map(rating => getRatingBadge(rating, schedule))
+      .forEach(function(badge) {
+        target.append(badge).append(' ');
+      });
 
-  let ul = $('<ul>', { class: 'list-group' });
+  let ul = $('<ul>', {class: 'list-group'});
   target.append(ul);
 
   byDay(schedule).forEach(function(dayEvents) {
     let dayEntry = $('<li>', {
       class: 'list-group-item',
-      css: { 'padding-top': '2px', 'padding-bottom': '2px' },
+      css: {'padding-top': '2px', 'padding-bottom': '2px'},
       html: $('<small>', {
         class: 'font-weight-bold',
         text: dayNames[dayEvents[0].day],
@@ -836,8 +806,7 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
       let location = e.location || '[unknown]';
       let endTime = minutesToTime(e.endMinute);
       let teachers = e.group.teachers.join(',') || '[unknown]';
-      eventEntry.html(
-        `
+      eventEntry.html(`
         <div class="d-flex w-100 justify-content-between">
            <small class="text-muted">
              <i class="far fa-clock"></i>
@@ -858,8 +827,7 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
             ${formatCourseId(e.group.course.id)}, group ${e.group.id}
           </small>
         </div>
-        `
-      );
+        `);
       ul.append(eventEntry);
     });
   });
@@ -931,7 +899,7 @@ function coursesSelectizeSetup() {
   let optgroups: any = [];
 
   currentCatalog.forEach(function(faculty) {
-    optgroups.push({ label: faculty.name, value: faculty.name });
+    optgroups.push({label: faculty.name, value: faculty.name});
     faculty.courses.forEach(function(course) {
       opts.push({
         optgroup: faculty.name,
@@ -989,11 +957,8 @@ function loadSettings(s: string): Settings {
   };
 
   if (s != '') {
-    result = $.extend(
-      true /* deep */,
-      result,
-      JSON.parse(s) as Settings
-    ) as Settings;
+    result = $.extend(true /* deep */, result, JSON.parse(s) as Settings) as
+        Settings;
   }
 
   if (mainDebugLogging) {
@@ -1026,12 +991,11 @@ function totalPossibleSchedules(courses: Set<Course>): number {
   let k = Array.from(courses.values());
 
   return k
-    .map(course =>
-      groupsByType(course)
-        .map(t => t.length)
-        .reduce((a, b) => a * b, 1)
-    )
-    .reduce((a, b) => a * b, 1);
+      .map(
+          course => groupsByType(course)
+                        .map(t => t.length)
+                        .reduce((a, b) => a * b, 1))
+      .reduce((a, b) => a * b, 1);
 }
 
 /**
@@ -1040,77 +1004,71 @@ function totalPossibleSchedules(courses: Set<Course>): number {
 function buildRatingsLimitForm() {
   let form = $('#rating-limits-form');
   Object.keys(allRatings).forEach(function(r) {
-    let row = $('<div>', { class: 'row' });
+    let row = $('<div>', {class: 'row'});
     form.append(row);
-    row.append(
-      $('<div>', {
-        class: 'col col-form-label',
-        // @ts-ignore: allRatings
-        text: allRatings[r].name,
-        // @ts-ignore: allRatings
-        title: allRatings[r].explanation,
-      })
-    );
-    row.append(
-      $('<div>', {
-        class: 'col',
-        html: $('<input>', {
-          id: `rating-${r}-min`,
-          type: 'number',
-          class: 'form-control',
-          placeholder: '-∞',
-          change: saveSettings,
-        }),
-      })
-    );
-    row.append(
-      $('<div>', {
-        class: 'col',
-        html: $('<input>', {
-          id: `rating-${r}-max`,
-          type: 'number',
-          class: 'form-control',
-          placeholder: '∞',
-          change: saveSettings,
-        }),
-      })
-    );
+    row.append($('<div>', {
+      class: 'col col-form-label',
+      // @ts-ignore: allRatings
+      text: allRatings[r].name,
+      // @ts-ignore: allRatings
+      title: allRatings[r].explanation,
+    }));
+    row.append($('<div>', {
+      class: 'col',
+      html: $('<input>', {
+        id: `rating-${r}-min`,
+        type: 'number',
+        class: 'form-control',
+        placeholder: '-∞',
+        change: saveSettings,
+      }),
+    }));
+    row.append($('<div>', {
+      class: 'col',
+      html: $('<input>', {
+        id: `rating-${r}-max`,
+        type: 'number',
+        class: 'form-control',
+        placeholder: '∞',
+        change: saveSettings,
+      }),
+    }));
   });
 }
 
 buildRatingsLimitForm();
 
-let settings = loadSettings(window.localStorage.getItem("ttime3_settings"));
+let settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
 
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();
 
-loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
-  function(catalog) {
-    if (mainDebugLogging) {
-      console.log('Loaded catalog:', catalog);
-    }
-    currentCatalog = catalog;
-    currentCatalogByCourseID = new Map();
+loadCatalog(settings.catalogUrl, /* isLocal= */ false)
+    .then(
+        function(catalog) {
+          if (mainDebugLogging) {
+            console.log('Loaded catalog:', catalog);
+          }
+          currentCatalog = catalog;
+          currentCatalogByCourseID = new Map();
 
-    currentCatalog.forEach(function(faculty) {
-      faculty.courses.forEach(function(course) {
-        currentCatalogByCourseID.set(course.id, course);
-      });
-    });
+          currentCatalog.forEach(function(faculty) {
+            faculty.courses.forEach(function(course) {
+              currentCatalogByCourseID.set(course.id, course);
+            });
+          });
 
-    writeCatalogSelector();
-    settings.selectedCourses.forEach(function(id) {
-      try {
-        addSelectedCourseByID(id);
-      } catch (error) {
-        console.error(`Failed to add course ${id}:`, error);
-      }
-    });
-    coursesSelectizeSetup();
-  },
-  function(error) {
-    $('#exception-occurred-catalog').show();
-    console.error('Failed to load catalog:', error);
-  }
-);
+          writeCatalogSelector();
+          settings.selectedCourses.forEach(function(id) {
+            try {
+              addSelectedCourseByID(id);
+            } catch (error) {
+              console.error(`Failed to add course ${id}:`, error);
+            }
+          });
+          coursesSelectizeSetup();
+        },
+        function(error) {
+          $('#exception-occurred-catalog').show();
+          console.error('Failed to load catalog:', error);
+        });

@@ -39,7 +39,7 @@ function parseCheeseForkTestDate(s: string): DateObj {
     console.warn('Failed to match date regex with: ', s);
     return null;
   }
-  return { day: Number(r[1]), month: Number(r[2]), year: Number(r[3]) };
+  return {day: Number(r[1]), month: Number(r[2]), year: Number(r[3])};
 }
 
 /**
@@ -104,9 +104,8 @@ function parseCheeseFork(jsData: string): Catalog {
       testDates: [
         dataCourse['general'][hebrew.moed_a],
         dataCourse['general'][hebrew.moed_b],
-      ]
-        .map(parseCheeseForkTestDate)
-        .filter(x => x != null),
+      ].map(parseCheeseForkTestDate)
+                     .filter(x => x != null),
       groups: [],
     };
 
@@ -144,8 +143,8 @@ function parseCheeseFork(jsData: string): Catalog {
           type = 'sport';
           desc = dataSchedule[hebrew.type];
         } else {
-          type =
-            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type];
+          type = typeMap.get(dataSchedule[hebrew.type]) ||
+              dataSchedule[hebrew.type];
         }
 
         groupsById.set(groupId, {
@@ -168,7 +167,7 @@ function parseCheeseFork(jsData: string): Catalog {
         startMinute: times[0],
         endMinute: times[1],
         location:
-          dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
+            dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
       };
 
       {

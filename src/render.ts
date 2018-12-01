@@ -114,7 +114,9 @@ function getLatest(schedule: Schedule): number {
 /**
  * Render a schedule to target
  */
-function renderSchedule(target: HTMLElement, schedule: Schedule, courseColors: Map<number, string[]>) {
+function renderSchedule(
+    target: HTMLElement, schedule: Schedule,
+    courseColors: Map<number, string[]>) {
   target.innerHTML = '';
 
   let earliest = getEarliest(schedule);
@@ -131,13 +133,11 @@ function renderSchedule(target: HTMLElement, schedule: Schedule, courseColors: M
     eventDiv.style.backgroundColor = colors[0];
     eventDiv.style.color = colors[1];
     positionElement(
-      eventDiv,
-      '%',
-      /* left   */ (100 / 6.0) * (1 + event.day + le.layer / le.numLayers),
-      /* top    */ scale * (event.startMinute - earliest),
-      /* width  */ 100 / 6.0 / le.numLayers,
-      /* height */ scale * (event.endMinute - event.startMinute)
-    );
+        eventDiv, '%',
+        /* left   */ (100 / 6.0) * (1 + event.day + le.layer / le.numLayers),
+        /* top    */ scale * (event.startMinute - earliest),
+        /* width  */ 100 / 6.0 / le.numLayers,
+        /* height */ scale * (event.endMinute - event.startMinute));
     annotateEvent(eventDiv, event);
     target.appendChild(eventDiv);
   });
@@ -172,9 +172,7 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   forbidLink.href = '#/';
   forbidLink.title = 'Forbid this group';
   forbidLink.onclick = function() {
-    $(forbidLink)
-      .fadeOut(100)
-      .fadeIn(100);
+    $(forbidLink).fadeOut(100).fadeIn(100);
     addForbiddenGroup(event.group);
   };
   forbidDiv.appendChild(forbidLink);
@@ -199,13 +197,11 @@ function addGridLines(target: HTMLElement, schedule: Schedule) {
     gridDiv.className = 'grid-line';
     gridDiv.innerText = minutesToTime(t);
     positionElement(
-      gridDiv,
-      '%',
-      /* left    */ 0,
-      /* top     */ scale * (t - earliest),
-      /* width   */ 100,
-      /* height  */ scale * gridDensity
-    );
+        gridDiv, '%',
+        /* left    */ 0,
+        /* top     */ scale * (t - earliest),
+        /* width   */ 100,
+        /* height  */ scale * gridDensity);
     target.appendChild(gridDiv);
   }
 }
@@ -213,7 +209,9 @@ function addGridLines(target: HTMLElement, schedule: Schedule) {
 /**
  * Position element using the given units
  */
-function positionElement(element: HTMLElement, units: string, left: number, top: number, width: number, height: number) {
+function positionElement(
+    element: HTMLElement, units: string, left: number, top: number,
+    width: number, height: number) {
   element.style.left = `${left}${units}`;
   element.style.top = `${top}${units}`;
   element.style.width = `${width}${units}`;
