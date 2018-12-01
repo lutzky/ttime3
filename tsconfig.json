@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./built",
+    "module": "commonjs",
     "alwaysStrict": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,

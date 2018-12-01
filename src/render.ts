@@ -114,7 +114,7 @@ function getLatest(schedule: Schedule): number {
 /**
  * Render a schedule to target
  */
-function renderSchedule(
+export function renderSchedule(
     target: HTMLElement, schedule: Schedule,
     courseColors: Map<number, string[]>) {
   target.innerHTML = '';
@@ -165,6 +165,7 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   location.innerText = event.location;
   target.appendChild(location);
 
+  /* TODO(lutzky): Return forbidDiv
   let forbidDiv = document.createElement('div');
   forbidDiv.className = 'forbid';
   let forbidLink = document.createElement('a');
@@ -177,6 +178,7 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   };
   forbidDiv.appendChild(forbidLink);
   target.appendChild(forbidDiv);
+   */
 }
 
 const gridDensity = 30;

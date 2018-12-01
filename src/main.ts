@@ -3,13 +3,8 @@
 //   mainDebugLogging = true
 let mainDebugLogging = false;
 
-class Faculty {
-  name: string;
-  semester: string;
-  courses: Course[];
-}
-
-type Catalog = Faculty[];
+import {renderSchedule} from './render';
+import {displayName, groupsByType, sortEvents, Course, Group, Faculty, Catalog, loadCatalog} from './common';
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
@@ -395,7 +390,7 @@ function addSelectedCourse(course: Course) {
 /**
  * Add a course with a given ID
  */
-function addSelectedCourseByID(...ids: number[]) {
+export function addSelectedCourseByID(...ids: number[]) {
   ids.forEach(function(id) {
     let course = getCourseByID(id);
 

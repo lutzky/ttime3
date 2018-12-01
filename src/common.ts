@@ -1,4 +1,12 @@
-class Group {
+export class Faculty {
+  name: string;
+  semester: string;
+  courses: Course[];
+}
+
+export type Catalog = Faculty[];
+
+export class Group {
   course: Course;
   description: string;
   events: AcademicEvent[];
@@ -7,7 +15,7 @@ class Group {
   teachers: Array<string>;
 }
 
-class Course {
+export class Course {
   name: string;
   academicPoints: number;
   id: number;
@@ -20,7 +28,7 @@ class Course {
 /**
  * Sorts events by start time
  */
-function sortEvents(events: AcademicEvent[]) {
+export function sortEvents(events: AcademicEvent[]) {
   events.sort(function(a, b) {
     if (a.day != b.day) {
       return a.day - b.day;
@@ -50,7 +58,7 @@ function eventsCollide(events: AcademicEvent[]): boolean {
 /**
  * Load the catalog object from url.
  */
-function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
+export function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
   return new Promise(function(resolve, reject) {
     // TODO(lutzky): Bring this back for tests
     // if (isLocal) {
@@ -131,7 +139,7 @@ function fixRawCatalog(catalog: Catalog) {
 /**
  * Return course's groups as an array of arrays, split by type
  */
-function groupsByType(course: Course): Group[][] {
+export function groupsByType(course: Course): Group[][] {
   let m = new Map();
   if (!course.groups) {
     return [];
@@ -150,6 +158,6 @@ function groupsByType(course: Course): Group[][] {
 /**
  * Return the appropriate display name for the group
  */
-function displayName(group: Group): string {
+export function displayName(group: Group): string {
   return group.description || group.course.name;
 }

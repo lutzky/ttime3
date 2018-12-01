@@ -8,8 +8,10 @@
     "@types/selectize": "^0.12.33",
     "clang-format": "^1.2.4",
     "google-closure-compiler": "^20180716.0.1",
+    "ts-loader": "^5.3.1",
     "typescript": "^3.2.1",
-    "typescript-formatter": "^7.2.2"
+    "typescript-formatter": "^7.2.2",
+    "webpack": "^4.26.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
@@ -20,7 +22,8 @@
     "http-server": "^0.11.1",
     "jasmine": "^3.1.0",
     "prettier": "^1.13.5",
-    "tern-jasmine": "^0.3.0"
+    "tern-jasmine": "^0.3.0",
+    "webpack-cli": "^3.1.2"
   },
   "scripts": {
     "test": "make"
