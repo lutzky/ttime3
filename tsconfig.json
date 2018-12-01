@@ -3,6 +3,7 @@
     "outDir": "./built",
     "alwaysStrict": true,
     "noImplicitReturns": true,
+    "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
     "target": "es2018"
   },

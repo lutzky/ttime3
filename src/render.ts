@@ -128,8 +128,8 @@ function renderSchedule(target: HTMLElement, schedule: Schedule, courseColors: M
     let event = le.event;
     eventDiv.className = 'event';
     let colors = courseColors.get(event.group.course.id);
-    eventDiv.style['background-color'] = colors[0];
-    eventDiv.style['color'] = colors[1];
+    eventDiv.style.backgroundColor = colors[0];
+    eventDiv.style.color = colors[1];
     positionElement(
       eventDiv,
       '%',

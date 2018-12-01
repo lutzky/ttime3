@@ -82,7 +82,7 @@ function parseCheeseFork(jsData: string): Catalog {
 
   console.info('Experimental CheeseFork parser. First course: ', data[0]);
 
-  data.forEach(function(dataCourse) {
+  data.forEach(function(dataCourse: any) {
     let facultyName = dataCourse['general'][hebrew.faculty];
 
     if (!facultiesByName.has(facultyName)) {
@@ -114,7 +114,7 @@ function parseCheeseFork(jsData: string): Catalog {
 
     let groupsById: Map<number, Group> = new Map();
 
-    dataCourse['schedule'].forEach(function(dataSchedule) {
+    dataCourse['schedule'].forEach(function(dataSchedule: any) {
       /*
        * In CheeseFork data, groups are repeated according to
        * "groups-you-should-sign-up-to". This is denoted as "group" in the data,

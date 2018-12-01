@@ -261,7 +261,7 @@ function rtlSpan(s: string): string {
  * Create a span for a course label, including info button
  */
 function courseLabel(course: Course): HTMLElement {
-  // TODO(lutzky): This function is full of DOM misuse, hence the @ts-ignore
+  // TODO(lutzky): This function is full of DOM misuse, hence the ts-ignore
   // symbols.
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
@@ -270,22 +270,22 @@ function courseLabel(course: Course): HTMLElement {
   infoLink.href = '#/';
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
-    // @ts-ignore
+    // @ts-ignore: dom-misuse
     if (!span.ttime3_expanded) {
       let infoDiv = document.createElement('div');
-      // @ts-ignore
+      // @ts-ignore: dom-misuse
       span.infoDiv = infoDiv;
       infoDiv.appendChild(htmlDescribeCourse(course));
       // showCourseDebugInfo(course);
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
-      // @ts-ignore
+      // @ts-ignore: dom-misuse
       span.ttime3_expanded = true;
     } else {
       infoLink.innerHTML = expandInfoSymbol;
-      // @ts-ignore
+      // @ts-ignore: dom-misuse
       span.ttime3_expanded = false;
-      // @ts-ignore
+      // @ts-ignore: dom-misuse
       span.removeChild(span.infoDiv);
     }
   };
@@ -365,10 +365,12 @@ function saveSettings() {
   };
 
   Object.keys(allRatings).forEach(function(r) {
+    // @ts-ignore: allRatings
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
       ($(`#rating-${r}-min`)[0]) as HTMLInputElement,
       null
     );
+    // @ts-ignore: allRatings
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
       ($(`#rating-${r}-max`)[0]) as HTMLInputElement,
       null
@@ -521,6 +523,8 @@ const customEventRegex = new RegExp(
     .join('')
 );
 
+// TODO(lutzky): inverseDayIndex is causing type problems, making us use
+// some ts-ignore.
 const inverseDayIndex = {
   Sun: 0,
   Mon: 1,
@@ -535,7 +539,7 @@ const inverseDayIndex = {
  * Create a course with a single event
  */
 function createSingleEventCourse(name: string, day: number, startMinute: number, endMinute: number): Course {
-  let c = {
+  let c: Course = {
     academicPoints: 0,
     id: 0,
     lecturerInCharge: '',
@@ -544,7 +548,7 @@ function createSingleEventCourse(name: string, day: number, startMinute: number,
     groups: [],
   };
 
-  let g = {
+  let g: Group = {
     course: c,
     description: '',
     id: 0,
@@ -555,7 +559,7 @@ function createSingleEventCourse(name: string, day: number, startMinute: number,
 
   c.groups.push(g);
 
-  let e = {
+  let e: AcademicEvent = {
     day: day,
     startMinute: startMinute,
     endMinute: endMinute,
@@ -586,7 +590,8 @@ function buildCustomEventsCourses(s: string): Course[] {
       throw Error('Invalid custom event line: ' + line);
     }
 
-    let day = inverseDayIndex[m[1]];
+    // @ts-ignore: inverseDayIndex
+    let day: number = inverseDayIndex[m[1]];
     let startMinute = Number(Number(m[2]) * 60 + Number(m[3]));
     let endMinute = Number(Number(m[4]) * 60 + Number(m[5]));
     let desc = m[6];
@@ -724,26 +729,28 @@ let sortedByRating = '';
 
 let sortedByRatingAsc = true;
 
+// TODO(lutzky): allRatings breaks typescript type checks and forces us to
+// use a lot of ts-ignore comments.
 const allRatings = {
   earliestStart: {
     name: 'Earliest start',
     explanation: 'Hour at which the earliest class of the week start',
-    badgeTextFunc: s => `Earliest start: ${s}`,
+    badgeTextFunc: (s: number) => `Earliest start: ${s}`,
   },
   latestFinish: {
     name: 'Latest finish',
     explanation: 'Hour at which the latest class of the week finishes',
-    badgeTextFunc: s => `Latest finish: ${s}`,
+    badgeTextFunc: (s: number) => `Latest finish: ${s}`,
   },
   numRuns: {
     name: 'Number of runs',
     explanation: 'Number of adjacent classes in different buildings',
-    badgeTextFunc: s => `${s} runs`,
+    badgeTextFunc: (s: number) => `${s} runs`,
   },
   freeDays: {
     name: 'Free days',
     explanation: 'Number of days with no classes',
-    badgeTextFunc: s => `${s} free days`,
+    badgeTextFunc: (s: number) => `${s} free days`,
   },
 };
 
@@ -757,6 +764,7 @@ function sortByRating(rating: string) {
 
   sortedByRating = rating;
   possibleSchedules.sort(function(a, b) {
+    // @ts-ignore: allRatings
     return (sortedByRatingAsc ? 1 : -1) * (a.rating[rating] - b.rating[rating]);
   });
 
@@ -775,7 +783,9 @@ function getRatingBadge(rating: string, schedule: Schedule): JQuery {
   let result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
+    // @ts-ignore: allRatings
     text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
+    // @ts-ignore: allRatings
     title: allRatings[rating].explanation,
     href: '#/',
     click: function() {
@@ -863,7 +873,7 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
  */
 function byDay(schedule: Schedule): AcademicEvent[][] {
   let events = schedule.events.slice();
-  let result = [[]];
+  let result: AcademicEvent[][] = [[]];
 
   sortEvents(events);
 
@@ -914,8 +924,11 @@ function getNicknames(course: Course): string {
  */
 function coursesSelectizeSetup() {
   let selectBox = $('#courses-selectize');
-  let opts = [];
-  let optgroups = [];
+
+  // Getting the types right for selectize is difficult :/
+
+  let opts: any = [];
+  let optgroups: any = [];
 
   currentCatalog.forEach(function(faculty) {
     optgroups.push({ label: faculty.name, value: faculty.name });
@@ -995,7 +1008,9 @@ function loadSettings(s: string): Settings {
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
 
     Object.keys(allRatings).forEach(function(r) {
+      // @ts-ignore: allRatings
       $(`#rating-${r}-min`).val(fs.ratingMin[r]);
+      // @ts-ignore: allRatings
       $(`#rating-${r}-max`).val(fs.ratingMax[r]);
     });
   }
@@ -1030,7 +1045,9 @@ function buildRatingsLimitForm() {
     row.append(
       $('<div>', {
         class: 'col col-form-label',
+        // @ts-ignore: allRatings
         text: allRatings[r].name,
+        // @ts-ignore: allRatings
         title: allRatings[r].explanation,
       })
     );

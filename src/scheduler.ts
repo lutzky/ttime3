@@ -148,7 +148,7 @@ function removeForbiddenGroups(
  */
 function filterWithDelta(
   src: Schedule[],
-  filter: (Schedule) => boolean,
+  filter: (s: Schedule) => boolean,
   filterName: string
 ): Schedule[] {
   let result = src.filter(filter);
@@ -186,6 +186,7 @@ function filterByRatings(
   settings: FilterSettings
 ): Schedule[] {
   Object.keys(settings.ratingMin).forEach(function(r) {
+    // @ts-ignore: allRatings
     if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
       return;
     }
@@ -194,13 +195,17 @@ function filterByRatings(
       schedules,
       function(schedule) {
         if (
+          // @ts-ignore: allRatings
           settings.ratingMin[r] != null &&
+          // @ts-ignore: allRatings
           schedule.rating[r] < settings.ratingMin[r]
         ) {
           return false;
         }
         if (
+          // @ts-ignore: allRatings
           settings.ratingMax[r] != null &&
+          // @ts-ignore: allRatings
           schedule.rating[r] > settings.ratingMax[r]
         ) {
           return false;
