@@ -1,11 +1,15 @@
+const path = require('path');
+
 module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   entry: './src/main.ts',
   output: {
-    filename: 'dist/ttime.js',
+    filename: 'ttime.js',
     library: 'ttime',
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/dist/'
   },
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.

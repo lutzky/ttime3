@@ -456,7 +456,7 @@ function refreshSelectedCourses() {
   });
 }
 
-import SchedulerWorker = require('worker-loader?name=dist/[name].js!./scheduler_worker');
+import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
 let schedulerWorker = new SchedulerWorker();
 
 /**
