@@ -1,3 +1,7 @@
+import 'mocha';
+import {expect} from 'chai';
+import {minutesToTime} from '../src/formatting';
+
 describe('Formatting', function() {
   describe('time formatting', function() {
     let testCases = [
@@ -12,7 +16,7 @@ describe('Formatting', function() {
     ];
     testCases.forEach(function(tc) {
       it('should format ' + tc.minutes + ' as ' + tc.time, function() {
-        expect(minutesToTime(tc.minutes)).toBe(tc.time);
+        expect(minutesToTime(tc.minutes)).to.equal(tc.time);
       });
     });
   });

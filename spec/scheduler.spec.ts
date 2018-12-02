@@ -1,21 +1,8 @@
+import 'mocha';
+import {expect} from 'chai';
+import {cartesian} from '../src/scheduler';
+
 const algebraCourseID = 104166;
-
-if (typeof require != 'undefined') {
-  let common = require('../common');
-  let formatting = require('../formatting');
-  let render = require('../render');
-  let scheduler = require('../scheduler');
-
-  cartesian = scheduler.cartesian;
-  eventsCollide = common.eventsCollide;
-  rate = scheduler.rate;
-  generateSchedules = scheduler.generateSchedules;
-  groupsByType = common.groupsByType;
-  layoutLayeredEvents = render.layoutLayeredEvents;
-  loadTestCatalog = common.loadTestCatalog;
-  minutesToTime = formatting.minutesToTime;
-  sortEvents = common.sortEvents;
-}
 
 const THOROUGH_TEST_MODE = false;
 
@@ -44,13 +31,13 @@ describe('Scheduler', function() {
   describe('Cartesian products', function() {
     it('should calculate correctly in trivial cases', function() {
       let a = [[1, 2]];
-      expect(cartesian(...a)).toEqual([[1], [2]]);
+      expect(cartesian(...a)).to.equal([[1], [2]]);
       let b = [[1, 2, 3]];
-      expect(cartesian(...b)).toEqual([[1], [2], [3]]);
+      expect(cartesian(...b)).to.equal([[1], [2], [3]]);
     });
     it('should caculate correctly in nontrivial cases', function() {
       let a = [[1, 2], [3, 4, 6]];
-      expect(cartesian(...a)).toEqual([
+      expect(cartesian(...a)).to.equal([
         [1, 3],
         [1, 4],
         [1, 6],
@@ -71,7 +58,7 @@ describe('Scheduler', function() {
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         ];
-        expect(() => cartesian(...a)).not.toThrow();
+        expect(() => cartesian(...a)).to.not.throw();
       });
     }
   });
@@ -121,7 +108,7 @@ describe('Scheduler', function() {
           }
           typeCounts.set(type, typeCounts.get(type) + 1);
         });
-        expect(typeCounts).toEqual(want);
+        expect(typeCounts).to.equal(want);
       });
     });
 
@@ -130,7 +117,7 @@ describe('Scheduler', function() {
       settings.noCollisions = true;
 
       let schedules = generateSchedules(new Set([algebra]), settings);
-      expect(schedules.length).toEqual(33);
+      expect(schedules.length).to.equal(33);
     });
 
     it('should schedule with 104166.11 if not forbidden', function() {
@@ -177,8 +164,8 @@ describe('Scheduler', function() {
       ];
 
       let schedules = generateSchedules(new Set([algebra]), settings);
-      expect(schedules.length).toEqual(3);
-      expect(schedules.map(x => x.events.length)).toEqual([1, 1, 1]);
+      expect(schedules.length).to.equal(3);
+      expect(schedules.map(x => x.events.length)).to.equal([1, 1, 1]);
     });
   });
 
@@ -191,16 +178,16 @@ describe('Scheduler', function() {
       let eventE = { startMinute: 120, endMinute: 180 /* no location */ };
       let eventF = { startMinute: 180, endMinute: 240, location: 'Taub 1' };
       it('should count if events have different buildings', function() {
-        expect(rate([eventA, eventB, eventC]).numRuns).toEqual(1);
+        expect(rate([eventA, eventB, eventC]).numRuns).to.equal(1);
       });
       it('should count 0 if everything is in the same building', function() {
-        expect(rate([eventA, eventB, eventD]).numRuns).toEqual(0);
+        expect(rate([eventA, eventB, eventD]).numRuns).to.equal(0);
       });
       it('should not count missing locations as different', function() {
-        expect(rate([eventA, eventB, eventE]).numRuns).toEqual(0);
+        expect(rate([eventA, eventB, eventE]).numRuns).to.equal(0);
       });
       it('should count multiple runs', function() {
-        expect(rate([eventB, eventC, eventF]).numRuns).toEqual(2);
+        expect(rate([eventB, eventC, eventF]).numRuns).to.equal(2);
       });
     });
     describe('freeDays', function() {
@@ -211,16 +198,16 @@ describe('Scheduler', function() {
       let evD = { day: 3 };
       let evE = { day: 4 };
       it('should have 5 free days for no events', function() {
-        expect(rate([]).freeDays).toEqual(5);
+        expect(rate([]).freeDays).to.equal(5);
       });
       it('should have 0 free days for one event per day', function() {
-        expect(rate([evA, evB, evC, evD, evE]).freeDays).toEqual(0);
+        expect(rate([evA, evB, evC, evD, evE]).freeDays).to.equal(0);
       });
       it('should have 3 free days for two events, one per day', function() {
-        expect(rate([evD, evE]).freeDays).toEqual(3);
+        expect(rate([evD, evE]).freeDays).to.equal(3);
       });
       it('should have 1 free days for 5 events over 4 days', function() {
-        expect(rate([evA, evAA, evC, evD, evE]).freeDays).toEqual(1);
+        expect(rate([evA, evAA, evC, evD, evE]).freeDays).to.equal(1);
       });
     });
     describe('earliestStart and latestFinish', function() {
@@ -230,10 +217,10 @@ describe('Scheduler', function() {
       let evC = { day: 2, startMinute: 120, endMinute: 190 };
       let evD = { day: 4, startMinute: 30, endMinute: 31 };
       it('should correctly compute earliestStart', function() {
-        expect(rate([evA, evAA, evB, evC, evD]).earliestStart).toEqual(0.5);
+        expect(rate([evA, evAA, evB, evC, evD]).earliestStart).to.equal(0.5);
       });
       it('should correctly compute latestFinish', function() {
-        expect(rate([evA, evAA, evB, evC, evD]).latestFinish).toEqual(5);
+        expect(rate([evA, evAA, evB, evC, evD]).latestFinish).to.equal(5);
       });
     });
   });

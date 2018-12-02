@@ -40,8 +40,10 @@ class LayeredEvent {
  *
  * Shamelessly lifted from boazg at
  * https://github.com/lutzky/ttime/blob/master/lib/ttime/tcal/tcal.rb
+ *
+ * TODO(lutzky): This is exported for testing purposes only.
  */
-function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
+export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
   let result: LayeredEvent[] = [];
 
   let remaining = events.slice();

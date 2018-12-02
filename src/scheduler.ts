@@ -51,8 +51,10 @@ function filterNoCollisions(schedule: Schedule): boolean {
  * Return a cartesian product of arrays
  *
  * Note: If changing this method, reenable CARTESIAN_SLOW_TEST.
+ *
+ * TODO(lutzky): cartesian is exported for testing purposes
  */
-function cartesian<T>(...a: T[][]): T[][] {
+export function cartesian<T>(...a: T[][]): T[][] {
   if (a.length == 0) {
     return [[]];
   }
