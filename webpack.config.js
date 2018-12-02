@@ -3,10 +3,9 @@ module.exports = {
   devtool: 'inline-source-map',
   entry: './src/main.ts',
   output: {
-    filename: 'ttime.js',
+    filename: 'dist/ttime.js',
     library: 'ttime',
-    libraryTarget: 'umd',
-
+    libraryTarget: 'umd'
   },
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.

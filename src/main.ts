@@ -27,10 +27,11 @@ const defaultCatalogUrl =
 /**
  * Set the given catalog URL and save settings. For use from HTML.
  */
-export function setCatalogUrl(url: string) {
+function setCatalogUrl(url: string) {
   $('#catalog-url').val(url);
   catalogUrlChanged();
 }
+(window as any).setCatalogUrl = setCatalogUrl;
 
 /**
  * Handler for changes to the catalog URL field
@@ -392,7 +393,7 @@ function addSelectedCourse(course: Course) {
 /**
  * Add a course with a given ID
  */
-export function addSelectedCourseByID(...ids: number[]) {
+function addSelectedCourseByID(...ids: number[]) {
   ids.forEach(function(id) {
     let course = getCourseByID(id);
 
@@ -403,6 +404,7 @@ export function addSelectedCourseByID(...ids: number[]) {
     }
   });
 }
+(window as any).addSelectedCourseByID = addSelectedCourseByID;
 
 /**
  * Mark course as unselected.
@@ -454,7 +456,7 @@ function refreshSelectedCourses() {
   });
 }
 
-import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
+import SchedulerWorker = require('worker-loader?name=dist/[name].js!./scheduler_worker');
 let schedulerWorker = new SchedulerWorker();
 
 /**
@@ -476,7 +478,7 @@ schedulerWorker.onmessage = function(e: MessageEvent) {
 /**
  * Check if custom-events-textarea has valid events
  */
-export function checkCustomEvents() {
+function checkCustomEvents() {
   let elem = $('#custom-events-textarea');
   elem.removeClass('is-invalid');
   elem.removeClass('is-valid');
@@ -490,6 +492,7 @@ export function checkCustomEvents() {
     elem.addClass('is-invalid');
   }
 }
+(window as any).checkCustomEvents = checkCustomEvents;
 
 const customEventRegex = new RegExp([
   /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
@@ -580,7 +583,7 @@ function buildCustomEventsCourses(s: string): Course[] {
 /**
  * Start a worker to generate schedules
  */
-export function getSchedules() {
+function getSchedules() {
   $('#generate-schedules').prop('disabled', true);
   $('#spinner').show();
   $('#exception-occurred').hide();
@@ -600,6 +603,7 @@ export function getSchedules() {
     filterSettings: settings.filterSettings,
   });
 }
+(window as any).getSchedules = getSchedules;
 
 let possibleSchedules: Schedule[] = [];
 
@@ -626,16 +630,18 @@ function setPossibleSchedules(schedules: Schedule[]) {
 /**
  * Increment the current displayed schedule
  */
-export function nextSchedule() {
+function nextSchedule() {
   goToSchedule(currentSchedule + 1);
 }
+(window as any).nextSchedule = nextSchedule;
 
 /**
  * Decrement the current displayed schedule
  */
-export function prevSchedule() {
+function prevSchedule() {
   goToSchedule(currentSchedule - 1);
 }
+(window as any).prevSchedule = prevSchedule;
 
 const dayNames = [
   'Sunday',
