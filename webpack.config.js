@@ -2,10 +2,16 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   entry: './src/main.ts',
-  output: {filename: 'bundle.js'},
+  output: {
+    filename: 'ttime.js',
+    library: 'ttime',
+    libraryTarget: 'umd',
+
+  },
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js'],
+    modules: ['node_modules']
   },
   module: {
     rules: [
@@ -15,6 +21,3 @@ module.exports = {
     ]
   }
 };
-
-// TODO(lutzky): We probably want
-// https://github.com/webpack-contrib/worker-loader

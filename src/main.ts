@@ -4,7 +4,8 @@
 let mainDebugLogging = false;
 
 import {renderSchedule} from './render';
-import {displayName, groupsByType, sortEvents, Course, Group, Faculty, Catalog, loadCatalog} from './common';
+import {displayName, groupsByType, sortEvents, loadCatalog} from './common';
+import {Schedule, Course, Group, Catalog, ScheduleRating, FilterSettings, AcademicEvent} from './common';
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
@@ -25,7 +26,7 @@ const defaultCatalogUrl =
 /**
  * Set the given catalog URL and save settings. For use from HTML.
  */
-function setCatalogUrl(url: string) {
+export function setCatalogUrl(url: string) {
   $('#catalog-url').val(url);
   catalogUrlChanged();
 }
@@ -473,7 +474,7 @@ schedulerWorker.onmessage = function(e: MessageEvent) {
 /**
  * Check if custom-events-textarea has valid events
  */
-function checkCustomEvents() {
+export function checkCustomEvents() {
   let elem = $('#custom-events-textarea');
   elem.removeClass('is-invalid');
   elem.removeClass('is-valid');
@@ -577,7 +578,7 @@ function buildCustomEventsCourses(s: string): Course[] {
 /**
  * Start a worker to generate schedules
  */
-function getSchedules() {
+export function getSchedules() {
   $('#generate-schedules').prop('disabled', true);
   $('#spinner').show();
   $('#exception-occurred').hide();
@@ -623,14 +624,14 @@ function setPossibleSchedules(schedules: Schedule[]) {
 /**
  * Increment the current displayed schedule
  */
-function nextSchedule() {
+export function nextSchedule() {
   goToSchedule(currentSchedule + 1);
 }
 
 /**
  * Decrement the current displayed schedule
  */
-function prevSchedule() {
+export function prevSchedule() {
   goToSchedule(currentSchedule - 1);
 }
 

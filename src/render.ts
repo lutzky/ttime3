@@ -1,3 +1,6 @@
+import {AcademicEvent, Schedule} from './common';
+import {displayName, eventsCollide} from './common';
+
 /**
  * Layered events for rendering on screen
  *
@@ -67,7 +70,7 @@ function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
 
     selected.forEach(function(s) {
       let assignedToLayer = false;
-      layers.some(function(layer, i) {
+      layers.some(function(layer, _) {
         if (!eventsCollide(layer.concat([s]))) {
           assignedToLayer = true;
           layer.push(s);

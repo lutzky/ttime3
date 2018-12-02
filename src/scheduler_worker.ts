@@ -1,5 +1,7 @@
 importScripts('common.js', 'scheduler.js');
 
+import {generateSchedules} from './scheduler';
+
 onmessage = function(e: MessageEvent) {
   try {
     let schedules = generateSchedules(e.data.courses, e.data.filterSettings);

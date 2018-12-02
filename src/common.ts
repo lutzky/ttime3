@@ -1,3 +1,5 @@
+import {parseCheeseFork} from './cheesefork';
+
 export class Faculty {
   name: string;
   semester: string;
@@ -25,6 +27,42 @@ export class Course {
   faculty?: Faculty;
 }
 
+export class AcademicEvent {
+  day: number;
+  group: Group;
+  startMinute: number;
+  endMinute: number;
+  location: string;
+}
+
+export class Schedule {
+  events: AcademicEvent[];
+  rating: ScheduleRating;
+}
+
+/**
+ * earliestStart and latestFinish are in hours (e.g. 1:30PM is 13.5).
+ *
+ * numRuns is the amount of occurences where two adjacent events (endMinute
+ * of the first one equals startMinute of the second, same day) are in the
+ * same room.
+ *
+ * freeDays is the number of days in Sun-Thu with no events.
+ */
+export class ScheduleRating {
+  earliestStart: number;
+  latestFinish: number;
+  numRuns: number;
+  freeDays: number;
+};
+
+export class FilterSettings {
+  noCollisions: boolean;
+  forbiddenGroups: string[];
+  ratingMin: ScheduleRating;
+  ratingMax: ScheduleRating;
+}
+
 /**
  * Sorts events by start time
  */
@@ -40,7 +78,7 @@ export function sortEvents(events: AcademicEvent[]) {
 /**
  * Returns false iff two entries in events overlap
  */
-function eventsCollide(events: AcademicEvent[]): boolean {
+export function eventsCollide(events: AcademicEvent[]): boolean {
   let e = events.slice();
   sortEvents(e);
 
@@ -58,7 +96,7 @@ function eventsCollide(events: AcademicEvent[]): boolean {
 /**
  * Load the catalog object from url.
  */
-export function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
+export function loadCatalog(url: string, _isLocal: boolean): Promise<Catalog> {
   return new Promise(function(resolve, reject) {
     // TODO(lutzky): Bring this back for tests
     // if (isLocal) {

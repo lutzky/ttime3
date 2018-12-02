@@ -4,34 +4,8 @@
 //   schedulerDebugLogging = true;
 let schedulerDebugLogging = false;
 
-class AcademicEvent {
-  day: number;
-  group: Group;
-  startMinute: number;
-  endMinute: number;
-  location: string;
-}
-
-class Schedule {
-  events: AcademicEvent[];
-  rating: ScheduleRating;
-}
-
-/**
- * earliestStart and latestFinish are in hours (e.g. 1:30PM is 13.5).
- *
- * numRuns is the amount of occurences where two adjacent events (endMinute
- * of the first one equals startMinute of the second, same day) are in the
- * same room.
- *
- * freeDays is the number of days in Sun-Thu with no events.
- */
-class ScheduleRating {
-  earliestStart: number;
-  latestFinish: number;
-  numRuns: number;
-  freeDays: number;
-};
+import {Schedule, Group, AcademicEvent, Course, ScheduleRating, FilterSettings} from './common';
+import {groupsByType, sortEvents, eventsCollide} from './common';
 
 /**
  * Return the building in which ev happens
@@ -89,17 +63,10 @@ function cartesian<T>(...a: T[][]): T[][] {
       .reduce((a, b) => a.concat(b));
 }
 
-class FilterSettings {
-  noCollisions: boolean;
-  forbiddenGroups: string[];
-  ratingMin: ScheduleRating;
-  ratingMax: ScheduleRating;
-}
-
 /**
  * Return all possible schedules
  */
-function generateSchedules(
+export function generateSchedules(
     courses: Set<Course>, settings: FilterSettings): Schedule[] {
   if (schedulerDebugLogging) {
     console.time('generateSchedules');

@@ -2,13 +2,20 @@
   "compilerOptions": {
     "outDir": "./built",
     "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
     "alwaysStrict": true,
     "noImplicitReturns": true,
     "noImplicitAny": true,
     "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "target": "es2018"
   },
   "include": [
     "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

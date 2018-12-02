@@ -1,3 +1,5 @@
+import {AcademicEvent, Catalog, Course, Faculty, Group} from './common';
+
 /**
  * This module implements support for importing data from cheeseFork
  *
@@ -47,7 +49,7 @@ function parseCheeseForkTestDate(s: string): DateObj {
  *
  * @param jsData - Cheesefork courses_*.js data
  */
-function parseCheeseFork(jsData: string): Catalog {
+export function parseCheeseFork(jsData: string): Catalog {
   const cheeseForkPrefix = 'var courses_from_rishum = ';
 
   const hebrew = {
@@ -180,7 +182,7 @@ function parseCheeseFork(jsData: string): Catalog {
       group.events.push(event);
     });
 
-    groupsById.forEach(function(group, id) {
+    groupsById.forEach(function(group, _) {
       course.groups.push(group);
     });
 
