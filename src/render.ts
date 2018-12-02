@@ -1,5 +1,6 @@
 import {AcademicEvent, Schedule} from './common';
-import {displayName, eventsCollide} from './common';
+import {eventsCollide} from './common';
+import {displayName, minutesToTime} from './formatting';
 
 /**
  * Layered events for rendering on screen

@@ -4,8 +4,9 @@
 let mainDebugLogging = false;
 
 import {renderSchedule} from './render';
-import {displayName, groupsByType, sortEvents, loadCatalog} from './common';
+import {groupsByType, sortEvents, loadCatalog} from './common';
 import {Schedule, Course, Group, Catalog, ScheduleRating, FilterSettings, AcademicEvent} from './common';
+import {displayName, formatDate, minutesToTime} from './formatting';
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
@@ -453,7 +454,8 @@ function refreshSelectedCourses() {
   });
 }
 
-let schedulerWorker = new Worker('built/scheduler_worker.js');
+import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
+let schedulerWorker = new SchedulerWorker();
 
 /**
  * Respond to scheduling result from worker

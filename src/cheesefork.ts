@@ -1,4 +1,4 @@
-import {AcademicEvent, Catalog, Course, Faculty, Group} from './common';
+import {AcademicEvent, Catalog, Course, DateObj, Faculty, Group} from './common';
 
 /**
  * This module implements support for importing data from cheeseFork

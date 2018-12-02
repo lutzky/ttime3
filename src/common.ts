@@ -63,6 +63,12 @@ export class FilterSettings {
   ratingMax: ScheduleRating;
 }
 
+export class DateObj {
+  year: number;
+  month: number;
+  day: number;
+}
+
 /**
  * Sorts events by start time
  */
@@ -191,11 +197,4 @@ export function groupsByType(course: Course): Group[][] {
   });
 
   return Array.from(m.values());
-}
-
-/**
- * Return the appropriate display name for the group
- */
-export function displayName(group: Group): string {
-  return group.description || group.course.name;
 }
