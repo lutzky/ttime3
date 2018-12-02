@@ -76,9 +76,8 @@ describe('Scheduler', function() {
     beforeEach(function(done) {
       loadTestCatalog().then(function(c) {
         catalog = c;
-        algebra = catalog[0].courses.find(
-          course => course.id == algebraCourseID
-        );
+        algebra =
+            catalog[0].courses.find(course => course.id == algebraCourseID);
         expect(algebra).toBeDefined();
         done();
       });
@@ -125,9 +124,8 @@ describe('Scheduler', function() {
       settings.noCollisions = true;
       let schedules = generateSchedules(new Set([algebra]), settings);
 
-      let schedulesWithGroup = schedules.filter(schedule =>
-        schedule.events.map(x => x.group.id).includes(11)
-      );
+      let schedulesWithGroup = schedules.filter(
+          schedule => schedule.events.map(x => x.group.id).includes(11));
 
       expect(schedulesWithGroup.length).toBeGreaterThan(0);
     });
@@ -138,9 +136,8 @@ describe('Scheduler', function() {
       settings.forbiddenGroups = ['104166.11'];
       let schedules = generateSchedules(new Set([algebra]), settings);
 
-      let schedulesWithGroup = schedules.filter(schedule =>
-        schedule.events.map(x => x.group.id).includes(11)
-      );
+      let schedulesWithGroup = schedules.filter(
+          schedule => schedule.events.map(x => x.group.id).includes(11));
 
       expect(schedulesWithGroup.length).toBe(0);
     });
@@ -171,12 +168,12 @@ describe('Scheduler', function() {
 
   describe('schedule ratings', function() {
     describe('numRuns', function() {
-      let eventA = { startMinute: 0, endMinute: 60, location: 'Ulman 105' };
-      let eventB = { startMinute: 60, endMinute: 120, location: 'Ulman 350' };
-      let eventC = { startMinute: 120, endMinute: 180, location: 'Meyer 750' };
-      let eventD = { startMinute: 120, endMinute: 180, location: 'Ulman 200' };
-      let eventE = { startMinute: 120, endMinute: 180 /* no location */ };
-      let eventF = { startMinute: 180, endMinute: 240, location: 'Taub 1' };
+      let eventA = {startMinute: 0, endMinute: 60, location: 'Ulman 105'};
+      let eventB = {startMinute: 60, endMinute: 120, location: 'Ulman 350'};
+      let eventC = {startMinute: 120, endMinute: 180, location: 'Meyer 750'};
+      let eventD = {startMinute: 120, endMinute: 180, location: 'Ulman 200'};
+      let eventE = {startMinute: 120, endMinute: 180 /* no location */};
+      let eventF = {startMinute: 180, endMinute: 240, location: 'Taub 1'};
       it('should count if events have different buildings', function() {
         expect(rate([eventA, eventB, eventC]).numRuns).to.equal(1);
       });
@@ -191,12 +188,12 @@ describe('Scheduler', function() {
       });
     });
     describe('freeDays', function() {
-      let evA = { day: 0 };
-      let evAA = { day: 0 };
-      let evB = { day: 1 };
-      let evC = { day: 2 };
-      let evD = { day: 3 };
-      let evE = { day: 4 };
+      let evA = {day: 0};
+      let evAA = {day: 0};
+      let evB = {day: 1};
+      let evC = {day: 2};
+      let evD = {day: 3};
+      let evE = {day: 4};
       it('should have 5 free days for no events', function() {
         expect(rate([]).freeDays).to.equal(5);
       });
@@ -211,11 +208,11 @@ describe('Scheduler', function() {
       });
     });
     describe('earliestStart and latestFinish', function() {
-      let evA = { day: 0, startMinute: 30, endMinute: 60 };
-      let evAA = { day: 0, startMinute: 120, endMinute: 190 };
-      let evB = { day: 1, startMinute: 150, endMinute: 300 };
-      let evC = { day: 2, startMinute: 120, endMinute: 190 };
-      let evD = { day: 4, startMinute: 30, endMinute: 31 };
+      let evA = {day: 0, startMinute: 30, endMinute: 60};
+      let evAA = {day: 0, startMinute: 120, endMinute: 190};
+      let evB = {day: 1, startMinute: 150, endMinute: 300};
+      let evC = {day: 2, startMinute: 120, endMinute: 190};
+      let evD = {day: 4, startMinute: 30, endMinute: 31};
       it('should correctly compute earliestStart', function() {
         expect(rate([evA, evAA, evB, evC, evD]).earliestStart).to.equal(0.5);
       });
