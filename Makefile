@@ -22,6 +22,9 @@ fix:
 serve:
 	http-server
 
+karma:
+	karma start karma.unit.js
+
 watch:
 	webpack --watch
 
