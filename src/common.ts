@@ -99,24 +99,25 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
   return false;
 }
 
+import fs = require('fs');
+
 /**
  * Load the catalog object from url.
  */
-export function loadCatalog(url: string, _isLocal: boolean): Promise<Catalog> {
+export function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
   return new Promise(function(resolve, reject) {
-    // TODO(lutzky): Bring this back for tests
-    // if (isLocal) {
-    //   require('fs').readFile(url, function(err, data) {
-    //     if (err) {
-    //       reject(err);
-    //     } else {
-    //       let result = JSON.parse(data);
-    //       fixRawCatalog(result as Catalog);
-    //       resolve(result);
-    //     }
-    //   });
-    //   return;
-    // }
+     if (isLocal) {
+       fs.readFile(url, function(err, data) {
+         if (err) {
+           reject(err);
+         } else {
+           let result = JSON.parse(data.toString());
+           fixRawCatalog(result as Catalog);
+           resolve(result);
+         }
+       });
+       return;
+     }
 
     let req = new XMLHttpRequest();
     req.open('GET', url);
@@ -168,17 +169,13 @@ function fixRawCatalog(catalog: Catalog) {
   });
 }
 
-// TODO(lutzky): Bring this back for tests
-// /**
-//  * Load the test catalog from local data
-//  */
-// function loadTestCatalog(): Promise<Catalog> {
-//   if (typeof require != 'undefined') {
-//     return loadCatalog('testdata.json', true);
-//   } else {
-//     return loadCatalog('../testdata.json', false);
-//   }
-// }
+export function loadTestCatalog(): Promise<Catalog> {
+   if (typeof require != 'undefined') {
+     return loadCatalog('testdata.json', true);
+   } else {
+     return loadCatalog('../testdata.json', false);
+   }
+ }
 
 /**
  * Return course's groups as an array of arrays, split by type
