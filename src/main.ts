@@ -1047,7 +1047,7 @@ let settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();
 
-loadCatalog(settings.catalogUrl, /* isLocal= */ false)
+loadCatalog(settings.catalogUrl)
     .then(
         function(catalog) {
           if (mainDebugLogging) {

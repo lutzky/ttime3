@@ -99,26 +99,11 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
   return false;
 }
 
-import fs = require('fs');
-
 /**
  * Load the catalog object from url.
  */
-export function loadCatalog(url: string, isLocal: boolean): Promise<Catalog> {
+export function loadCatalog(url: string): Promise<Catalog> {
   return new Promise(function(resolve, reject) {
-     if (isLocal) {
-       fs.readFile(url, function(err, data) {
-         if (err) {
-           reject(err);
-         } else {
-           let result = JSON.parse(data.toString());
-           fixRawCatalog(result as Catalog);
-           resolve(result);
-         }
-       });
-       return;
-     }
-
     let req = new XMLHttpRequest();
     req.open('GET', url);
     req.onload = function() {
@@ -169,13 +154,15 @@ function fixRawCatalog(catalog: Catalog) {
   });
 }
 
+import * as testData from '../testdata.json';
+
 export function loadTestCatalog(): Promise<Catalog> {
-   if (typeof require != 'undefined') {
-     return loadCatalog('testdata.json', true);
-   } else {
-     return loadCatalog('../testdata.json', false);
-   }
- }
+  return new Promise(function(resolve, _reject) {
+    let result: Catalog = testData as any as Catalog;
+    fixRawCatalog(result);
+    resolve(result);
+  });
+}
 
 /**
  * Return course's groups as an array of arrays, split by type
