@@ -189,8 +189,10 @@ function countFreeDays(events: AcademicEvent[]): number {
 
 /**
  * Rate the given events as a schedule
+ *
+ * TODO(lutzky): rate is exported for testing purposes
  */
-function rate(events: AcademicEvent[]): ScheduleRating {
+export function rate(events: AcademicEvent[]): ScheduleRating {
   return {
     earliestStart: Math.min(...events.map(e => e.startMinute / 60.0)),
     latestFinish: Math.max(...events.map(e => e.endMinute / 60.0)),
