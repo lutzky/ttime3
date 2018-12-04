@@ -6,6 +6,12 @@ if (process.env.TTIME_THOROUGH) {
   extra_files.push('test_config/thorough.js');
 }
 
+let browsers = [];
+
+if (process.env.CHROME_HEADLESS) {
+  browsers.push('ChromeHeadless');
+}
+
 module.exports = function(config) {
   config.set({
     node: {
@@ -16,10 +22,11 @@ module.exports = function(config) {
     files: extra_files.concat(['spec/**/*.ts']),
     exclude: [],
     preprocessors: {'spec/**/*.ts': ['webpack']},
+    browsers: browsers,
     webpack: {
       mode: 'development',
-      module: webpackConfig.module,
-      resolve: webpackConfig.resolve
+      module: webpackConfig().module,
+      resolve: webpackConfig().resolve
     },
     reporters: ['progress'],
     port: 8080,
