@@ -25,8 +25,11 @@ fix:
 	./clang-format-diff.sh fix
 	echo 'LINT FIXING CURRENTLY INACTIVE'
 
-serve:
+serve-production:
 	http-server
+
+serve-dev:
+	http-server dev-server/
 
 karma:
 	karma start karma.unit.js
@@ -35,6 +38,9 @@ karma_thorough:
 	TTIME_THOROUGH=1 karma start karma.unit.js
 
 webpack-watch:
-	webpack --watch
+	webpack --watch --progress
+
+webpack-production:
+	webpack --env.production --progress
 
 .PHONY: test lint all fix serve watch

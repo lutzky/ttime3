@@ -15,7 +15,7 @@ module.exports = env => {
       filename: 'ttime.js',
       library: 'ttime',
       libraryTarget: 'umd',
-      path: path.resolve(__dirname, 'dist'),
+      path: path.resolve(__dirname, isProduction ? 'dist' : 'dev-server/dist'),
       publicPath: 'dist/'
     },
     resolve: {
