@@ -12,8 +12,8 @@ clang-format-diff:
 	./clang-format-diff.sh
 
 lint:
-	# TODO(lutzky): Fix linting
-	echo 'LINTING CURRENTLY INACTIVE'
+	@# TODO(lutzky): Fix linting
+	@echo 'LINTING CURRENTLY INACTIVE'
 
 test:
 	mocha -r ts-node/register spec/**/*.spec.ts
@@ -23,7 +23,7 @@ tsc-watch:
 
 fix:
 	./clang-format-diff.sh fix
-	echo 'LINT FIXING CURRENTLY INACTIVE'
+	@echo 'LINT FIXING CURRENTLY INACTIVE'
 
 serve-production:
 	http-server
