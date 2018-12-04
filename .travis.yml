@@ -1,7 +1,13 @@
 language: node_js
 install: npm install
+sudo: required
+addons:
+  chrome: stable
 node_js:
   - "node"
+script:
+  - npm test
+  - make karma CHROME_HEADLESS=1
 branches:
   except:
     - /.*-wip$/
