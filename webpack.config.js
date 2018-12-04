@@ -9,7 +9,7 @@ module.exports = {
     library: 'ttime',
     libraryTarget: 'umd',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/dist/'
+    publicPath: 'dist/'
   },
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.
