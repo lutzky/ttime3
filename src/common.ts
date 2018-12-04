@@ -136,7 +136,7 @@ export function loadCatalog(url: string): Promise<Catalog> {
 /**
  * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
  */
-function fixRawCatalog(catalog: Catalog) {
+export function fixRawCatalog(catalog: Catalog) {
   catalog.forEach(function(faculty) {
     faculty.courses.forEach(function(course) {
       course.faculty = faculty;
@@ -154,15 +154,6 @@ function fixRawCatalog(catalog: Catalog) {
   });
 }
 
-import * as testData from '../testdata.json';
-
-export function loadTestCatalog(): Promise<Catalog> {
-  return new Promise(function(resolve, _reject) {
-    let result: Catalog = testData as any as Catalog;
-    fixRawCatalog(result);
-    resolve(result);
-  });
-}
 
 /**
  * Return course's groups as an array of arrays, split by type

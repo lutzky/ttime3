@@ -2,7 +2,7 @@
 import {expect} from 'chai';
 
 import {AcademicEvent, Catalog, Course, FilterSettings} from '../src/common';
-import {loadTestCatalog, ScheduleRating} from '../src/common';
+import {fixRawCatalog, ScheduleRating} from '../src/common';
 import {cartesian, generateSchedules, rate} from '../src/scheduler';
 
 const algebraCourseID = 104166;
@@ -10,6 +10,17 @@ const algebraCourseID = 104166;
 let THOROUGH_TEST_MODE = false;
 
 declare var ttime_thorough: boolean;
+
+import * as testData from '../testdata.json';
+
+export function loadTestCatalog(): Promise<Catalog> {
+  return new Promise(function(resolve, _reject) {
+    let result: Catalog = testData as any as Catalog;
+    fixRawCatalog(result);
+    resolve(result);
+  });
+}
+
 
 if (typeof ttime_thorough != 'undefined') {
   console.info('Thorough test mode active');
