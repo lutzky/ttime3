@@ -171,7 +171,6 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   location.innerText = event.location;
   target.appendChild(location);
 
-  /* TODO(lutzky): Return forbidDiv
   let forbidDiv = document.createElement('div');
   forbidDiv.className = 'forbid';
   let forbidLink = document.createElement('a');
@@ -180,11 +179,10 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   forbidLink.title = 'Forbid this group';
   forbidLink.onclick = function() {
     $(forbidLink).fadeOut(100).fadeIn(100);
-    addForbiddenGroup(event.group);
+    (window as any).addForbiddenGroup(event.group);
   };
   forbidDiv.appendChild(forbidLink);
   target.appendChild(forbidDiv);
-   */
 }
 
 const gridDensity = 30;

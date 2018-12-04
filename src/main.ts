@@ -117,6 +117,9 @@ function addForbiddenGroup(group: Group) {
 
   updateForbiddenGroups();
 }
+// TODO(lutzky): Making addForbiddenGroup available to render.ts in this way
+// is an ugly hack.
+(window as any).addForbiddenGroup = addForbiddenGroup;
 
 /**
  * Remove the given group from the forbidden groups
