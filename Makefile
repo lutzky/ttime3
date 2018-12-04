@@ -25,6 +25,9 @@ serve:
 karma:
 	karma start karma.unit.js
 
+karma_thorough:
+	TTIME_THOROUGH=1 karma start karma.unit.js
+
 watch:
 	webpack --watch
 

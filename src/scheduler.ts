@@ -50,7 +50,7 @@ function filterNoCollisions(schedule: Schedule): boolean {
 /**
  * Return a cartesian product of arrays
  *
- * Note: If changing this method, reenable CARTESIAN_SLOW_TEST.
+ * Note: If changing this method, test with "make karma_thorough".
  *
  * TODO(lutzky): cartesian is exported for testing purposes
  */

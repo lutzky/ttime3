@@ -7,7 +7,14 @@ import {cartesian, generateSchedules, rate} from '../src/scheduler';
 
 const algebraCourseID = 104166;
 
-const THOROUGH_TEST_MODE = false;
+let THOROUGH_TEST_MODE = false;
+
+declare var ttime_thorough: boolean;
+
+if (typeof ttime_thorough != 'undefined') {
+  console.info('Thorough test mode active');
+  THOROUGH_TEST_MODE = true;
+}
 
 describe('Scheduler', function() {
   /**
@@ -49,7 +56,7 @@ describe('Scheduler', function() {
     });
     if (THOROUGH_TEST_MODE) {
       it('should not crash with large inputs', function() {
-        // Disabled because this is a slow test. CARTESIAN_SLOW_TEST
+        this.timeout(10000);
         let a = [
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
