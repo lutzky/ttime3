@@ -15,6 +15,9 @@ lint:
 test:
 	mocha -r ts-node/register spec/**/*.spec.ts
 
+tsc-watch:
+	tsc --watch
+
 fix:
 	# TODO(lutzky): Fix lint fixing
 	echo 'LINT FIXING CURRENTLY INACTIVE'
@@ -28,7 +31,7 @@ karma:
 karma_thorough:
 	TTIME_THOROUGH=1 karma start karma.unit.js
 
-watch:
+webpack-watch:
 	webpack --watch
 
 .PHONY: test lint all fix serve watch
