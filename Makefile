@@ -1,12 +1,15 @@
 export PATH := node_modules/.bin:$(PATH)
 
-ALL_TARGETS = test lint
+ALL_TARGETS = test lint clang-format-diff
 
 ifdef TESTLOOP_FIX
 	ALL_TARGETS := fix $(ALL_TARGETS)
 endif
 
 all: $(ALL_TARGETS)
+
+clang-format-diff:
+	./clang-format-diff.sh
 
 lint:
 	# TODO(lutzky): Fix linting
@@ -19,7 +22,7 @@ tsc-watch:
 	tsc --watch
 
 fix:
-	# TODO(lutzky): Fix lint fixing
+	./clang-format-diff.sh fix
 	echo 'LINT FIXING CURRENTLY INACTIVE'
 
 serve:
