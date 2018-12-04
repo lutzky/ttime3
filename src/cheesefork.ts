@@ -1,4 +1,4 @@
-'use strict';
+import {AcademicEvent, Catalog, Course, DateObj, Faculty, Group} from './common';
 
 /**
  * This module implements support for importing data from cheeseFork
@@ -9,16 +9,16 @@
 /**
  * Parse a cheesefork-format hour
  *
- * @param {string} s - "HH:M - HH:M", where M is tens of minutes
+ * @param s - "HH:M - HH:M", where M is tens of minutes
  *
- * @returns {Array<number>} - Minutes since midnight
+ * @returns Minutes since midnight
  */
-function parseCheeseForkHour(s) {
+function parseCheeseForkHour(s: string): number[] {
   return s.split(' - ').map(function(hhm) {
     let splitHour = hhm.split(':');
     let minute = Number(splitHour[0]) * 60;
     if (splitHour.length > 1) {
-      minute += splitHour[1] * 10;
+      minute += Number(splitHour[1]) * 10;
     }
     return minute;
   });
@@ -29,11 +29,9 @@ const dateRegex = /([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})/;
 /**
  * Parse a cheesefork-format test date
  *
- * @param {string} s - "Bla bla bla DD.MM.YYYY Bla bla bla"
- *
- * @returns {DateObj?}
+ * @param s - "Bla bla bla DD.MM.YYYY Bla bla bla"
  */
-function parseCheeseForkTestDate(s) {
+function parseCheeseForkTestDate(s: string): DateObj {
   if (!s) {
     return null;
   }
@@ -43,18 +41,15 @@ function parseCheeseForkTestDate(s) {
     console.warn('Failed to match date regex with: ', s);
     return null;
   }
-  return { day: Number(r[1]), month: Number(r[2]), year: Number(r[3]) };
+  return {day: Number(r[1]), month: Number(r[2]), year: Number(r[3])};
 }
 
 /**
  * Parse cheesefork data
  *
- * @param {string} jsData - Cheesefork courses_*.js data
- *
- * @returns {Catalog}
+ * @param jsData - Cheesefork courses_*.js data
  */
-function parseCheeseFork(jsData) {
-  /* exported parseCheeseFork */
+export function parseCheeseFork(jsData: string): Catalog {
   const cheeseForkPrefix = 'var courses_from_rishum = ';
 
   const hebrew = {
@@ -79,8 +74,7 @@ function parseCheeseFork(jsData) {
 
   const typeMap = new Map([['הרצאה', 'lecture'], ['תרגול', 'tutorial']]);
 
-  /** @type {Map<string, Faculty>} */
-  let facultiesByName = new Map();
+  let facultiesByName: Map<string, Faculty> = new Map();
 
   if (!jsData.startsWith(cheeseForkPrefix)) {
     throw new Error('Not valid cheesefork jsData - lacks expected prefix');
@@ -90,7 +84,7 @@ function parseCheeseFork(jsData) {
 
   console.info('Experimental CheeseFork parser. First course: ', data[0]);
 
-  data.forEach(function(dataCourse) {
+  data.forEach(function(dataCourse: any) {
     let facultyName = dataCourse['general'][hebrew.faculty];
 
     if (!facultiesByName.has(facultyName)) {
@@ -103,28 +97,25 @@ function parseCheeseFork(jsData) {
 
     let faculty = facultiesByName.get(facultyName);
 
-    /** @type {Course} */
-    let course = {
+    let course: Course = {
       academicPoints: Number(dataCourse['general'][hebrew.academicPoints]),
+      faculty: faculty,
       name: dataCourse['general'][hebrew.courseName],
       id: Number(dataCourse['general'][hebrew.courseId]),
       lecturerInCharge: dataCourse['general'][hebrew.thoseInCharge],
       testDates: [
         dataCourse['general'][hebrew.moed_a],
         dataCourse['general'][hebrew.moed_b],
-      ]
-        .map(parseCheeseForkTestDate)
-        .filter(x => x != null),
+      ].map(parseCheeseForkTestDate)
+                     .filter(x => x != null),
       groups: [],
     };
 
-    /** @type {Map<number, number>} */
-    let groupFirstAppearedInMetagroup = new Map();
+    let groupFirstAppearedInMetagroup: Map<number, number> = new Map();
 
-    /** @type {Map<number, Group>} */
-    let groupsById = new Map();
+    let groupsById: Map<number, Group> = new Map();
 
-    dataCourse['schedule'].forEach(function(dataSchedule) {
+    dataCourse['schedule'].forEach(function(dataSchedule: any) {
       /*
        * In CheeseFork data, groups are repeated according to
        * "groups-you-should-sign-up-to". This is denoted as "group" in the data,
@@ -154,8 +145,8 @@ function parseCheeseFork(jsData) {
           type = 'sport';
           desc = dataSchedule[hebrew.type];
         } else {
-          type =
-            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type];
+          type = typeMap.get(dataSchedule[hebrew.type]) ||
+              dataSchedule[hebrew.type];
         }
 
         groupsById.set(groupId, {
@@ -172,14 +163,13 @@ function parseCheeseFork(jsData) {
 
       let times = parseCheeseForkHour(dataSchedule[hebrew.hour]);
 
-      /** @type {AcademicEvent} */
-      let event = {
+      let event: AcademicEvent = {
         group: group,
         day: hebrew.dayLetters.indexOf(dataSchedule[hebrew.day]),
         startMinute: times[0],
         endMinute: times[1],
         location:
-          dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
+            dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
       };
 
       {
@@ -192,7 +182,7 @@ function parseCheeseFork(jsData) {
       group.events.push(event);
     });
 
-    groupsById.forEach(function(group, id) {
+    groupsById.forEach(function(group, _) {
       course.groups.push(group);
     });
 

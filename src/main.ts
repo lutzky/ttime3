@@ -1,85 +1,42 @@
-'use strict';
-
 // To enable debugging, type the following into your Javascript console:
 //
 //   mainDebugLogging = true
 let mainDebugLogging = false;
 
-/**
- * @typedef {{
- *   course: Course,
- *   description: string,
- *   events: Array<AcademicEvent>,
- *   id: number,
- *   type: string,
- *   teachers: Array<string>,
- * }}
- */
-let Group;
-/* exported Group */
-
-/**
- * @typedef {{
- *   name: string,
- *   academicPoints: number,
- *   id: number,
- *   groups: Array<Group>,
- *   lecturerInCharge: string,
- *   testDates: Array<DateObj>,
- * }}
- */
-let Course;
-/* exported Course */
-
-/**
- * @typedef {{
- *   name: string,
- *   semester: string,
- *   courses: Array<Course>
- *  }}
- */
-let Faculty;
-/* exported Faculty */
-
-/**
- * @typedef {Array<Faculty>}
- */
-let Catalog;
-/* exported Catalog */
+import {renderSchedule} from './render';
+import {groupsByType, sortEvents, loadCatalog} from './common';
+import {Schedule, Course, Group, Catalog, ScheduleRating, FilterSettings, AcademicEvent} from './common';
+import {displayName, formatDate, minutesToTime} from './formatting';
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
  * so Settings and all of the types of its member variables can't have maps
  * nor sets.
- *
- * @typedef {{
- *   selectedCourses: Array<number>,
- *   catalogUrl: string,
- *   filterSettings: FilterSettings,
- * }}
  */
-let Settings;
-/* exported Settings */
+class Settings {
+  selectedCourses: number[];
+  forbiddenGroups: string[];
+  customEvents: string;
+  catalogUrl: string;
+  filterSettings: FilterSettings;
+}
 
 const defaultCatalogUrl =
-  'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
+    'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
 
 /**
  * Set the given catalog URL and save settings. For use from HTML.
- *
- * @param {string} url - URL to set
  */
-function setCatalogUrl(url) {
-  /* exported setCatalogUrl */
+function setCatalogUrl(url: string) {
   $('#catalog-url').val(url);
   catalogUrlChanged();
 }
+(window as any).setCatalogUrl = setCatalogUrl;
 
 /**
  * Handler for changes to the catalog URL field
  */
 function catalogUrlChanged() {
-  /* exported catalogUrlChanged */
   saveSettings();
 }
 
@@ -87,33 +44,25 @@ let selectedCourses = new Set();
 
 /**
  * Catalog of all courses
- * @type {Catalog}
  */
-let currentCatalog = null;
+let currentCatalog: Catalog = null;
 
 /**
  * Mapping from course IDs to courses
- * @type {Map<number, Course>}
  */
-let currentCatalogByCourseID = null;
+let currentCatalogByCourseID: Map<number, Course> = null;
 
 /**
  * Updates forblink according to its data('forbidden')
- *
- * @param {jQuery} fl - forbidLink
  */
-function updateForbidLinkText(fl) {
+function updateForbidLinkText(fl: JQuery) {
   fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
 }
 
 /**
  * Creates a header for the given group, for displaying in the catalog
- *
- * @param {Group} group - Group to create header for
- *
- * @returns {!jQuery}
  */
-function groupHeaderForCatalog(group) {
+function groupHeaderForCatalog(group: Group): JQuery {
   let result = $('<li>');
   let groupNameText = `Group ${group.id} (${group.type}) `;
   if (group.teachers.length > 0) {
@@ -128,7 +77,7 @@ function groupHeaderForCatalog(group) {
   let forbidLink = $('<a>', {
     class: 'forbid-link',
     href: '#/',
-    data: { forbidden: isGroupForbidden(group), groupID: groupIDString(group) },
+    data: {forbidden: isGroupForbidden(group), groupID: groupIDString(group)},
   });
 
   updateForbidLinkText(forbidLink);
@@ -147,42 +96,35 @@ function groupHeaderForCatalog(group) {
 
 /**
  * Forbidden groups, as formatted using groupIDString
- *
- * @type {!Set<string>}
  */
-let forbiddenGroups = new Set();
+let forbiddenGroups: Set<string> = new Set();
 
 /**
  * A string identifier representing a given group. Used in forbiddenGroups.
  *
  * Format: 'course_id.group_id'
- *
- * @param {Group} group - Group to represent
- *
- * @returns {string}
  */
-function groupIDString(group) {
+function groupIDString(group: Group): string {
   return `${group.course.id}.${group.id}`;
 }
 
 /**
  * Add the given group to the forbidden groups
- *
- * @param {Group} group - Group to forbid
  */
-function addForbiddenGroup(group) {
+function addForbiddenGroup(group: Group) {
   forbiddenGroups.add(groupIDString(group));
   saveSettings();
 
   updateForbiddenGroups();
 }
+// TODO(lutzky): Making addForbiddenGroup available to render.ts in this way
+// is an ugly hack.
+(window as any).addForbiddenGroup = addForbiddenGroup;
 
 /**
  * Remove the given group from the forbidden groups
- *
- * @param {Group} group - Group to unforbid
  */
-function delForbiddenGroup(group) {
+function delForbiddenGroup(group: Group) {
   forbiddenGroups.delete(groupIDString(group));
   saveSettings();
 
@@ -191,12 +133,8 @@ function delForbiddenGroup(group) {
 
 /**
  * Check whether group is forbidden
- *
- * @param {Group} group - Group to check
- *
- * @returns {boolean}
  */
-function isGroupForbidden(group) {
+function isGroupForbidden(group: Group): boolean {
   return forbiddenGroups.has(groupIDString(group));
 }
 
@@ -225,68 +163,51 @@ function updateForbiddenGroups() {
     ul.append(li);
   });
 
-  $('a.forbid-link').each(
-    /** @this {HTMLElement} */
-    function() {
-      let groupID = /** @type {string} */ ($(this).data('groupID'));
+  $('a.forbid-link').each(function() {
+    let groupID: string = $(this).data('groupID');
 
-      let isForbidden = forbiddenGroups.has(groupID);
-      $(this).data('forbidden', isForbidden);
-      updateForbidLinkText($(this));
-    }
-  );
+    let isForbidden = forbiddenGroups.has(groupID);
+    $(this).data('forbidden', isForbidden);
+    updateForbidLinkText($(this));
+  });
 }
 
 /**
  * Format a course ID as a 6-digit number
  *
  * For example, 18420 should be presented (and searchable) as 018420.
- *
- * @param {number} id - Course ID
- *
- * @returns {string}
  */
-function formatCourseId(id) {
+function formatCourseId(id: number): string {
   return String(id).padStart(6, '0');
 }
 
 /**
  * Return an HTML description for a course
- *
- * @param {Course} course - Course to describe
- *
- * @returns {!Element}
  */
-function htmlDescribeCourse(course) {
+function htmlDescribeCourse(course: Course): HTMLElement {
   let result = $('<span>');
   let ul = $('<ul>');
+  ul.append($('<li>', {
+    html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
+  }));
   ul.append(
-    $('<li>', {
-      html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
-    })
-  );
-  ul.append(
-    $('<li>', { html: `<b>Academic points:</b> ${course.academicPoints}` })
-  );
-  ul.append(
-    $('<li>', {
-      html: `<b>Lecturer in charge:</b> ${rtlSpan(
-        course.lecturerInCharge || '[unknown]'
-      )}`,
-    })
-  );
-  ul.append($('<li>', { html: '<b>Test dates:</b>' }));
+      $('<li>', {html: `<b>Academic points:</b> ${course.academicPoints}`}));
+  ul.append($('<li>', {
+    html: `<b>Lecturer in charge:</b> ${
+        rtlSpan(course.lecturerInCharge || '[unknown]')}`,
+  }));
+  ul.append($('<li>', {html: '<b>Test dates:</b>'}));
   let testDates = $('<ul>');
   if (course.testDates) {
     course.testDates.forEach(function(d) {
-      testDates.append($('<li>', { text: formatDate(d) }));
+      testDates.append($('<li>', {text: formatDate(d)}));
     });
   } else {
-    testDates.append($('<li>', { text: '[unknown]' }));
+    testDates.append($('<li>', {text: '[unknown]'}));
   }
   ul.append(testDates);
 
-  ul.append($('<li>', { html: '<b>Groups:</b>' }));
+  ul.append($('<li>', {html: '<b>Groups:</b>'}));
   let groups = $('<ul>');
   if (course.groups) {
     course.groups.forEach(function(g) {
@@ -294,24 +215,18 @@ function htmlDescribeCourse(course) {
       let events = $('<ul>');
       if (g.events) {
         g.events.forEach(function(e) {
-          events.append(
-            $('<li>', {
-              text:
-                `${dayNames[e.day]}, ` +
-                minutesToTime(e.startMinute) +
-                '-' +
-                minutesToTime(e.endMinute) +
-                ` at ${e.location || '[unknown]'}`,
-            })
-          );
+          events.append($('<li>', {
+            text: `${dayNames[e.day]}, ` + minutesToTime(e.startMinute) + '-' +
+                minutesToTime(e.endMinute) + ` at ${e.location || '[unknown]'}`,
+          }));
         });
       } else {
-        events.append($('<li>', { text: '[unknown]' }));
+        events.append($('<li>', {text: '[unknown]'}));
       }
       groups.append(events);
     });
   } else {
-    groups.append($('<li>', { text: '[unknown]' }));
+    groups.append($('<li>', {text: '[unknown]'}));
   }
   ul.append(groups);
 
@@ -324,22 +239,17 @@ const collapseInfoSymbol = '<i class="fas fa-minus-circle"></i>';
 
 /**
  * Wrap s with a right-to-left span
- *
- * @param {string} s - String to wrap
- * @returns {string}
  */
-function rtlSpan(s) {
+function rtlSpan(s: string): string {
   return `<span dir="rtl">${s}</span>`;
 }
 
 /**
  * Create a span for a course label, including info button
- *
- * @param {Course} course - Course to create label for
- *
- * @returns {!Element}
  */
-function courseLabel(course) {
+function courseLabel(course: Course): HTMLElement {
+  // TODO(lutzky): This function is full of DOM misuse, hence the ts-ignore
+  // symbols.
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
   infoLink.innerHTML = expandInfoSymbol;
@@ -347,17 +257,22 @@ function courseLabel(course) {
   infoLink.href = '#/';
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
+    // @ts-ignore: dom-misuse
     if (!span.ttime3_expanded) {
       let infoDiv = document.createElement('div');
+      // @ts-ignore: dom-misuse
       span.infoDiv = infoDiv;
       infoDiv.appendChild(htmlDescribeCourse(course));
       // showCourseDebugInfo(course);
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
+      // @ts-ignore: dom-misuse
       span.ttime3_expanded = true;
     } else {
       infoLink.innerHTML = expandInfoSymbol;
+      // @ts-ignore: dom-misuse
       span.ttime3_expanded = false;
+      // @ts-ignore: dom-misuse
       span.removeChild(span.infoDiv);
     }
   };
@@ -388,7 +303,7 @@ function writeCatalogSelector() {
     facultyDetails.append(summary);
     facultiesDiv.append(facultyDetails);
 
-    let courseList = $('<ul>', { class: 'course-list' });
+    let courseList = $('<ul>', {class: 'course-list'});
     facultyDetails.append(courseList);
 
     faculty.courses.forEach(function(course) {
@@ -410,23 +325,16 @@ function writeCatalogSelector() {
 
 /**
  * Returns whether or not a checkbox with the given ID is checked
- *
- * @param {string} id - ID of checkbox
- *
- * @returns {boolean}
  */
-function getCheckboxValueById(id) {
-  return document.getElementById(id).checked;
+function getCheckboxValueById(id: string): boolean {
+  return (document.getElementById(id) as HTMLInputElement).checked;
 }
 
 /**
  * Sets whether or not a checkbox with the given ID is checked
- *
- * @param {string} id - ID of checkbox
- * @param {boolean} checked - Whether or not checkbox should be checked
  */
-function setCheckboxValueById(id, checked) {
-  document.getElementById(id).checked = checked;
+function setCheckboxValueById(id: string, checked: boolean) {
+  (document.getElementById(id) as HTMLInputElement).checked = checked;
 }
 
 /**
@@ -434,8 +342,8 @@ function setCheckboxValueById(id, checked) {
  */
 function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
-  settings.customEvents = $('#custom-events-textarea').val();
-  settings.catalogUrl = /** @type {string} */ ($('#catalog-url').val());
+  settings.customEvents = $('#custom-events-textarea').val() as string;
+  settings.catalogUrl = $('#catalog-url').val() as string;
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
     noCollisions: getCheckboxValueById('filter.noCollisions'),
@@ -444,17 +352,15 @@ function saveSettings() {
   };
 
   Object.keys(allRatings).forEach(function(r) {
+    // @ts-ignore: allRatings
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
-      $(`#rating-${r}-min`)[0],
-      null
-    );
+        ($(`#rating-${r}-min`)[0]) as HTMLInputElement, null);
+    // @ts-ignore: allRatings
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
-      $(`#rating-${r}-max`)[0],
-      null
-    );
+        ($(`#rating-${r}-max`)[0]) as HTMLInputElement, null);
   });
 
-  window.localStorage.ttime3_settings = JSON.stringify(settings);
+  window.localStorage.setItem('ttime3_settings', JSON.stringify(settings));
 
   if (mainDebugLogging) {
     console.info('Saved settings:', settings);
@@ -464,13 +370,9 @@ function saveSettings() {
 /**
  * Get the numeric value in the given field, or return the default if
  * it's empty.
- *
- * @param {Element} input - Input field containing the number
- * @param {number?} defaultValue - Number to return if input is empty
- *
- * @returns {number?}
  */
-function getNumInputValueWithDefault(input, defaultValue) {
+function getNumInputValueWithDefault(
+    input: HTMLInputElement, defaultValue: number): number {
   if (input.value == '') {
     return defaultValue;
   }
@@ -479,10 +381,8 @@ function getNumInputValueWithDefault(input, defaultValue) {
 
 /**
  * Mark course as selected.
- *
- * @param {Course} course - Course to select
  */
-function addSelectedCourse(course) {
+function addSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Selected', course);
   }
@@ -495,11 +395,8 @@ function addSelectedCourse(course) {
 
 /**
  * Add a course with a given ID
- *
- * @param {...number} ids - Course IDS
  */
-function addSelectedCourseByID(...ids) {
-  /* exported addSelectedCourseByID */
+function addSelectedCourseByID(...ids: number[]) {
   ids.forEach(function(id) {
     let course = getCourseByID(id);
 
@@ -510,13 +407,12 @@ function addSelectedCourseByID(...ids) {
     }
   });
 }
+(window as any).addSelectedCourseByID = addSelectedCourseByID;
 
 /**
  * Mark course as unselected.
- *
- * @param {Course} course - Course to unselect
  */
-function delSelectedCourse(course) {
+function delSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Unselected', course);
   }
@@ -532,16 +428,15 @@ function delSelectedCourse(course) {
  */
 function refreshSelectedCourses() {
   let nscheds = Number(totalPossibleSchedules(selectedCourses));
-  $('#possible-schedules').text(
-    `${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`
-  );
+  $('#possible-schedules')
+      .text(`${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`);
   $('#generate-schedules').prop('disabled', selectedCourses.size == 0);
   let div = $('#selected-courses');
   div.empty();
-  let ul = $('<ul>', { class: 'list-group' });
+  let ul = $('<ul>', {class: 'list-group'});
   div.append(ul);
   selectedCourses.forEach(function(course) {
-    let li = $('<li>', { class: 'list-group-item' });
+    let li = $('<li>', {class: 'list-group-item'});
     let label = courseLabel(course);
     let btn = $('<button>', {
       class: 'btn btn-sm btn-danger float-right',
@@ -553,12 +448,10 @@ function refreshSelectedCourses() {
     li.append(label);
 
     if (course.groups == null || course.groups.length == 0) {
-      li.append(
-        $('<i>', {
-          class: 'text-warning fas fa-exclamation-triangle',
-          title: 'Course has no groups',
-        })
-      );
+      li.append($('<i>', {
+        class: 'text-warning fas fa-exclamation-triangle',
+        title: 'Course has no groups',
+      }));
     }
 
     li.append(btn);
@@ -566,14 +459,13 @@ function refreshSelectedCourses() {
   });
 }
 
-let schedulerWorker = new Worker('scheduler_worker.js');
+import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
+let schedulerWorker = new SchedulerWorker();
 
 /**
  * Respond to scheduling result from worker
- *
- * @param {MessageEvent} e - blabbity boop
  */
-schedulerWorker.onmessage = function(e) {
+schedulerWorker.onmessage = function(e: MessageEvent) {
   if (mainDebugLogging) {
     console.info('Received message from worker:', e);
   }
@@ -590,13 +482,12 @@ schedulerWorker.onmessage = function(e) {
  * Check if custom-events-textarea has valid events
  */
 function checkCustomEvents() {
-  /* exported checkCustomEvents */
   let elem = $('#custom-events-textarea');
   elem.removeClass('is-invalid');
   elem.removeClass('is-valid');
 
   try {
-    let courses = buildCustomEventsCourses(/** @type {string} */ (elem.val()));
+    let courses = buildCustomEventsCourses(elem.val() as string);
     if (courses.length > 0) {
       elem.addClass('is-valid');
     }
@@ -604,17 +495,16 @@ function checkCustomEvents() {
     elem.addClass('is-invalid');
   }
 }
+(window as any).checkCustomEvents = checkCustomEvents;
 
-const customEventRegex = new RegExp(
-  [
-    /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
-    /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
-    /(.*)/,
-  ]
-    .map(x => x.source)
-    .join('')
-);
+const customEventRegex = new RegExp([
+  /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
+  /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
+  /(.*)/,
+].map(x => x.source).join(''));
 
+// TODO(lutzky): inverseDayIndex is causing type problems, making us use
+// some ts-ignore.
 const inverseDayIndex = {
   Sun: 0,
   Mon: 1,
@@ -627,17 +517,10 @@ const inverseDayIndex = {
 
 /**
  * Create a course with a single event
- *
- * @param {string} name - Course name
- * @param {number} day - Day of week index
- * @param {number} startMinute - Minutes since midnight for start
- * @param {number} endMinute - Minutes since midnight for end
- *
- * @returns {Course}
  */
-function createSingleEventCourse(name, day, startMinute, endMinute) {
-  /** @type {Course} */
-  let c = {
+function createSingleEventCourse(
+    name: string, day: number, startMinute: number, endMinute: number): Course {
+  let c: Course = {
     academicPoints: 0,
     id: 0,
     lecturerInCharge: '',
@@ -646,8 +529,7 @@ function createSingleEventCourse(name, day, startMinute, endMinute) {
     groups: [],
   };
 
-  /** @type {Group} */
-  let g = {
+  let g: Group = {
     course: c,
     description: '',
     id: 0,
@@ -658,8 +540,7 @@ function createSingleEventCourse(name, day, startMinute, endMinute) {
 
   c.groups.push(g);
 
-  /** @type {AcademicEvent} */
-  let e = {
+  let e: AcademicEvent = {
     day: day,
     startMinute: startMinute,
     endMinute: endMinute,
@@ -675,13 +556,10 @@ function createSingleEventCourse(name, day, startMinute, endMinute) {
 /**
  * Build courses with the configured custom events
  *
- * @param {string} s - Custom events, lines matching customEventRegex
- *
- * @returns {Array<Course>}
+ * @param s - Custom events, lines matching customEventRegex
  */
-function buildCustomEventsCourses(s) {
-  /** @type {Array<Course>} */
-  let result = [];
+function buildCustomEventsCourses(s: string): Course[] {
+  let result: Course[] = [];
 
   if (s == '') {
     return result;
@@ -693,7 +571,8 @@ function buildCustomEventsCourses(s) {
       throw Error('Invalid custom event line: ' + line);
     }
 
-    let day = inverseDayIndex[m[1]];
+    // @ts-ignore: inverseDayIndex
+    let day: number = inverseDayIndex[m[1]];
     let startMinute = Number(Number(m[2]) * 60 + Number(m[3]));
     let endMinute = Number(Number(m[4]) * 60 + Number(m[5]));
     let desc = m[6];
@@ -708,7 +587,6 @@ function buildCustomEventsCourses(s) {
  * Start a worker to generate schedules
  */
 function getSchedules() {
-  /* exported getSchedules */
   $('#generate-schedules').prop('disabled', true);
   $('#spinner').show();
   $('#exception-occurred').hide();
@@ -728,27 +606,22 @@ function getSchedules() {
     filterSettings: settings.filterSettings,
   });
 }
+(window as any).getSchedules = getSchedules;
 
-/** @type {Array<Schedule>} */
-let possibleSchedules = [];
+let possibleSchedules: Schedule[] = [];
 
-/** @type {number} */
 let currentSchedule = 0;
 
 /**
  * Set the collection of possible schedules
- *
- * @param {Array<Schedule>} schedules - Possible schedules
  */
-function setPossibleSchedules(schedules) {
+function setPossibleSchedules(schedules: Schedule[]) {
   possibleSchedules = schedules;
   currentSchedule = 0;
   let divs = $('#schedule-browser, #rendered-schedule-container');
   $('#num-schedules').text(schedules.length);
-  if (
-    schedules.length == 0 ||
-    (schedules.length == 1 && schedules[0].events.length == 0)
-  ) {
+  if (schedules.length == 0 ||
+      (schedules.length == 1 && schedules[0].events.length == 0)) {
     divs.hide();
     $('#no-schedules').show();
   } else {
@@ -761,17 +634,17 @@ function setPossibleSchedules(schedules) {
  * Increment the current displayed schedule
  */
 function nextSchedule() {
-  /* exported nextSchedule */
   goToSchedule(currentSchedule + 1);
 }
+(window as any).nextSchedule = nextSchedule;
 
 /**
  * Decrement the current displayed schedule
  */
 function prevSchedule() {
-  /* exported prevSchedule */
   goToSchedule(currentSchedule - 1);
 }
+(window as any).prevSchedule = prevSchedule;
 
 const dayNames = [
   'Sunday',
@@ -786,46 +659,39 @@ const dayNames = [
 // Colors are taken from this page, but reordered to maximize contrast:
 // https://getbootstrap.com/docs/4.1/getting-started/theming/
 const courseColors = [
-  ['#007bff', '#fff'], // blue
-  ['#e83e8c', '#fff'], // pink
-  ['#ffc107', '#000'], // yellow
-  ['#6610f2', '#fff'], // indigo
-  ['#dc3545', '#fff'], // red
-  ['#28a745', '#fff'], // green
-  ['#6f42c1', '#fff'], // purple
-  ['#fd7e14', '#000'], // orange
-  ['#20c997', '#fff'], // teal
-  ['#17a2b8', '#fff'], // cyan
-  ['#6c757d', '#fff'], // gray
-  ['#343a40', '#fff'], // dark-gray
+  ['#007bff', '#fff'],  // blue
+  ['#e83e8c', '#fff'],  // pink
+  ['#ffc107', '#000'],  // yellow
+  ['#6610f2', '#fff'],  // indigo
+  ['#dc3545', '#fff'],  // red
+  ['#28a745', '#fff'],  // green
+  ['#6f42c1', '#fff'],  // purple
+  ['#fd7e14', '#000'],  // orange
+  ['#20c997', '#fff'],  // teal
+  ['#17a2b8', '#fff'],  // cyan
+  ['#6c757d', '#fff'],  // gray
+  ['#343a40', '#fff'],  // dark-gray
 ];
 
 /**
  * Get appropriate colors for courses
- *
- * @param {Set<Course>} courses - All courses
- *
- * @returns {Map<number, Array<string>>}
  */
-function getCourseColorMap(courses) {
-  let numbers = Array.from(courses.values())
-    .map(c => c.id)
-    .sort();
+function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
+  let numbers = Array.from(courses.values()).map(c => c.id).sort();
 
   // 0 course ID is for custom events
   numbers.push(0);
 
-  let numsAndColors = numbers.map((num, i) => [num, courseColors[i]]);
+  let numsAndColors =
+      numbers.map((num, i) => [num, courseColors[i]]) as [number, string[]][];
 
   return new Map(numsAndColors);
 }
 
 /**
  * Display schedule i, modulo the possible range 0-(numSchedules - 1)
- *
- * @param {number} i - schedule to show
  */
-function goToSchedule(i) {
+function goToSchedule(i: number) {
   let max = possibleSchedules.length;
   i = (i + max) % max;
   currentSchedule = i;
@@ -834,77 +700,69 @@ function goToSchedule(i) {
 
   writeScheduleContents($('#schedule-contents'), schedule);
   renderSchedule(
-    $('#rendered-schedule')[0],
-    schedule,
-    getCourseColorMap(selectedCourses)
-  );
+      $('#rendered-schedule')[0], schedule, getCourseColorMap(selectedCourses));
 }
 
-/** @type {string} */
 let sortedByRating = '';
 
-/** @type {boolean} */
 let sortedByRatingAsc = true;
 
+// TODO(lutzky): allRatings breaks typescript type checks and forces us to
+// use a lot of ts-ignore comments.
 const allRatings = {
   earliestStart: {
     name: 'Earliest start',
     explanation: 'Hour at which the earliest class of the week start',
-    badgeTextFunc: s => `Earliest start: ${s}`,
+    badgeTextFunc: (s: number) => `Earliest start: ${s}`,
   },
   latestFinish: {
     name: 'Latest finish',
     explanation: 'Hour at which the latest class of the week finishes',
-    badgeTextFunc: s => `Latest finish: ${s}`,
+    badgeTextFunc: (s: number) => `Latest finish: ${s}`,
   },
   numRuns: {
     name: 'Number of runs',
     explanation: 'Number of adjacent classes in different buildings',
-    badgeTextFunc: s => `${s} runs`,
+    badgeTextFunc: (s: number) => `${s} runs`,
   },
   freeDays: {
     name: 'Free days',
     explanation: 'Number of days with no classes',
-    badgeTextFunc: s => `${s} free days`,
+    badgeTextFunc: (s: number) => `${s} free days`,
   },
 };
 
 /**
  * Sort current schedule by rating
- *
- * @param {string} rating - Rating name to sort by
  */
-function sortByRating(rating) {
+function sortByRating(rating: string) {
   if (sortedByRating == rating) {
     sortedByRatingAsc = !sortedByRatingAsc;
   }
 
   sortedByRating = rating;
   possibleSchedules.sort(function(a, b) {
+    // @ts-ignore: allRatings
     return (sortedByRatingAsc ? 1 : -1) * (a.rating[rating] - b.rating[rating]);
   });
 
   goToSchedule(0);
   Object.keys(allRatings).forEach(function(rating) {
-    $(`#rating-badge-${rating}`).replaceWith(
-      getRatingBadge(rating, possibleSchedules[0])
-    );
+    $(`#rating-badge-${rating}`)
+        .replaceWith(getRatingBadge(rating, possibleSchedules[0]));
   });
 }
 
 /**
  * Get a badge for the given rating according to the schedule type
- *
- * @param {string} rating - Name of rating
- * @param {Schedule} schedule - Schedule to fetch rating from
- *
- * @returns {jQuery}
  */
-function getRatingBadge(rating, schedule) {
+function getRatingBadge(rating: string, schedule: Schedule): JQuery {
   let result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
+    // @ts-ignore: allRatings
     text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
+    // @ts-ignore: allRatings
     title: allRatings[rating].explanation,
     href: '#/',
     click: function() {
@@ -922,26 +780,23 @@ function getRatingBadge(rating, schedule) {
 
 /**
  * Write the schedule contents to target
- *
- * @param {jQuery} target - Target to write schedule to
- * @param {Schedule} schedule - Schedule to write
  */
-function writeScheduleContents(target, schedule) {
+function writeScheduleContents(target: JQuery, schedule: Schedule) {
   target.empty();
 
   Object.keys(allRatings)
-    .map(rating => getRatingBadge(rating, schedule))
-    .forEach(function(badge) {
-      target.append(badge).append(' ');
-    });
+      .map(rating => getRatingBadge(rating, schedule))
+      .forEach(function(badge) {
+        target.append(badge).append(' ');
+      });
 
-  let ul = $('<ul>', { class: 'list-group' });
+  let ul = $('<ul>', {class: 'list-group'});
   target.append(ul);
 
   byDay(schedule).forEach(function(dayEvents) {
     let dayEntry = $('<li>', {
       class: 'list-group-item',
-      css: { 'padding-top': '2px', 'padding-bottom': '2px' },
+      css: {'padding-top': '2px', 'padding-bottom': '2px'},
       html: $('<small>', {
         class: 'font-weight-bold',
         text: dayNames[dayEvents[0].day],
@@ -958,8 +813,7 @@ function writeScheduleContents(target, schedule) {
       let location = e.location || '[unknown]';
       let endTime = minutesToTime(e.endMinute);
       let teachers = e.group.teachers.join(',') || '[unknown]';
-      eventEntry.html(
-        `
+      eventEntry.html(`
         <div class="d-flex w-100 justify-content-between">
            <small class="text-muted">
              <i class="far fa-clock"></i>
@@ -980,8 +834,7 @@ function writeScheduleContents(target, schedule) {
             ${formatCourseId(e.group.course.id)}, group ${e.group.id}
           </small>
         </div>
-        `
-      );
+        `);
       ul.append(eventEntry);
     });
   });
@@ -990,13 +843,12 @@ function writeScheduleContents(target, schedule) {
 /**
  * Get events for schedule split into per-day arrays
  *
- * @param {Schedule} schedule - Schedule to split into days
- * @returns {Array<Array<AcademicEvent>>} - Each entry is an array of Events
- *                                          with the same day, sorted ascending.
+ * @returns An array of arrays of events, with entry is an array of events
+ *          with the same day, sorted ascending.
  */
-function byDay(schedule) {
+function byDay(schedule: Schedule): AcademicEvent[][] {
   let events = schedule.events.slice();
-  let result = [[]];
+  let result: AcademicEvent[][] = [[]];
 
   sortEvents(events);
 
@@ -1015,23 +867,15 @@ function byDay(schedule) {
 
 /**
  * Find a course by its ID
- *
- * @param {number} id - Course ID
- *
- * @returns {Course}
  */
-function getCourseByID(id) {
+function getCourseByID(id: number): Course {
   return currentCatalogByCourseID.get(id);
 }
 
 /**
  * Gets nicknames or abbreviations for a course
- *
- * @param {Course} course - Course to get nicknames for
- *
- * @returns {string}
  */
-function getNicknames(course) {
+function getNicknames(course: Course): string {
   let result = [];
 
   if (course.name.includes('חשבון דיפרנציאלי ואינטגרלי')) {
@@ -1055,11 +899,14 @@ function getNicknames(course) {
  */
 function coursesSelectizeSetup() {
   let selectBox = $('#courses-selectize');
-  let opts = [];
-  let optgroups = [];
+
+  // Getting the types right for selectize is difficult :/
+
+  let opts: any = [];
+  let optgroups: any = [];
 
   currentCatalog.forEach(function(faculty) {
-    optgroups.push({ label: faculty.name, value: faculty.name });
+    optgroups.push({label: faculty.name, value: faculty.name});
     faculty.courses.forEach(function(course) {
       opts.push({
         optgroup: faculty.name,
@@ -1087,10 +934,8 @@ function coursesSelectizeSetup() {
 
 /**
  * Get a null rating
- *
- * @returns {ScheduleRating}
  */
-function getNullRating() {
+function getNullRating(): ScheduleRating {
   return {
     earliestStart: null,
     freeDays: null,
@@ -1102,12 +947,10 @@ function getNullRating() {
 /**
  * Load settings from localStorage
  *
- * @param {Object} s - The window.localStorage object to load from
- * @returns {Settings}
+ * @param s - JSON form of settings
  */
-function loadSettings(s) {
-  /** @type {Settings} */
-  let result = {
+function loadSettings(s: string): Settings {
+  let result: Settings = {
     catalogUrl: defaultCatalogUrl,
     selectedCourses: [],
     forbiddenGroups: [],
@@ -1120,12 +963,9 @@ function loadSettings(s) {
     },
   };
 
-  if (s.ttime3_settings) {
-    result = /** @type {Settings} */ ($.extend(
-      true /* deep */,
-      result,
-      /** @type {Settings} */ (JSON.parse(s.ttime3_settings))
-    ));
+  if (s != '') {
+    result = $.extend(true /* deep */, result, JSON.parse(s) as Settings) as
+        Settings;
   }
 
   if (mainDebugLogging) {
@@ -1140,7 +980,9 @@ function loadSettings(s) {
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
 
     Object.keys(allRatings).forEach(function(r) {
+      // @ts-ignore: allRatings
       $(`#rating-${r}-min`).val(fs.ratingMin[r]);
+      // @ts-ignore: allRatings
       $(`#rating-${r}-max`).val(fs.ratingMax[r]);
     });
   }
@@ -1151,21 +993,16 @@ function loadSettings(s) {
 /**
  * Figure out the total number of schedules possible for the set of courses,
  * disregarding filters.
- *
- * @param {Set<Course>} courses - Courses to estimate for
- *
- * @returns {number}
  */
-function totalPossibleSchedules(courses) {
+function totalPossibleSchedules(courses: Set<Course>): number {
   let k = Array.from(courses.values());
 
   return k
-    .map(course =>
-      groupsByType(course)
-        .map(t => t.length)
-        .reduce((a, b) => a * b, 1)
-    )
-    .reduce((a, b) => a * b, 1);
+      .map(
+          course => groupsByType(course)
+                        .map(t => t.length)
+                        .reduce((a, b) => a * b, 1))
+      .reduce((a, b) => a * b, 1);
 }
 
 /**
@@ -1174,75 +1011,71 @@ function totalPossibleSchedules(courses) {
 function buildRatingsLimitForm() {
   let form = $('#rating-limits-form');
   Object.keys(allRatings).forEach(function(r) {
-    let row = $('<div>', { class: 'row' });
+    let row = $('<div>', {class: 'row'});
     form.append(row);
-    row.append(
-      $('<div>', {
-        class: 'col col-form-label',
-        text: allRatings[r].name,
-        title: allRatings[r].explanation,
-      })
-    );
-    row.append(
-      $('<div>', {
-        class: 'col',
-        html: $('<input>', {
-          id: `rating-${r}-min`,
-          type: 'number',
-          class: 'form-control',
-          placeholder: '-∞',
-          change: saveSettings,
-        }),
-      })
-    );
-    row.append(
-      $('<div>', {
-        class: 'col',
-        html: $('<input>', {
-          id: `rating-${r}-max`,
-          type: 'number',
-          class: 'form-control',
-          placeholder: '∞',
-          change: saveSettings,
-        }),
-      })
-    );
+    row.append($('<div>', {
+      class: 'col col-form-label',
+      // @ts-ignore: allRatings
+      text: allRatings[r].name,
+      // @ts-ignore: allRatings
+      title: allRatings[r].explanation,
+    }));
+    row.append($('<div>', {
+      class: 'col',
+      html: $('<input>', {
+        id: `rating-${r}-min`,
+        type: 'number',
+        class: 'form-control',
+        placeholder: '-∞',
+        change: saveSettings,
+      }),
+    }));
+    row.append($('<div>', {
+      class: 'col',
+      html: $('<input>', {
+        id: `rating-${r}-max`,
+        type: 'number',
+        class: 'form-control',
+        placeholder: '∞',
+        change: saveSettings,
+      }),
+    }));
   });
 }
 
 buildRatingsLimitForm();
 
-let settings = loadSettings(window.localStorage);
+let settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
 
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();
 
-loadCatalog(settings.catalogUrl, /* isLocal= */ false).then(
-  function(catalog) {
-    if (mainDebugLogging) {
-      console.log('Loaded catalog:', catalog);
-    }
-    currentCatalog = catalog;
-    currentCatalogByCourseID = new Map();
+loadCatalog(settings.catalogUrl)
+    .then(
+        function(catalog) {
+          if (mainDebugLogging) {
+            console.log('Loaded catalog:', catalog);
+          }
+          currentCatalog = catalog;
+          currentCatalogByCourseID = new Map();
 
-    currentCatalog.forEach(function(faculty) {
-      faculty.courses.forEach(function(course) {
-        currentCatalogByCourseID.set(course.id, course);
-      });
-    });
+          currentCatalog.forEach(function(faculty) {
+            faculty.courses.forEach(function(course) {
+              currentCatalogByCourseID.set(course.id, course);
+            });
+          });
 
-    writeCatalogSelector();
-    settings.selectedCourses.forEach(function(id) {
-      try {
-        addSelectedCourseByID(id);
-      } catch (error) {
-        console.error(`Failed to add course ${id}:`, error);
-      }
-    });
-    coursesSelectizeSetup();
-  },
-  function(error) {
-    $('#exception-occurred-catalog').show();
-    console.error('Failed to load catalog:', error);
-  }
-);
+          writeCatalogSelector();
+          settings.selectedCourses.forEach(function(id) {
+            try {
+              addSelectedCourseByID(id);
+            } catch (error) {
+              console.error(`Failed to add course ${id}:`, error);
+            }
+          });
+          coursesSelectizeSetup();
+        },
+        function(error) {
+          $('#exception-occurred-catalog').show();
+          console.error('Failed to load catalog:', error);
+        });

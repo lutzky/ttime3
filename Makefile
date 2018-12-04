@@ -1,6 +1,6 @@
 export PATH := node_modules/.bin:$(PATH)
 
-ALL_TARGETS = closure test lint
+ALL_TARGETS = test lint clang-format-diff
 
 ifdef TESTLOOP_FIX
 	ALL_TARGETS := fix $(ALL_TARGETS)
@@ -8,27 +8,33 @@ endif
 
 all: $(ALL_TARGETS)
 
+clang-format-diff:
+	./clang-format-diff.sh
+
 lint:
-	eslint *.js spec/*.js
+	# TODO(lutzky): Fix linting
+	echo 'LINTING CURRENTLY INACTIVE'
 
 test:
-	jasmine
+	mocha -r ts-node/register spec/**/*.spec.ts
 
-closure:
-	google-closure-compiler \
-		--js='*.js' \
-		--js='spec/*.js' \
-		--externs=externs/externs.js \
-		--externs=node_modules/google-closure-compiler/contrib/externs/jasmine-2.0.js \
-		--externs=node_modules/google-closure-compiler/contrib/externs/jquery-3.3.js \
-		--compilation_level=ADVANCED \
-		--checks_only \
-		--jscomp_error='*'
+tsc-watch:
+	tsc --watch
 
 fix:
-	eslint --fix *.js spec/*.js
+	./clang-format-diff.sh fix
+	echo 'LINT FIXING CURRENTLY INACTIVE'
 
 serve:
 	http-server
 
-.PHONY: test lint closure all fix serve
+karma:
+	karma start karma.unit.js
+
+karma_thorough:
+	TTIME_THOROUGH=1 karma start karma.unit.js
+
+webpack-watch:
+	webpack --watch
+
+.PHONY: test lint all fix serve watch

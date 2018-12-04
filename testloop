@@ -14,4 +14,4 @@ while true; do
   esac
 done
 
-exec npx supervisor -n exit -x make all
+exec npx supervisor -e '.ts' -n exit -x make all

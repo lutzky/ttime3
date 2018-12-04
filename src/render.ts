@@ -1,11 +1,9 @@
-'use strict';
+import {AcademicEvent, Schedule} from './common';
+import {eventsCollide} from './common';
+import {displayName, minutesToTime} from './formatting';
 
 /**
- * @typedef {{
- *   event: AcademicEvent,
- *   layer: number,
- *   numLayers: number,
- * }}
+ * Layered events for rendering on screen
  *
  * Explanation: Suppose you have events A, B, C, that collide like so (time
  * being horizontal):
@@ -30,10 +28,12 @@
  *
  * In this case the numLayers for all events is 3, and B, C, and A are on layers
  * 0, 1, and 2 respectively.
- *
  */
-let LayeredEvent;
-/* exported LayeredEvent */
+class LayeredEvent {
+  event: AcademicEvent;
+  layer: number;
+  numLayers: number;
+}
 
 /**
  * Sort events into buckets of colliding events.
@@ -41,13 +41,10 @@ let LayeredEvent;
  * Shamelessly lifted from boazg at
  * https://github.com/lutzky/ttime/blob/master/lib/ttime/tcal/tcal.rb
  *
- * @param {Array<AcademicEvent>} events - Events to layer
- *
- * @returns {Array<LayeredEvent>}
+ * TODO(lutzky): This is exported for testing purposes only.
  */
-function layoutLayeredEvents(events) {
-  /** @type {Array<LayeredEvent>} */
-  let result = [];
+export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
+  let result: LayeredEvent[] = [];
 
   let remaining = events.slice();
 
@@ -72,17 +69,17 @@ function layoutLayeredEvents(events) {
       remaining = remaining.filter(x => !selected.has(x));
     }
 
-    /** @type {Array<Array<AcademicEvent>>} */
-    let layers = [];
+    let layers: AcademicEvent[][] = [];
 
     selected.forEach(function(s) {
       let assignedToLayer = false;
-      layers.some(function(layer, i) {
+      layers.some(function(layer, _) {
         if (!eventsCollide(layer.concat([s]))) {
           assignedToLayer = true;
           layer.push(s);
           return true;
         }
+        return false;
       });
 
       if (!assignedToLayer) {
@@ -108,35 +105,24 @@ function layoutLayeredEvents(events) {
 
 /**
  * Get the start time of the earliest event in the schedule
- *
- * @param {Schedule} schedule - Schedule
- *
- * @returns {number}
  */
-function getEarliest(schedule) {
+function getEarliest(schedule: Schedule): number {
   return Math.min(...schedule.events.map(x => x.startMinute));
 }
 
 /**
  * Get the end time of the latest event in the schedule
- *
- * @param {Schedule} schedule - Schedule
- *
- * @returns {number}
  */
-function getLatest(schedule) {
+function getLatest(schedule: Schedule): number {
   return Math.max(...schedule.events.map(x => x.endMinute));
 }
 
 /**
  * Render a schedule to target
- *
- * @param {Element} target - Target to write schedule to
- * @param {Schedule} schedule - Schedule to render
- * @param {Map<number, Array<string>>} courseColors - Map from course ID to
- *                                                    colors
  */
-function renderSchedule(target, schedule, courseColors) {
+export function renderSchedule(
+    target: HTMLElement, schedule: Schedule,
+    courseColors: Map<number, string[]>) {
   target.innerHTML = '';
 
   let earliest = getEarliest(schedule);
@@ -150,16 +136,14 @@ function renderSchedule(target, schedule, courseColors) {
     let event = le.event;
     eventDiv.className = 'event';
     let colors = courseColors.get(event.group.course.id);
-    eventDiv.style['background-color'] = colors[0];
-    eventDiv.style['color'] = colors[1];
+    eventDiv.style.backgroundColor = colors[0];
+    eventDiv.style.color = colors[1];
     positionElement(
-      eventDiv,
-      '%',
-      /* left   */ (100 / 6.0) * (1 + event.day + le.layer / le.numLayers),
-      /* top    */ scale * (event.startMinute - earliest),
-      /* width  */ 100 / 6.0 / le.numLayers,
-      /* height */ scale * (event.endMinute - event.startMinute)
-    );
+        eventDiv, '%',
+        /* left   */ (100 / 6.0) * (1 + event.day + le.layer / le.numLayers),
+        /* top    */ scale * (event.startMinute - earliest),
+        /* width  */ 100 / 6.0 / le.numLayers,
+        /* height */ scale * (event.endMinute - event.startMinute));
     annotateEvent(eventDiv, event);
     target.appendChild(eventDiv);
   });
@@ -169,11 +153,8 @@ function renderSchedule(target, schedule, courseColors) {
 
 /**
  * Annotate the div with the actualy contents of the event
- *
- * @param {Element} target - Div to annotate
- * @param {AcademicEvent} event - Event details to show
  */
-function annotateEvent(target, event) {
+function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   target.innerHTML = '';
   let courseName = document.createElement('span');
   courseName.className = 'course-name';
@@ -197,10 +178,8 @@ function annotateEvent(target, event) {
   forbidLink.href = '#/';
   forbidLink.title = 'Forbid this group';
   forbidLink.onclick = function() {
-    $(forbidLink)
-      .fadeOut(100)
-      .fadeIn(100);
-    addForbiddenGroup(event.group);
+    $(forbidLink).fadeOut(100).fadeIn(100);
+    (window as any).addForbiddenGroup(event.group);
   };
   forbidDiv.appendChild(forbidLink);
   target.appendChild(forbidDiv);
@@ -210,11 +189,8 @@ const gridDensity = 30;
 
 /**
  * Render grid lines on target
- *
- * @param {Element} target - Target to draw grid lines on
- * @param {Schedule} schedule - Schedule being rendered
  */
-function addGridLines(target, schedule) {
+function addGridLines(target: HTMLElement, schedule: Schedule) {
   let earliest = getEarliest(schedule);
   let latest = getLatest(schedule);
   let scale = 100.0 / (latest - earliest);
@@ -227,37 +203,23 @@ function addGridLines(target, schedule) {
     gridDiv.className = 'grid-line';
     gridDiv.innerText = minutesToTime(t);
     positionElement(
-      gridDiv,
-      '%',
-      /* left    */ 0,
-      /* top     */ scale * (t - earliest),
-      /* width   */ 100,
-      /* height  */ scale * gridDensity
-    );
+        gridDiv, '%',
+        /* left    */ 0,
+        /* top     */ scale * (t - earliest),
+        /* width   */ 100,
+        /* height  */ scale * gridDensity);
     target.appendChild(gridDiv);
   }
 }
 
 /**
  * Position element using the given units
- *
- * @param {Element} element - Element to position
- * @param {string} units - Units, appended to all coordinates
- * @param {number} left - Left coordinate
- * @param {number} top - Top coordinate
- * @param {number} width - Width
- * @param {number} height - Height
  */
-function positionElement(element, units, left, top, width, height) {
+function positionElement(
+    element: HTMLElement, units: string, left: number, top: number,
+    width: number, height: number) {
   element.style.left = `${left}${units}`;
   element.style.top = `${top}${units}`;
   element.style.width = `${width}${units}`;
   element.style.height = `${height}${units}`;
-}
-
-if (typeof module != 'undefined') {
-  module.exports = {
-    layoutLayeredEvents: layoutLayeredEvents,
-    renderSchedule: renderSchedule,
-  };
 }
