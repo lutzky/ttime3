@@ -18,6 +18,11 @@ lint:
 test:
 	mocha -r ts-node/register spec/**/*.spec.ts
 
+test-watch:
+	mocha -r ts-node/register \
+		--watch --watch-extensions ts \
+		spec/**/*.spec.ts
+
 tsc-watch:
 	tsc --watch
 
