@@ -15,7 +15,8 @@ import * as testData from '../testdata.json';
 
 export function loadTestCatalog(): Promise<Catalog> {
   return new Promise(function(resolve, _reject) {
-    let result: Catalog = testData as any as Catalog;
+    let testDataCopy = JSON.parse(JSON.stringify(testData));
+    let result: Catalog = testDataCopy as any as Catalog;
     fixRawCatalog(result);
     resolve(result);
   });
