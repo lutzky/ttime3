@@ -503,8 +503,6 @@ const customEventRegex = new RegExp([
   /(.*)/,
 ].map(x => x.source).join(''));
 
-// TODO(lutzky): inverseDayIndex is causing type problems, making us use
-// some ts-ignore.
 const inverseDayIndex = {
   Sun: 0,
   Mon: 1,
@@ -571,8 +569,7 @@ function buildCustomEventsCourses(s: string): Course[] {
       throw Error('Invalid custom event line: ' + line);
     }
 
-    // @ts-ignore: inverseDayIndex
-    let day: number = inverseDayIndex[m[1]];
+    let day: number = inverseDayIndex[m[1] as keyof typeof inverseDayIndex];
     let startMinute = Number(Number(m[2]) * 60 + Number(m[3]));
     let endMinute = Number(Number(m[4]) * 60 + Number(m[5]));
     let desc = m[6];
