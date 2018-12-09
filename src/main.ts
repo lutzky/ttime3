@@ -248,8 +248,6 @@ function rtlSpan(s: string): string {
  * Create a span for a course label, including info button
  */
 function courseLabel(course: Course): HTMLElement {
-  // TODO(lutzky): This function is full of DOM misuse, hence the ts-ignore
-  // symbols.
   let span = document.createElement('span');
   let infoLink = document.createElement('a');
   infoLink.innerHTML = expandInfoSymbol;
@@ -257,23 +255,18 @@ function courseLabel(course: Course): HTMLElement {
   infoLink.href = '#/';
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
-    // @ts-ignore: dom-misuse
-    if (!span.ttime3_expanded) {
+    if (!$(span).data('ttime3_expanded')) {
       let infoDiv = document.createElement('div');
-      // @ts-ignore: dom-misuse
-      span.infoDiv = infoDiv;
+      $(span).data('infoDiv', infoDiv);
       infoDiv.appendChild(htmlDescribeCourse(course));
       // showCourseDebugInfo(course);
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
-      // @ts-ignore: dom-misuse
-      span.ttime3_expanded = true;
+      $(span).data('ttime3_expanded', true);
     } else {
       infoLink.innerHTML = expandInfoSymbol;
-      // @ts-ignore: dom-misuse
-      span.ttime3_expanded = false;
-      // @ts-ignore: dom-misuse
-      span.removeChild(span.infoDiv);
+      $(span).data('ttime3_expanded', false);
+      span.removeChild($(span).data('infoDiv'));
     }
   };
   span.appendChild(infoLink);
