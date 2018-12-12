@@ -14,10 +14,8 @@ Requirements: `npm`.
 * Run `npm install` first
 * Run `make`, it'll perform lint tests and such. Run `./testloop` to get that to automatically run on file changes.
 * Run `make fix` to fix code style formatting.
-* Run `make webpack-watch` in a window - this will update the generated javascript when files are changed.
-* Run `make dev-serve` to run a local server. Opening `index.html` directly in the browser won't work because XHR is used.
-
-Note that the build files are stored under `dev-server/`.
+* Run `make webpack-dev-server` to run a local in a window - this will update the generated javascript when files are changed. This does not modify the production output.
+* Run `make webpack-production` to update the production version in `dist/`.
 
 ## Releasing a version
 

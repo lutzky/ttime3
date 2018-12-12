@@ -33,17 +33,14 @@ fix:
 serve-production:
 	http-server
 
-serve-dev:
-	http-server dev-server/
-
 karma:
 	karma start karma.unit.js
 
 karma_thorough:
 	TTIME_THOROUGH=1 karma start karma.unit.js
 
-webpack-watch:
-	webpack --watch --progress
+webpack-dev-server:
+	webpack-dev-server
 
 webpack-production:
 	webpack --env.production --progress

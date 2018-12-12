@@ -23,6 +23,10 @@ module.exports = env => {
       extensions: ['.ts', '.tsx', '.js'],
       modules: ['node_modules']
     },
+    devServer: {
+      disableHostCheck: true,
+      host: "0.0.0.0",
+    },
     module: {
       rules: [
         // all files with a `.ts` or `.tsx` extension will be handled by
