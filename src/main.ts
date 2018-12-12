@@ -344,11 +344,9 @@ function saveSettings() {
     ratingMin: getNullRating(),
   };
 
-  Object.keys(allRatings).forEach(function(r) {
-    // @ts-ignore: allRatings
+  allRatingTypes.forEach(function(r) {
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
         ($(`#rating-${r}-min`)[0]) as HTMLInputElement, null);
-    // @ts-ignore: allRatings
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
         ($(`#rating-${r}-max`)[0]) as HTMLInputElement, null);
   });
@@ -697,8 +695,6 @@ let sortedByRating = '';
 
 let sortedByRatingAsc = true;
 
-// TODO(lutzky): allRatings breaks typescript type checks and forces us to
-// use a lot of ts-ignore comments.
 const allRatings = {
   earliestStart: {
     name: 'Earliest start',
@@ -722,37 +718,38 @@ const allRatings = {
   },
 };
 
+type ratingType = keyof ScheduleRating;
+
+const allRatingTypes = Object.keys(allRatings) as ratingType[];
+
 /**
  * Sort current schedule by rating
  */
-function sortByRating(rating: string) {
+function sortByRating(rating: ratingType) {
   if (sortedByRating == rating) {
     sortedByRatingAsc = !sortedByRatingAsc;
   }
 
   sortedByRating = rating;
   possibleSchedules.sort(function(a, b) {
-    // @ts-ignore: allRatings
     return (sortedByRatingAsc ? 1 : -1) * (a.rating[rating] - b.rating[rating]);
   });
 
   goToSchedule(0);
-  Object.keys(allRatings).forEach(function(rating) {
-    $(`#rating-badge-${rating}`)
-        .replaceWith(getRatingBadge(rating, possibleSchedules[0]));
+  allRatingTypes.forEach(function(r) {
+    $(`#rating-badge-${r}`)
+        .replaceWith(getRatingBadge(r, possibleSchedules[0]));
   });
 }
 
 /**
  * Get a badge for the given rating according to the schedule type
  */
-function getRatingBadge(rating: string, schedule: Schedule): JQuery {
+function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
   let result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
-    // @ts-ignore: allRatings
     text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
-    // @ts-ignore: allRatings
     title: allRatings[rating].explanation,
     href: '#/',
     click: function() {
@@ -774,8 +771,7 @@ function getRatingBadge(rating: string, schedule: Schedule): JQuery {
 function writeScheduleContents(target: JQuery, schedule: Schedule) {
   target.empty();
 
-  Object.keys(allRatings)
-      .map(rating => getRatingBadge(rating, schedule))
+  allRatingTypes.map(rating => getRatingBadge(rating, schedule))
       .forEach(function(badge) {
         target.append(badge).append(' ');
       });
@@ -969,10 +965,8 @@ function loadSettings(s: string): Settings {
     let fs = result.filterSettings;
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
 
-    Object.keys(allRatings).forEach(function(r) {
-      // @ts-ignore: allRatings
+    allRatingTypes.forEach(function(r) {
       $(`#rating-${r}-min`).val(fs.ratingMin[r]);
-      // @ts-ignore: allRatings
       $(`#rating-${r}-max`).val(fs.ratingMax[r]);
     });
   }
@@ -1000,14 +994,12 @@ function totalPossibleSchedules(courses: Set<Course>): number {
  */
 function buildRatingsLimitForm() {
   let form = $('#rating-limits-form');
-  Object.keys(allRatings).forEach(function(r) {
+  allRatingTypes.forEach(function(r) {
     let row = $('<div>', {class: 'row'});
     form.append(row);
     row.append($('<div>', {
       class: 'col col-form-label',
-      // @ts-ignore: allRatings
       text: allRatings[r].name,
-      // @ts-ignore: allRatings
       title: allRatings[r].explanation,
     }));
     row.append($('<div>', {

@@ -145,31 +145,25 @@ function runAllFilters(
  */
 function filterByRatings(
     schedules: Schedule[], settings: FilterSettings): Schedule[] {
-  Object.keys(settings.ratingMin).forEach(function(r) {
-    // @ts-ignore: allRatings
-    if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
-      return;
-    }
+  Object.keys(settings.ratingMin)
+      .forEach(function(r: keyof typeof settings.ratingMin) {
+        if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
+          return;
+        }
 
-    schedules = filterWithDelta(schedules, function(schedule) {
-      if (
-          // @ts-ignore: allRatings
-          settings.ratingMin[r] != null &&
-          // @ts-ignore: allRatings
-          schedule.rating[r] < settings.ratingMin[r]) {
-        return false;
-      }
-      if (
-          // @ts-ignore: allRatings
-          settings.ratingMax[r] != null &&
-          // @ts-ignore: allRatings
-          schedule.rating[r] > settings.ratingMax[r]) {
-        return false;
-      }
+        schedules = filterWithDelta(schedules, function(schedule) {
+          if (settings.ratingMin[r] != null &&
+              schedule.rating[r] < settings.ratingMin[r]) {
+            return false;
+          }
+          if (settings.ratingMax[r] != null &&
+              schedule.rating[r] > settings.ratingMax[r]) {
+            return false;
+          }
 
-      return true;
-    }, `Rating '${r}'`);
-  });
+          return true;
+        }, `Rating '${r}'`);
+      });
 
   return schedules;
 }
