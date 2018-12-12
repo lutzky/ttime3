@@ -7,7 +7,7 @@ node_js:
   - "node"
 script:
   - npm test
-  - make karma CHROME_HEADLESS=1
+  - CHROME_HEADLESS=1 npm run karma
 branches:
   except:
     - /.*-wip$/

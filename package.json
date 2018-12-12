@@ -32,7 +32,17 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "test": "make"
+    "test": "npm run test:mocha && npm run format:check",
+    "test:mocha": "mocha -r ts-node/register spec/**/*.spec.ts",
+    "test:watch": "npm run test:mocha -- --watch --watch-extensions ts",
+    "tsc:watch": "tsc --watch",
+    "format:check": "./clang-format-diff.sh",
+    "format:fix": "npm run format:check -- fix",
+    "serve:production": "http-server",
+    "karma": "karma start karma.unit.js",
+    "karma:thorough": "TTIME_THOROUGH=1 npm run karma",
+    "start": "webpack-dev-server",
+    "build": "webpack --env.production --progress"
   },
   "repository": {
     "type": "git",
