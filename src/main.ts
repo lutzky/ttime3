@@ -357,6 +357,7 @@ function saveSettings() {
     console.info('Saved settings:', settings);
   }
 }
+(window as any).saveSettings = saveSettings;
 
 /**
  * Get the numeric value in the given field, or return the default if
