@@ -2,7 +2,7 @@ const ctx: Worker = self as any;
 
 import {generateSchedules} from './scheduler';
 
-ctx.onmessage = function(e: MessageEvent) {
+ctx.onmessage = (e: MessageEvent) => {
   try {
     const schedules = generateSchedules(e.data.courses, e.data.filterSettings);
     ctx.postMessage(schedules);

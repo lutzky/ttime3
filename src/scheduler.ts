@@ -27,11 +27,11 @@ function countRuns(events: AcademicEvent[]): number {
   let result = 0;
   sortEvents(e);
   for (let i = 0; i < e.length - 1; i++) {
-    if (e[i].day == e[i + 1].day) {
-      if (e[i + 1].startMinute == e[i].endMinute) {
+    if (e[i].day === e[i + 1].day) {
+      if (e[i + 1].startMinute === e[i].endMinute) {
         const b1 = eventBuilding(e[i]);
         const b2 = eventBuilding(e[i + 1]);
-        if (b1 && b2 && b1 != b2) {
+        if (b1 && b2 && b1 !== b2) {
           result++;
         }
       }
@@ -54,13 +54,13 @@ function filterNoCollisions(schedule: Schedule): boolean {
  *
  * TODO(lutzky): cartesian is exported for testing purposes
  */
-export function cartesian<T>(...a: T[][]): T[][] {
-  if (a.length == 0) {
+export function cartesian<T>(...arrays: T[][]): T[][] {
+  if (arrays.length === 0) {
     return [[]];
   }
 
-  const subCart = cartesian(...a.slice(1));
-  return a[0]
+  const subCart = cartesian(...arrays.slice(1));
+  return arrays[0]
       .map((x) => subCart.map((y) => [x].concat(y)))
       .reduce((a, b) => a.concat(b));
 }
@@ -146,12 +146,12 @@ function runAllFilters(
 function filterByRatings(
     schedules: Schedule[], settings: FilterSettings): Schedule[] {
   Object.keys(settings.ratingMin)
-      .forEach(function(r: keyof typeof settings.ratingMin) {
+      .forEach((r: keyof typeof settings.ratingMin) => {
         if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
           return;
         }
 
-        schedules = filterWithDelta(schedules, function(schedule) {
+        schedules = filterWithDelta(schedules, (schedule) => {
           if (settings.ratingMin[r] != null &&
               schedule.rating[r] < settings.ratingMin[r]) {
             return false;
@@ -174,11 +174,11 @@ function filterByRatings(
 function countFreeDays(events: AcademicEvent[]): number {
   const hasClasses = [false, false, false, false, false];
 
-  events.forEach(function(event) {
+  events.forEach((event) => {
     hasClasses[event.day] = true;
   });
 
-  return hasClasses.filter((x) => x == false).length;
+  return hasClasses.filter((x) => x === false).length;
 }
 
 /**
@@ -189,9 +189,9 @@ function countFreeDays(events: AcademicEvent[]): number {
 export function rate(events: AcademicEvent[]): ScheduleRating {
   return {
     earliestStart: Math.min(...events.map((e) => e.startMinute / 60.0)),
+    freeDays: countFreeDays(events),
     latestFinish: Math.max(...events.map((e) => e.endMinute / 60.0)),
     numRuns: countRuns(events),
-    freeDays: countFreeDays(events),
   };
 }
 
