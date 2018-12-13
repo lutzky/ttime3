@@ -14,7 +14,7 @@ import {AcademicEvent, Catalog, Course, DateObj, Faculty, Group} from './common'
  * @returns Minutes since midnight
  */
 function parseCheeseForkHour(s: string): number[] {
-  return s.split(' - ').map(function(hhm) {
+  return s.split(' - ').map((hhm) => {
     const splitHour = hhm.split(':');
     let minute = Number(splitHour[0]) * 60;
     if (splitHour.length > 1) {
@@ -84,7 +84,7 @@ export function parseCheeseFork(jsData: string): Catalog {
 
   console.info('Experimental CheeseFork parser. First course: ', data[0]);
 
-  data.forEach(function(dataCourse: any) {
+  data.forEach((dataCourse: any) => {
     const facultyName = dataCourse.general[hebrew.faculty];
 
     if (!facultiesByName.has(facultyName)) {
@@ -115,7 +115,7 @@ export function parseCheeseFork(jsData: string): Catalog {
 
     const groupsById: Map<number, Group> = new Map();
 
-    dataCourse.schedule.forEach(function(dataSchedule: any) {
+    dataCourse.schedule.forEach((dataSchedule: any) => {
       /*
        * In CheeseFork data, groups are repeated according to
        * "groups-you-should-sign-up-to". This is denoted as "group" in the data,
@@ -182,7 +182,7 @@ export function parseCheeseFork(jsData: string): Catalog {
       group.events.push(event);
     });
 
-    groupsById.forEach(function(group, _) {
+    groupsById.forEach((group, _) => {
       course.groups.push(group);
     });
 

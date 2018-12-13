@@ -73,7 +73,7 @@ export class DateObj {
  * Sorts events by start time
  */
 export function sortEvents(events: AcademicEvent[]) {
-  events.sort(function(a, b) {
+  events.sort((a, b) => {
     if (a.day != b.day) {
       return a.day - b.day;
     }
@@ -103,10 +103,10 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
  * Load the catalog object from url.
  */
 export function loadCatalog(url: string): Promise<Catalog> {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
     req.open('GET', url);
-    req.onload = function() {
+    req.onload = () => {
       if (req.status == 200) {
         let result: Catalog = null;
         try {
@@ -125,7 +125,7 @@ export function loadCatalog(url: string): Promise<Catalog> {
       }
     };
 
-    req.onerror = function() {
+    req.onerror = () => {
       reject(Error('Network Error'));
     };
 
@@ -137,14 +137,14 @@ export function loadCatalog(url: string): Promise<Catalog> {
  * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
  */
 export function fixRawCatalog(catalog: Catalog) {
-  catalog.forEach(function(faculty) {
-    faculty.courses.forEach(function(course) {
+  catalog.forEach((faculty) => {
+    faculty.courses.forEach((course) => {
       course.faculty = faculty;
       if (course.groups) {
-        course.groups.forEach(function(group) {
+        course.groups.forEach((group) => {
           group.course = course;
           if (group.events) {
-            group.events.forEach(function(event) {
+            group.events.forEach((event) => {
               event.group = group;
             });
           }
@@ -163,7 +163,7 @@ export function groupsByType(course: Course): Group[][] {
     return [];
   }
 
-  course.groups.forEach(function(group) {
+  course.groups.forEach((group) => {
     if (!m.has(group.type)) {
       m.set(group.type, []);
     }

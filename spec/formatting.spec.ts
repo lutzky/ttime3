@@ -1,8 +1,8 @@
 import {expect} from 'chai';
 import {minutesToTime} from '../src/formatting';
 
-describe('Formatting', function() {
-  describe('time formatting', function() {
+describe('Formatting', () => {
+  describe('time formatting', () => {
     const testCases = [
       {minutes: 0, time: '00:00'},
       {minutes: 59, time: '00:59'},
@@ -13,8 +13,8 @@ describe('Formatting', function() {
       {minutes: 720, time: '12:00'},
       {minutes: 780, time: '13:00'},
     ];
-    testCases.forEach(function(tc) {
-      it('should format ' + tc.minutes + ' as ' + tc.time, function() {
+    testCases.forEach((tc) => {
+      it('should format ' + tc.minutes + ' as ' + tc.time, () => {
         expect(minutesToTime(tc.minutes)).to.equal(tc.time);
       });
     });

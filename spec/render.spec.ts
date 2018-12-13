@@ -4,8 +4,8 @@ import {expect} from 'chai';
 import {AcademicEvent} from '../src/common';
 import {layoutLayeredEvents} from '../src/render';
 
-describe('Render', function() {
-  it('should correctly lay out layered events', function() {
+describe('Render', () => {
+  it('should correctly lay out layered events', () => {
     const events = [
       {day: 1, startMinute: 5, endMinute: 25},
       {day: 1, startMinute: 0, endMinute: 15},

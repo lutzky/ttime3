@@ -56,9 +56,9 @@ export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
       selectedMoreEvents = false;
       const oldSelected = selected;
       selected = new Set();
-      oldSelected.forEach(function(s) {
+      oldSelected.forEach((s) => {
         selected.add(s);
-        remaining.forEach(function(r) {
+        remaining.forEach((r) => {
           if (eventsCollide([r, s])) {
             selected.add(r);
             selectedMoreEvents = true;
@@ -71,9 +71,9 @@ export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
 
     const layers: AcademicEvent[][] = [];
 
-    selected.forEach(function(s) {
+    selected.forEach((s) => {
       let assignedToLayer = false;
-      layers.some(function(layer, _) {
+      layers.some((layer, _) => {
         if (!eventsCollide(layer.concat([s]))) {
           assignedToLayer = true;
           layer.push(s);
@@ -89,8 +89,8 @@ export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
       }
     });
 
-    layers.forEach(function(l, i) {
-      l.forEach(function(s) {
+    layers.forEach((l, i) => {
+      l.forEach((s) => {
         result.push({
           event: s,
           layer: i,
@@ -131,7 +131,7 @@ export function renderSchedule(
 
   const layeredEvents = layoutLayeredEvents(schedule.events);
 
-  layeredEvents.forEach(function(le) {
+  layeredEvents.forEach((le) => {
     const eventDiv = document.createElement('div');
     const event = le.event;
     eventDiv.className = 'event';
@@ -177,7 +177,7 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   forbidLink.innerHTML = '<i class="fas fa-ban"></i>';
   forbidLink.href = '#/';
   forbidLink.title = 'Forbid this group';
-  forbidLink.onclick = function() {
+  forbidLink.onclick = () => {
     $(forbidLink).fadeOut(100).fadeIn(100);
     (window as any).addForbiddenGroup(event.group);
   };

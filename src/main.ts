@@ -76,13 +76,13 @@ function groupHeaderForCatalog(group: Group): JQuery {
 
   const forbidLink = $('<a>', {
     class: 'forbid-link',
-    href: '#/',
     data: {forbidden: isGroupForbidden(group), groupID: groupIDString(group)},
+    href: '#/',
   });
 
   updateForbidLinkText(forbidLink);
 
-  forbidLink.on('click', function() {
+  forbidLink.on('click', () => {
     if (forbidLink.data('forbidden')) {
       delForbiddenGroup(group);
     } else {
@@ -145,7 +145,7 @@ function updateForbiddenGroups() {
   const ul = $('#forbidden-groups');
   ul.empty();
 
-  forbiddenGroups.forEach(function(fg) {
+  forbiddenGroups.forEach((fg) => {
     const li = $('<li>');
     li.text(fg + ' ');
 
@@ -163,7 +163,7 @@ function updateForbiddenGroups() {
     ul.append(li);
   });
 
-  $('a.forbid-link').each(function() {
+  $('a.forbid-link').each(() => {
     const groupID: string = $(this).data('groupID');
 
     const isForbidden = forbiddenGroups.has(groupID);
@@ -199,7 +199,7 @@ function htmlDescribeCourse(course: Course): HTMLElement {
   ul.append($('<li>', {html: '<b>Test dates:</b>'}));
   const testDates = $('<ul>');
   if (course.testDates) {
-    course.testDates.forEach(function(d) {
+    course.testDates.forEach((d) => {
       testDates.append($('<li>', {text: formatDate(d)}));
     });
   } else {
@@ -210,11 +210,11 @@ function htmlDescribeCourse(course: Course): HTMLElement {
   ul.append($('<li>', {html: '<b>Groups:</b>'}));
   const groups = $('<ul>');
   if (course.groups) {
-    course.groups.forEach(function(g) {
+    course.groups.forEach((g) => {
       groups.append(groupHeaderForCatalog(g)[0]);
       const events = $('<ul>');
       if (g.events) {
-        g.events.forEach(function(e) {
+        g.events.forEach((e) => {
           events.append($('<li>', {
             text: `${dayNames[e.day]}, ` + minutesToTime(e.startMinute) + '-' +
                 minutesToTime(e.endMinute) + ` at ${e.location || '[unknown]'}`,
@@ -254,7 +254,7 @@ function courseLabel(course: Course): HTMLElement {
   infoLink.className = 'expando';
   infoLink.href = '#/';
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
-  infoLink.onclick = function() {
+  infoLink.onclick = () => {
     if (!$(span).data('ttime3_expanded')) {
       const infoDiv = document.createElement('div');
       $(span).data('infoDiv', infoDiv);
@@ -283,7 +283,7 @@ function writeCatalogSelector() {
   const facultiesDiv = $('#catalog');
 
   facultiesDiv.empty();
-  currentCatalog.forEach(function(faculty) {
+  currentCatalog.forEach((faculty) => {
     const facultyDetails = $('<details>');
 
     const summary = $('<summary>');
@@ -299,7 +299,7 @@ function writeCatalogSelector() {
     const courseList = $('<ul>', {class: 'course-list'});
     facultyDetails.append(courseList);
 
-    faculty.courses.forEach(function(course) {
+    faculty.courses.forEach((course) => {
       const btn = $('<button>', {
         text: '+',
         click() {
@@ -344,7 +344,7 @@ function saveSettings() {
     ratingMin: getNullRating(),
   };
 
-  allRatingTypes.forEach(function(r) {
+  allRatingTypes.forEach((r) => {
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
         ($(`#rating-${r}-min`)[0]) as HTMLInputElement, null);
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
@@ -365,7 +365,7 @@ function saveSettings() {
  */
 function getNumInputValueWithDefault(
     input: HTMLInputElement, defaultValue: number): number {
-  if (input.value == '') {
+  if (input.value === '') {
     return defaultValue;
   }
   return Number(input.value);
@@ -389,7 +389,7 @@ function addSelectedCourse(course: Course) {
  * Add a course with a given ID
  */
 function addSelectedCourseByID(...ids: number[]) {
-  ids.forEach(function(id) {
+  ids.forEach((id) => {
     const course = getCourseByID(id);
 
     if (course) {
@@ -422,12 +422,12 @@ function refreshSelectedCourses() {
   const nscheds = Number(totalPossibleSchedules(selectedCourses));
   $('#possible-schedules')
       .text(`${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`);
-  $('#generate-schedules').prop('disabled', selectedCourses.size == 0);
+  $('#generate-schedules').prop('disabled', selectedCourses.size === 0);
   const div = $('#selected-courses');
   div.empty();
   const ul = $('<ul>', {class: 'list-group'});
   div.append(ul);
-  selectedCourses.forEach(function(course) {
+  selectedCourses.forEach((course) => {
     const li = $('<li>', {class: 'list-group-item'});
     const label = courseLabel(course);
     const btn = $('<button>', {
@@ -439,7 +439,7 @@ function refreshSelectedCourses() {
     });
     li.append(label);
 
-    if (course.groups == null || course.groups.length == 0) {
+    if (course.groups === null || course.groups.length === 0) {
       li.append($('<i>', {
         class: 'text-warning fas fa-exclamation-triangle',
         title: 'Course has no groups',
@@ -457,7 +457,7 @@ const schedulerWorker = new SchedulerWorker();
 /**
  * Respond to scheduling result from worker
  */
-schedulerWorker.onmessage = function(e: MessageEvent) {
+schedulerWorker.onmessage = (e: MessageEvent) => {
   if (mainDebugLogging) {
     console.info('Received message from worker:', e);
   }
@@ -495,6 +495,7 @@ const customEventRegex = new RegExp([
   /(.*)/,
 ].map((x) => x.source).join(''));
 
+/* tslint:disable:object-literal-sort-keys */
 const inverseDayIndex = {
   Sun: 0,
   Mon: 1,
@@ -504,6 +505,7 @@ const inverseDayIndex = {
   Fri: 5,
   Sat: 6,
 };
+/* tslint:enable:object-literal-sort-keys */
 
 /**
  * Create a course with a single event
@@ -512,30 +514,30 @@ function createSingleEventCourse(
     name: string, day: number, startMinute: number, endMinute: number): Course {
   const c: Course = {
     academicPoints: 0,
+    groups: [],
     id: 0,
     lecturerInCharge: '',
     name,
     testDates: [],
-    groups: [],
   };
 
   const g: Group = {
     course: c,
     description: '',
+    events: [],
     id: 0,
     teachers: [],
     type: 'lecture',
-    events: [],
   };
 
   c.groups.push(g);
 
   const e: AcademicEvent = {
     day,
-    startMinute,
     endMinute,
-    location: '',
     group: g,
+    location: '',
+    startMinute,
   };
 
   g.events.push(e);
@@ -551,11 +553,11 @@ function createSingleEventCourse(
 function buildCustomEventsCourses(s: string): Course[] {
   const result: Course[] = [];
 
-  if (s == '') {
+  if (s === '') {
     return result;
   }
 
-  s.split('\n').forEach(function(line) {
+  s.split('\n').forEach((line) => {
     const m = customEventRegex.exec(line);
     if (m == null) {
       throw Error('Invalid custom event line: ' + line);
@@ -609,8 +611,8 @@ function setPossibleSchedules(schedules: Schedule[]) {
   currentSchedule = 0;
   const divs = $('#schedule-browser, #rendered-schedule-container');
   $('#num-schedules').text(schedules.length);
-  if (schedules.length == 0 ||
-      (schedules.length == 1 && schedules[0].events.length == 0)) {
+  if (schedules.length === 0 ||
+      (schedules.length === 1 && schedules[0].events.length === 0)) {
     divs.hide();
     $('#no-schedules').show();
   } else {
@@ -698,24 +700,24 @@ let sortedByRatingAsc = true;
 
 const allRatings = {
   earliestStart: {
-    name: 'Earliest start',
-    explanation: 'Hour at which the earliest class of the week start',
     badgeTextFunc: (s: number) => `Earliest start: ${s}`,
-  },
-  latestFinish: {
-    name: 'Latest finish',
-    explanation: 'Hour at which the latest class of the week finishes',
-    badgeTextFunc: (s: number) => `Latest finish: ${s}`,
-  },
-  numRuns: {
-    name: 'Number of runs',
-    explanation: 'Number of adjacent classes in different buildings',
-    badgeTextFunc: (s: number) => `${s} runs`,
+    explanation: 'Hour at which the earliest class of the week start',
+    name: 'Earliest start',
   },
   freeDays: {
-    name: 'Free days',
-    explanation: 'Number of days with no classes',
     badgeTextFunc: (s: number) => `${s} free days`,
+    explanation: 'Number of days with no classes',
+    name: 'Free days',
+  },
+  latestFinish: {
+    badgeTextFunc: (s: number) => `Latest finish: ${s}`,
+    explanation: 'Hour at which the latest class of the week finishes',
+    name: 'Latest finish',
+  },
+  numRuns: {
+    badgeTextFunc: (s: number) => `${s} runs`,
+    explanation: 'Number of adjacent classes in different buildings',
+    name: 'Number of runs',
   },
 };
 
@@ -727,17 +729,17 @@ const allRatingTypes = Object.keys(allRatings) as ratingType[];
  * Sort current schedule by rating
  */
 function sortByRating(rating: ratingType) {
-  if (sortedByRating == rating) {
+  if (sortedByRating === rating) {
     sortedByRatingAsc = !sortedByRatingAsc;
   }
 
   sortedByRating = rating;
-  possibleSchedules.sort(function(a, b) {
+  possibleSchedules.sort((a, b) => {
     return (sortedByRatingAsc ? 1 : -1) * (a.rating[rating] - b.rating[rating]);
   });
 
   goToSchedule(0);
-  allRatingTypes.forEach(function(r) {
+  allRatingTypes.forEach((r) => {
     $(`#rating-badge-${r}`)
         .replaceWith(getRatingBadge(r, possibleSchedules[0]));
   });
@@ -749,16 +751,16 @@ function sortByRating(rating: ratingType) {
 function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
   const result = $('<a>', {
     class: 'badge badge-info',
+    href: '#/',
     id: `rating-badge-${rating}`,
     text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
     title: allRatings[rating].explanation,
-    href: '#/',
     click() {
       sortByRating(rating);
     },
   });
 
-  if (sortedByRating == rating) {
+  if (sortedByRating === rating) {
     const icon = sortedByRatingAsc ? 'fa-sort-up' : 'fa-sort-down';
     result.append(` <i class="fas ${icon}"></i>`);
   }
@@ -773,14 +775,14 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
   target.empty();
 
   allRatingTypes.map((rating) => getRatingBadge(rating, schedule))
-      .forEach(function(badge) {
+      .forEach((badge) => {
         target.append(badge).append(' ');
       });
 
   const ul = $('<ul>', {class: 'list-group'});
   target.append(ul);
 
-  byDay(schedule).forEach(function(dayEvents) {
+  byDay(schedule).forEach((dayEvents) => {
     const dayEntry = $('<li>', {
       class: 'list-group-item',
       css: {'padding-top': '2px', 'padding-bottom': '2px'},
@@ -792,7 +794,7 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
     ul.append(dayEntry);
     // let eventList = $('<ul>');
     //    dayEntry.append(eventList);
-    dayEvents.forEach(function(e) {
+    dayEvents.forEach((e) => {
       const eventEntry = $('<li>', {
         class: 'list-group-item',
       });
@@ -841,8 +843,8 @@ function byDay(schedule: Schedule): AcademicEvent[][] {
 
   let currentDay = events[0].day;
 
-  events.forEach(function(e) {
-    if (e.day != currentDay) {
+  events.forEach((e) => {
+    if (e.day !== currentDay) {
       result.push([]);
       currentDay = e.day;
     }
@@ -892,24 +894,24 @@ function coursesSelectizeSetup() {
   const opts: any = [];
   const optgroups: any = [];
 
-  currentCatalog.forEach(function(faculty) {
+  currentCatalog.forEach((faculty) => {
     optgroups.push({label: faculty.name, value: faculty.name});
-    faculty.courses.forEach(function(course) {
+    faculty.courses.forEach((course) => {
       opts.push({
-        optgroup: faculty.name,
-        value: course.id,
-        text: `${formatCourseId(course.id)} - ${course.name}`,
         nicknames: getNicknames(course),
+        optgroup: faculty.name,
+        text: `${formatCourseId(course.id)} - ${course.name}`,
+        value: course.id,
       });
     });
   });
 
   selectBox.selectize({
-    options: opts,
     optgroups,
+    options: opts,
     searchField: ['text', 'nicknames'],
     onItemAdd(courseID) {
-      if (courseID == '') {
+      if (courseID === '') {
         return;
       }
       const course = getCourseByID(Number(courseID));
@@ -939,18 +941,18 @@ function getNullRating(): ScheduleRating {
 function loadSettings(s: string): Settings {
   let result: Settings = {
     catalogUrl: defaultCatalogUrl,
-    selectedCourses: [],
-    forbiddenGroups: [],
     customEvents: '',
     filterSettings: {
       forbiddenGroups: [],
       noCollisions: true,
-      ratingMin: getNullRating(),
       ratingMax: getNullRating(),
+      ratingMin: getNullRating(),
     },
+    forbiddenGroups: [],
+    selectedCourses: [],
   };
 
-  if (s != '') {
+  if (s !== '') {
     result = $.extend(true /* deep */, result, JSON.parse(s) as Settings) as
         Settings;
   }
@@ -966,7 +968,7 @@ function loadSettings(s: string): Settings {
     const fs = result.filterSettings;
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
 
-    allRatingTypes.forEach(function(r) {
+    allRatingTypes.forEach((r) => {
       $(`#rating-${r}-min`).val(fs.ratingMin[r]);
       $(`#rating-${r}-max`).val(fs.ratingMax[r]);
     });
@@ -995,7 +997,7 @@ function totalPossibleSchedules(courses: Set<Course>): number {
  */
 function buildRatingsLimitForm() {
   const form = $('#rating-limits-form');
-  allRatingTypes.forEach(function(r) {
+  allRatingTypes.forEach((r) => {
     const row = $('<div>', {class: 'row'});
     form.append(row);
     row.append($('<div>', {
@@ -1006,21 +1008,21 @@ function buildRatingsLimitForm() {
     row.append($('<div>', {
       class: 'col',
       html: $('<input>', {
-        id: `rating-${r}-min`,
-        type: 'number',
-        class: 'form-control',
-        placeholder: '-∞',
         change: saveSettings,
+        class: 'form-control',
+        id: `rating-${r}-min`,
+        placeholder: '-∞',
+        type: 'number',
       }),
     }));
     row.append($('<div>', {
       class: 'col',
       html: $('<input>', {
-        id: `rating-${r}-max`,
-        type: 'number',
-        class: 'form-control',
-        placeholder: '∞',
         change: saveSettings,
+        class: 'form-control',
+        id: `rating-${r}-max`,
+        placeholder: '∞',
+        type: 'number',
       }),
     }));
   });
@@ -1035,21 +1037,21 @@ updateForbiddenGroups();
 
 loadCatalog(settings.catalogUrl)
     .then(
-        function(catalog) {
+        (catalog) => {
           if (mainDebugLogging) {
             console.log('Loaded catalog:', catalog);
           }
           currentCatalog = catalog;
           currentCatalogByCourseID = new Map();
 
-          currentCatalog.forEach(function(faculty) {
-            faculty.courses.forEach(function(course) {
+          currentCatalog.forEach((faculty) => {
+            faculty.courses.forEach((course) => {
               currentCatalogByCourseID.set(course.id, course);
             });
           });
 
           writeCatalogSelector();
-          settings.selectedCourses.forEach(function(id) {
+          settings.selectedCourses.forEach((id) => {
             try {
               addSelectedCourseByID(id);
             } catch (error) {
@@ -1058,7 +1060,7 @@ loadCatalog(settings.catalogUrl)
           });
           coursesSelectizeSetup();
         },
-        function(error) {
+        (error) => {
           $('#exception-occurred-catalog').show();
           console.error('Failed to load catalog:', error);
         });
