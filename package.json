@@ -33,7 +33,7 @@
     "webpack-cli": "^3.1.2"
   },
   "scripts": {
-    "test": "npm run test:mocha && npm run format:check",
+    "test": "npm run test:mocha && npm run format:check && npm run lint",
     "test:mocha": "mocha -r ts-node/register spec/**/*.spec.ts",
     "test:watch": "npm run test:mocha -- --watch --watch-extensions ts",
     "tsc:watch": "tsc --watch",
