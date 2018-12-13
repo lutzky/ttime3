@@ -1,12 +1,12 @@
 // To enable debugging, type the following into your Javascript console:
 //
 //   mainDebugLogging = true
-let mainDebugLogging = false;
+const mainDebugLogging = false;
 
-import {renderSchedule} from './render';
-import {groupsByType, sortEvents, loadCatalog} from './common';
-import {Schedule, Course, Group, Catalog, ScheduleRating, FilterSettings, AcademicEvent} from './common';
+import {groupsByType, loadCatalog, sortEvents} from './common';
+import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule, ScheduleRating} from './common';
 import {displayName, formatDate, minutesToTime} from './formatting';
+import {renderSchedule} from './render';
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
@@ -14,11 +14,11 @@ import {displayName, formatDate, minutesToTime} from './formatting';
  * nor sets.
  */
 class Settings {
-  selectedCourses: number[];
-  forbiddenGroups: string[];
-  customEvents: string;
-  catalogUrl: string;
-  filterSettings: FilterSettings;
+  public selectedCourses: number[];
+  public forbiddenGroups: string[];
+  public customEvents: string;
+  public catalogUrl: string;
+  public filterSettings: FilterSettings;
 }
 
 const defaultCatalogUrl =
@@ -40,7 +40,7 @@ function catalogUrlChanged() {
   saveSettings();
 }
 
-let selectedCourses = new Set();
+const selectedCourses = new Set();
 
 /**
  * Catalog of all courses
@@ -63,18 +63,18 @@ function updateForbidLinkText(fl: JQuery) {
  * Creates a header for the given group, for displaying in the catalog
  */
 function groupHeaderForCatalog(group: Group): JQuery {
-  let result = $('<li>');
+  const result = $('<li>');
   let groupNameText = `Group ${group.id} (${group.type}) `;
   if (group.teachers.length > 0) {
     groupNameText += `(${group.teachers.join(', ')}) `;
   }
 
-  let groupName = $('<b>', {
+  const groupName = $('<b>', {
     text: groupNameText,
   });
   result.append(groupName);
 
-  let forbidLink = $('<a>', {
+  const forbidLink = $('<a>', {
     class: 'forbid-link',
     href: '#/',
     data: {forbidden: isGroupForbidden(group), groupID: groupIDString(group)},
@@ -142,17 +142,17 @@ function isGroupForbidden(group: Group): boolean {
  * Update the list of currently forbidden groups
  */
 function updateForbiddenGroups() {
-  let ul = $('#forbidden-groups');
+  const ul = $('#forbidden-groups');
   ul.empty();
 
   forbiddenGroups.forEach(function(fg) {
-    let li = $('<li>');
+    const li = $('<li>');
     li.text(fg + ' ');
 
-    let unforbidLink = $('<a>', {
+    const unforbidLink = $('<a>', {
       href: '#/',
       text: '[unforbid]',
-      click: function() {
+      click() {
         forbiddenGroups.delete(fg);
         saveSettings();
         updateForbiddenGroups();
@@ -164,9 +164,9 @@ function updateForbiddenGroups() {
   });
 
   $('a.forbid-link').each(function() {
-    let groupID: string = $(this).data('groupID');
+    const groupID: string = $(this).data('groupID');
 
-    let isForbidden = forbiddenGroups.has(groupID);
+    const isForbidden = forbiddenGroups.has(groupID);
     $(this).data('forbidden', isForbidden);
     updateForbidLinkText($(this));
   });
@@ -185,8 +185,8 @@ function formatCourseId(id: number): string {
  * Return an HTML description for a course
  */
 function htmlDescribeCourse(course: Course): HTMLElement {
-  let result = $('<span>');
-  let ul = $('<ul>');
+  const result = $('<span>');
+  const ul = $('<ul>');
   ul.append($('<li>', {
     html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
   }));
@@ -197,7 +197,7 @@ function htmlDescribeCourse(course: Course): HTMLElement {
         rtlSpan(course.lecturerInCharge || '[unknown]')}`,
   }));
   ul.append($('<li>', {html: '<b>Test dates:</b>'}));
-  let testDates = $('<ul>');
+  const testDates = $('<ul>');
   if (course.testDates) {
     course.testDates.forEach(function(d) {
       testDates.append($('<li>', {text: formatDate(d)}));
@@ -208,11 +208,11 @@ function htmlDescribeCourse(course: Course): HTMLElement {
   ul.append(testDates);
 
   ul.append($('<li>', {html: '<b>Groups:</b>'}));
-  let groups = $('<ul>');
+  const groups = $('<ul>');
   if (course.groups) {
     course.groups.forEach(function(g) {
       groups.append(groupHeaderForCatalog(g)[0]);
-      let events = $('<ul>');
+      const events = $('<ul>');
       if (g.events) {
         g.events.forEach(function(e) {
           events.append($('<li>', {
@@ -248,15 +248,15 @@ function rtlSpan(s: string): string {
  * Create a span for a course label, including info button
  */
 function courseLabel(course: Course): HTMLElement {
-  let span = document.createElement('span');
-  let infoLink = document.createElement('a');
+  const span = document.createElement('span');
+  const infoLink = document.createElement('a');
   infoLink.innerHTML = expandInfoSymbol;
   infoLink.className = 'expando';
   infoLink.href = '#/';
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = function() {
     if (!$(span).data('ttime3_expanded')) {
-      let infoDiv = document.createElement('div');
+      const infoDiv = document.createElement('div');
       $(span).data('infoDiv', infoDiv);
       infoDiv.appendChild(htmlDescribeCourse(course));
       // showCourseDebugInfo(course);
@@ -273,22 +273,22 @@ function courseLabel(course: Course): HTMLElement {
   return span;
 }
 
-let courseAddButtons = new Map();
-let courseAddLabels = new Map();
+const courseAddButtons = new Map();
+const courseAddLabels = new Map();
 
 /**
  * Write catalog selector to page.
  */
 function writeCatalogSelector() {
-  let facultiesDiv = $('#catalog');
+  const facultiesDiv = $('#catalog');
 
   facultiesDiv.empty();
   currentCatalog.forEach(function(faculty) {
-    let facultyDetails = $('<details>');
+    const facultyDetails = $('<details>');
 
-    let summary = $('<summary>');
+    const summary = $('<summary>');
     summary.html(`<strong>${faculty.name}</strong> `);
-    let semesterTag = $('<span>', {
+    const semesterTag = $('<span>', {
       class: 'badge badge-secondary',
       text: faculty.semester,
     });
@@ -296,20 +296,20 @@ function writeCatalogSelector() {
     facultyDetails.append(summary);
     facultiesDiv.append(facultyDetails);
 
-    let courseList = $('<ul>', {class: 'course-list'});
+    const courseList = $('<ul>', {class: 'course-list'});
     facultyDetails.append(courseList);
 
     faculty.courses.forEach(function(course) {
-      let btn = $('<button>', {
+      const btn = $('<button>', {
         text: '+',
-        click: function() {
+        click() {
           addSelectedCourse(course);
         },
       });
       courseAddButtons.set(course.id, btn);
-      let label = courseLabel(course);
+      const label = courseLabel(course);
       courseAddLabels.set(course.id, label);
-      let courseLi = $('<li>');
+      const courseLi = $('<li>');
       courseLi.append(btn).append(label);
       courseList.append(courseLi);
     });
@@ -334,7 +334,7 @@ function setCheckboxValueById(id: string, checked: boolean) {
  * Save all settings to localStorage
  */
 function saveSettings() {
-  settings.selectedCourses = Array.from(selectedCourses).map(c => c.id);
+  settings.selectedCourses = Array.from(selectedCourses).map((c) => c.id);
   settings.customEvents = $('#custom-events-textarea').val() as string;
   settings.catalogUrl = $('#catalog-url').val() as string;
   settings.filterSettings = {
@@ -390,7 +390,7 @@ function addSelectedCourse(course: Course) {
  */
 function addSelectedCourseByID(...ids: number[]) {
   ids.forEach(function(id) {
-    let course = getCourseByID(id);
+    const course = getCourseByID(id);
 
     if (course) {
       addSelectedCourse(course);
@@ -419,21 +419,21 @@ function delSelectedCourse(course: Course) {
  * Redraw the list of selected courses
  */
 function refreshSelectedCourses() {
-  let nscheds = Number(totalPossibleSchedules(selectedCourses));
+  const nscheds = Number(totalPossibleSchedules(selectedCourses));
   $('#possible-schedules')
       .text(`${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`);
   $('#generate-schedules').prop('disabled', selectedCourses.size == 0);
-  let div = $('#selected-courses');
+  const div = $('#selected-courses');
   div.empty();
-  let ul = $('<ul>', {class: 'list-group'});
+  const ul = $('<ul>', {class: 'list-group'});
   div.append(ul);
   selectedCourses.forEach(function(course) {
-    let li = $('<li>', {class: 'list-group-item'});
-    let label = courseLabel(course);
-    let btn = $('<button>', {
+    const li = $('<li>', {class: 'list-group-item'});
+    const label = courseLabel(course);
+    const btn = $('<button>', {
       class: 'btn btn-sm btn-danger float-right',
       html: '<i class="fas fa-trash-alt"></i>',
-      click: function() {
+      click() {
         delSelectedCourse(course);
       },
     });
@@ -452,7 +452,7 @@ function refreshSelectedCourses() {
 }
 
 import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
-let schedulerWorker = new SchedulerWorker();
+const schedulerWorker = new SchedulerWorker();
 
 /**
  * Respond to scheduling result from worker
@@ -474,12 +474,12 @@ schedulerWorker.onmessage = function(e: MessageEvent) {
  * Check if custom-events-textarea has valid events
  */
 function checkCustomEvents() {
-  let elem = $('#custom-events-textarea');
+  const elem = $('#custom-events-textarea');
   elem.removeClass('is-invalid');
   elem.removeClass('is-valid');
 
   try {
-    let courses = buildCustomEventsCourses(elem.val() as string);
+    const courses = buildCustomEventsCourses(elem.val() as string);
     if (courses.length > 0) {
       elem.addClass('is-valid');
     }
@@ -493,7 +493,7 @@ const customEventRegex = new RegExp([
   /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
   /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
   /(.*)/,
-].map(x => x.source).join(''));
+].map((x) => x.source).join(''));
 
 const inverseDayIndex = {
   Sun: 0,
@@ -510,16 +510,16 @@ const inverseDayIndex = {
  */
 function createSingleEventCourse(
     name: string, day: number, startMinute: number, endMinute: number): Course {
-  let c: Course = {
+  const c: Course = {
     academicPoints: 0,
     id: 0,
     lecturerInCharge: '',
-    name: name,
+    name,
     testDates: [],
     groups: [],
   };
 
-  let g: Group = {
+  const g: Group = {
     course: c,
     description: '',
     id: 0,
@@ -530,10 +530,10 @@ function createSingleEventCourse(
 
   c.groups.push(g);
 
-  let e: AcademicEvent = {
-    day: day,
-    startMinute: startMinute,
-    endMinute: endMinute,
+  const e: AcademicEvent = {
+    day,
+    startMinute,
+    endMinute,
     location: '',
     group: g,
   };
@@ -549,22 +549,22 @@ function createSingleEventCourse(
  * @param s - Custom events, lines matching customEventRegex
  */
 function buildCustomEventsCourses(s: string): Course[] {
-  let result: Course[] = [];
+  const result: Course[] = [];
 
   if (s == '') {
     return result;
   }
 
   s.split('\n').forEach(function(line) {
-    let m = customEventRegex.exec(line);
+    const m = customEventRegex.exec(line);
     if (m == null) {
       throw Error('Invalid custom event line: ' + line);
     }
 
-    let day: number = inverseDayIndex[m[1] as keyof typeof inverseDayIndex];
-    let startMinute = Number(Number(m[2]) * 60 + Number(m[3]));
-    let endMinute = Number(Number(m[4]) * 60 + Number(m[5]));
-    let desc = m[6];
+    const day: number = inverseDayIndex[m[1] as keyof typeof inverseDayIndex];
+    const startMinute = Number(Number(m[2]) * 60 + Number(m[3]));
+    const endMinute = Number(Number(m[4]) * 60 + Number(m[5]));
+    const desc = m[6];
 
     result.push(createSingleEventCourse(desc, day, startMinute, endMinute));
   });
@@ -582,10 +582,10 @@ function getSchedules() {
   $('#no-schedules').hide();
   $('#initial-instructions').hide();
 
-  let coursesToSchedule = new Set(selectedCourses);
+  const coursesToSchedule = new Set(selectedCourses);
   try {
-    let courses = buildCustomEventsCourses(settings.customEvents);
-    courses.forEach(c => coursesToSchedule.add(c));
+    const courses = buildCustomEventsCourses(settings.customEvents);
+    courses.forEach((c) => coursesToSchedule.add(c));
   } catch (error) {
     console.error('Failed to build custom events course:', error);
   }
@@ -607,7 +607,7 @@ let currentSchedule = 0;
 function setPossibleSchedules(schedules: Schedule[]) {
   possibleSchedules = schedules;
   currentSchedule = 0;
-  let divs = $('#schedule-browser, #rendered-schedule-container');
+  const divs = $('#schedule-browser, #rendered-schedule-container');
   $('#num-schedules').text(schedules.length);
   if (schedules.length == 0 ||
       (schedules.length == 1 && schedules[0].events.length == 0)) {
@@ -666,13 +666,13 @@ const courseColors = [
  * Get appropriate colors for courses
  */
 function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
-  let numbers = Array.from(courses.values()).map(c => c.id).sort();
+  const numbers = Array.from(courses.values()).map((c) => c.id).sort();
 
   // 0 course ID is for custom events
   numbers.push(0);
 
-  let numsAndColors =
-      numbers.map((num, i) => [num, courseColors[i]]) as [number, string[]][];
+  const numsAndColors = numbers.map((num, i) => [num, courseColors[i]]) as
+      Array<[number, string[]]>;
 
   return new Map(numsAndColors);
 }
@@ -681,11 +681,11 @@ function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
  * Display schedule i, modulo the possible range 0-(numSchedules - 1)
  */
 function goToSchedule(i: number) {
-  let max = possibleSchedules.length;
+  const max = possibleSchedules.length;
   i = (i + max) % max;
   currentSchedule = i;
   $('#current-schedule-id').text(i + 1);
-  let schedule = possibleSchedules[i];
+  const schedule = possibleSchedules[i];
 
   writeScheduleContents($('#schedule-contents'), schedule);
   renderSchedule(
@@ -747,19 +747,19 @@ function sortByRating(rating: ratingType) {
  * Get a badge for the given rating according to the schedule type
  */
 function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
-  let result = $('<a>', {
+  const result = $('<a>', {
     class: 'badge badge-info',
     id: `rating-badge-${rating}`,
     text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
     title: allRatings[rating].explanation,
     href: '#/',
-    click: function() {
+    click() {
       sortByRating(rating);
     },
   });
 
   if (sortedByRating == rating) {
-    let icon = sortedByRatingAsc ? 'fa-sort-up' : 'fa-sort-down';
+    const icon = sortedByRatingAsc ? 'fa-sort-up' : 'fa-sort-down';
     result.append(` <i class="fas ${icon}"></i>`);
   }
 
@@ -772,16 +772,16 @@ function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
 function writeScheduleContents(target: JQuery, schedule: Schedule) {
   target.empty();
 
-  allRatingTypes.map(rating => getRatingBadge(rating, schedule))
+  allRatingTypes.map((rating) => getRatingBadge(rating, schedule))
       .forEach(function(badge) {
         target.append(badge).append(' ');
       });
 
-  let ul = $('<ul>', {class: 'list-group'});
+  const ul = $('<ul>', {class: 'list-group'});
   target.append(ul);
 
   byDay(schedule).forEach(function(dayEvents) {
-    let dayEntry = $('<li>', {
+    const dayEntry = $('<li>', {
       class: 'list-group-item',
       css: {'padding-top': '2px', 'padding-bottom': '2px'},
       html: $('<small>', {
@@ -793,13 +793,13 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
     // let eventList = $('<ul>');
     //    dayEntry.append(eventList);
     dayEvents.forEach(function(e) {
-      let eventEntry = $('<li>', {
+      const eventEntry = $('<li>', {
         class: 'list-group-item',
       });
-      let startTime = minutesToTime(e.startMinute);
-      let location = e.location || '[unknown]';
-      let endTime = minutesToTime(e.endMinute);
-      let teachers = e.group.teachers.join(',') || '[unknown]';
+      const startTime = minutesToTime(e.startMinute);
+      const location = e.location || '[unknown]';
+      const endTime = minutesToTime(e.endMinute);
+      const teachers = e.group.teachers.join(',') || '[unknown]';
       eventEntry.html(`
         <div class="d-flex w-100 justify-content-between">
            <small class="text-muted">
@@ -834,8 +834,8 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
  *          with the same day, sorted ascending.
  */
 function byDay(schedule: Schedule): AcademicEvent[][] {
-  let events = schedule.events.slice();
-  let result: AcademicEvent[][] = [[]];
+  const events = schedule.events.slice();
+  const result: AcademicEvent[][] = [[]];
 
   sortEvents(events);
 
@@ -863,7 +863,7 @@ function getCourseByID(id: number): Course {
  * Gets nicknames or abbreviations for a course
  */
 function getNicknames(course: Course): string {
-  let result = [];
+  const result = [];
 
   if (course.name.includes('חשבון דיפרנציאלי ואינטגרלי')) {
     result.push('חדוא', 'חדו"א');
@@ -885,12 +885,12 @@ function getNicknames(course: Course): string {
  * Set up the course selection selectize.js box
  */
 function coursesSelectizeSetup() {
-  let selectBox = $('#courses-selectize');
+  const selectBox = $('#courses-selectize');
 
   // Getting the types right for selectize is difficult :/
 
-  let opts: any = [];
-  let optgroups: any = [];
+  const opts: any = [];
+  const optgroups: any = [];
 
   currentCatalog.forEach(function(faculty) {
     optgroups.push({label: faculty.name, value: faculty.name});
@@ -906,13 +906,13 @@ function coursesSelectizeSetup() {
 
   selectBox.selectize({
     options: opts,
-    optgroups: optgroups,
+    optgroups,
     searchField: ['text', 'nicknames'],
-    onItemAdd: function(courseID) {
+    onItemAdd(courseID) {
       if (courseID == '') {
         return;
       }
-      let course = getCourseByID(Number(courseID));
+      const course = getCourseByID(Number(courseID));
       addSelectedCourse(course);
       selectBox[0].selectize.clear();
     },
@@ -963,7 +963,7 @@ function loadSettings(s: string): Settings {
   $('#custom-events-textarea').val(result.customEvents);
 
   {
-    let fs = result.filterSettings;
+    const fs = result.filterSettings;
     setCheckboxValueById('filter.noCollisions', fs.noCollisions);
 
     allRatingTypes.forEach(function(r) {
@@ -980,13 +980,13 @@ function loadSettings(s: string): Settings {
  * disregarding filters.
  */
 function totalPossibleSchedules(courses: Set<Course>): number {
-  let k = Array.from(courses.values());
+  const k = Array.from(courses.values());
 
   return k
       .map(
-          course => groupsByType(course)
-                        .map(t => t.length)
-                        .reduce((a, b) => a * b, 1))
+          (course) => groupsByType(course)
+                          .map((t) => t.length)
+                          .reduce((a, b) => a * b, 1))
       .reduce((a, b) => a * b, 1);
 }
 
@@ -994,9 +994,9 @@ function totalPossibleSchedules(courses: Set<Course>): number {
  * Build the limit-by-ratings form for the settings subpage
  */
 function buildRatingsLimitForm() {
-  let form = $('#rating-limits-form');
+  const form = $('#rating-limits-form');
   allRatingTypes.forEach(function(r) {
-    let row = $('<div>', {class: 'row'});
+    const row = $('<div>', {class: 'row'});
     form.append(row);
     row.append($('<div>', {
       class: 'col col-form-label',
@@ -1028,7 +1028,7 @@ function buildRatingsLimitForm() {
 
 buildRatingsLimitForm();
 
-let settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
+const settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
 
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();

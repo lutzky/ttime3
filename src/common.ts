@@ -1,43 +1,43 @@
 import {parseCheeseFork} from './cheesefork';
 
 export class Faculty {
-  name: string;
-  semester: string;
-  courses: Course[];
+  public name: string;
+  public semester: string;
+  public courses: Course[];
 }
 
 export type Catalog = Faculty[];
 
 export class Group {
-  course: Course;
-  description: string;
-  events: AcademicEvent[];
-  id: number;
-  type: string;
-  teachers: Array<string>;
+  public course: Course;
+  public description: string;
+  public events: AcademicEvent[];
+  public id: number;
+  public type: string;
+  public teachers: string[];
 }
 
 export class Course {
-  name: string;
-  academicPoints: number;
-  id: number;
-  groups: Array<Group>;
-  lecturerInCharge: string;
-  testDates: DateObj[];
-  faculty?: Faculty;
+  public name: string;
+  public academicPoints: number;
+  public id: number;
+  public groups: Group[];
+  public lecturerInCharge: string;
+  public testDates: DateObj[];
+  public faculty?: Faculty;
 }
 
 export class AcademicEvent {
-  day: number;
-  group: Group;
-  startMinute: number;
-  endMinute: number;
-  location: string;
+  public day: number;
+  public group: Group;
+  public startMinute: number;
+  public endMinute: number;
+  public location: string;
 }
 
 export class Schedule {
-  events: AcademicEvent[];
-  rating: ScheduleRating;
+  public events: AcademicEvent[];
+  public rating: ScheduleRating;
 }
 
 /**
@@ -50,23 +50,23 @@ export class Schedule {
  * freeDays is the number of days in Sun-Thu with no events.
  */
 export class ScheduleRating {
-  earliestStart: number;
-  latestFinish: number;
-  numRuns: number;
-  freeDays: number;
-};
+  public earliestStart: number;
+  public latestFinish: number;
+  public numRuns: number;
+  public freeDays: number;
+}
 
 export class FilterSettings {
-  noCollisions: boolean;
-  forbiddenGroups: string[];
-  ratingMin: ScheduleRating;
-  ratingMax: ScheduleRating;
+  public noCollisions: boolean;
+  public forbiddenGroups: string[];
+  public ratingMin: ScheduleRating;
+  public ratingMax: ScheduleRating;
 }
 
 export class DateObj {
-  year: number;
-  month: number;
-  day: number;
+  public year: number;
+  public month: number;
+  public day: number;
 }
 
 /**
@@ -85,7 +85,7 @@ export function sortEvents(events: AcademicEvent[]) {
  * Returns false iff two entries in events overlap
  */
 export function eventsCollide(events: AcademicEvent[]): boolean {
-  let e = events.slice();
+  const e = events.slice();
   sortEvents(e);
 
   for (let i = 0; i < e.length - 1; i++) {
@@ -104,7 +104,7 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
  */
 export function loadCatalog(url: string): Promise<Catalog> {
   return new Promise(function(resolve, reject) {
-    let req = new XMLHttpRequest();
+    const req = new XMLHttpRequest();
     req.open('GET', url);
     req.onload = function() {
       if (req.status == 200) {
@@ -154,12 +154,11 @@ export function fixRawCatalog(catalog: Catalog) {
   });
 }
 
-
 /**
  * Return course's groups as an array of arrays, split by type
  */
 export function groupsByType(course: Course): Group[][] {
-  let m = new Map();
+  const m = new Map();
   if (!course.groups) {
     return [];
   }

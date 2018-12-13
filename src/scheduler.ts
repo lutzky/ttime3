@@ -2,10 +2,10 @@
 // context" to scheduler_worker.js, and type the following into the console:
 //
 //   schedulerDebugLogging = true;
-let schedulerDebugLogging = false;
+const schedulerDebugLogging = false;
 
-import {Schedule, Group, AcademicEvent, Course, ScheduleRating, FilterSettings} from './common';
-import {groupsByType, sortEvents, eventsCollide} from './common';
+import {AcademicEvent, Course, FilterSettings, Group, Schedule, ScheduleRating} from './common';
+import {eventsCollide, groupsByType, sortEvents} from './common';
 
 /**
  * Return the building in which ev happens
@@ -23,14 +23,14 @@ function eventBuilding(ev: AcademicEvent): string {
  * in adjacent classes.
  */
 function countRuns(events: AcademicEvent[]): number {
-  let e = events.slice();
+  const e = events.slice();
   let result = 0;
   sortEvents(e);
   for (let i = 0; i < e.length - 1; i++) {
     if (e[i].day == e[i + 1].day) {
       if (e[i + 1].startMinute == e[i].endMinute) {
-        let b1 = eventBuilding(e[i]);
-        let b2 = eventBuilding(e[i + 1]);
+        const b1 = eventBuilding(e[i]);
+        const b2 = eventBuilding(e[i + 1]);
         if (b1 && b2 && b1 != b2) {
           result++;
         }
@@ -59,9 +59,9 @@ export function cartesian<T>(...a: T[][]): T[][] {
     return [[]];
   }
 
-  let subCart = cartesian(...a.slice(1));
+  const subCart = cartesian(...a.slice(1));
   return a[0]
-      .map(x => subCart.map(y => [x].concat(y)))
+      .map((x) => subCart.map((y) => [x].concat(y)))
       .reduce((a, b) => a.concat(b));
 }
 
@@ -74,12 +74,12 @@ export function generateSchedules(
     console.time('generateSchedules');
   }
 
-  let groupBins = Array.from(courses)
-                      .map(c => removeForbiddenGroups(c, settings))
-                      .map(groupsByType)
-                      .reduce((a, b) => a.concat(b), []);
+  const groupBins = Array.from(courses)
+                        .map((c) => removeForbiddenGroups(c, settings))
+                        .map(groupsByType)
+                        .reduce((a, b) => a.concat(b), []);
 
-  let groupProduct = cartesian(...groupBins);
+  const groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
   if (schedulerDebugLogging) {
@@ -105,7 +105,7 @@ function removeForbiddenGroups(
     return course;
   }
   course.groups = course.groups.filter(
-      g => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`));
+      (g) => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`));
   return course;
 }
 
@@ -116,7 +116,7 @@ function removeForbiddenGroups(
 function filterWithDelta(
     src: Schedule[], filter: (s: Schedule) => boolean,
     filterName: string): Schedule[] {
-  let result = src.filter(filter);
+  const result = src.filter(filter);
   if (schedulerDebugLogging) {
     console.info(
         `Filter ${filterName} removed ${src.length - result.length} schedules`);
@@ -172,13 +172,13 @@ function filterByRatings(
  * Returns the number of free days given an event set
  */
 function countFreeDays(events: AcademicEvent[]): number {
-  let hasClasses = [false, false, false, false, false];
+  const hasClasses = [false, false, false, false, false];
 
   events.forEach(function(event) {
     hasClasses[event.day] = true;
   });
 
-  return hasClasses.filter(x => x == false).length;
+  return hasClasses.filter((x) => x == false).length;
 }
 
 /**
@@ -188,8 +188,8 @@ function countFreeDays(events: AcademicEvent[]): number {
  */
 export function rate(events: AcademicEvent[]): ScheduleRating {
   return {
-    earliestStart: Math.min(...events.map(e => e.startMinute / 60.0)),
-    latestFinish: Math.max(...events.map(e => e.endMinute / 60.0)),
+    earliestStart: Math.min(...events.map((e) => e.startMinute / 60.0)),
+    latestFinish: Math.max(...events.map((e) => e.endMinute / 60.0)),
     numRuns: countRuns(events),
     freeDays: countFreeDays(events),
   };
@@ -199,7 +199,7 @@ export function rate(events: AcademicEvent[]): ScheduleRating {
  * Convert groups to a schedule
  */
 function groupsToSchedule(groups: Group[]): Schedule {
-  let e = groups.reduce((a, b) => a.concat(b.events), []);
+  const e = groups.reduce((a, b) => a.concat(b.events), []);
   return {
     events: e,
     rating: rate(e),

@@ -30,9 +30,9 @@ import {displayName, minutesToTime} from './formatting';
  * 0, 1, and 2 respectively.
  */
 class LayeredEvent {
-  event: AcademicEvent;
-  layer: number;
-  numLayers: number;
+  public event: AcademicEvent;
+  public layer: number;
+  public numLayers: number;
 }
 
 /**
@@ -44,7 +44,7 @@ class LayeredEvent {
  * TODO(lutzky): This is exported for testing purposes only.
  */
 export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
-  let result: LayeredEvent[] = [];
+  const result: LayeredEvent[] = [];
 
   let remaining = events.slice();
 
@@ -54,7 +54,7 @@ export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
 
     while (selectedMoreEvents) {
       selectedMoreEvents = false;
-      let oldSelected = selected;
+      const oldSelected = selected;
       selected = new Set();
       oldSelected.forEach(function(s) {
         selected.add(s);
@@ -66,10 +66,10 @@ export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
         });
       });
 
-      remaining = remaining.filter(x => !selected.has(x));
+      remaining = remaining.filter((x) => !selected.has(x));
     }
 
-    let layers: AcademicEvent[][] = [];
+    const layers: AcademicEvent[][] = [];
 
     selected.forEach(function(s) {
       let assignedToLayer = false;
@@ -107,14 +107,14 @@ export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
  * Get the start time of the earliest event in the schedule
  */
 function getEarliest(schedule: Schedule): number {
-  return Math.min(...schedule.events.map(x => x.startMinute));
+  return Math.min(...schedule.events.map((x) => x.startMinute));
 }
 
 /**
  * Get the end time of the latest event in the schedule
  */
 function getLatest(schedule: Schedule): number {
-  return Math.max(...schedule.events.map(x => x.endMinute));
+  return Math.max(...schedule.events.map((x) => x.endMinute));
 }
 
 /**
@@ -125,17 +125,17 @@ export function renderSchedule(
     courseColors: Map<number, string[]>) {
   target.innerHTML = '';
 
-  let earliest = getEarliest(schedule);
-  let latest = getLatest(schedule);
-  let scale = 100.0 / (latest - earliest);
+  const earliest = getEarliest(schedule);
+  const latest = getLatest(schedule);
+  const scale = 100.0 / (latest - earliest);
 
-  let layeredEvents = layoutLayeredEvents(schedule.events);
+  const layeredEvents = layoutLayeredEvents(schedule.events);
 
   layeredEvents.forEach(function(le) {
-    let eventDiv = document.createElement('div');
-    let event = le.event;
+    const eventDiv = document.createElement('div');
+    const event = le.event;
     eventDiv.className = 'event';
-    let colors = courseColors.get(event.group.course.id);
+    const colors = courseColors.get(event.group.course.id);
     eventDiv.style.backgroundColor = colors[0];
     eventDiv.style.color = colors[1];
     positionElement(
@@ -156,24 +156,24 @@ export function renderSchedule(
  */
 function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   target.innerHTML = '';
-  let courseName = document.createElement('span');
+  const courseName = document.createElement('span');
   courseName.className = 'course-name';
   courseName.innerText = displayName(event.group);
   target.appendChild(courseName);
 
-  let eventType = document.createElement('span');
+  const eventType = document.createElement('span');
   eventType.className = 'event-type';
   eventType.innerText = event.group.type;
   target.appendChild(eventType);
 
-  let location = document.createElement('div');
+  const location = document.createElement('div');
   location.className = 'location';
   location.innerText = event.location;
   target.appendChild(location);
 
-  let forbidDiv = document.createElement('div');
+  const forbidDiv = document.createElement('div');
   forbidDiv.className = 'forbid';
-  let forbidLink = document.createElement('a');
+  const forbidLink = document.createElement('a');
   forbidLink.innerHTML = '<i class="fas fa-ban"></i>';
   forbidLink.href = '#/';
   forbidLink.title = 'Forbid this group';
@@ -191,15 +191,15 @@ const gridDensity = 30;
  * Render grid lines on target
  */
 function addGridLines(target: HTMLElement, schedule: Schedule) {
-  let earliest = getEarliest(schedule);
-  let latest = getLatest(schedule);
-  let scale = 100.0 / (latest - earliest);
+  const earliest = getEarliest(schedule);
+  const latest = getLatest(schedule);
+  const scale = 100.0 / (latest - earliest);
 
-  let firstGridLine = Math.ceil(earliest / gridDensity) * gridDensity;
-  let lastGridLine = Math.floor(latest / gridDensity) * gridDensity;
+  const firstGridLine = Math.ceil(earliest / gridDensity) * gridDensity;
+  const lastGridLine = Math.floor(latest / gridDensity) * gridDensity;
 
   for (let t = firstGridLine; t <= lastGridLine; t += gridDensity) {
-    let gridDiv = document.createElement('div');
+    const gridDiv = document.createElement('div');
     gridDiv.className = 'grid-line';
     gridDiv.innerText = minutesToTime(t);
     positionElement(

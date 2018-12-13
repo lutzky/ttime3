@@ -3,7 +3,7 @@ import {minutesToTime} from '../src/formatting';
 
 describe('Formatting', function() {
   describe('time formatting', function() {
-    let testCases = [
+    const testCases = [
       {minutes: 0, time: '00:00'},
       {minutes: 59, time: '00:59'},
       {minutes: 60, time: '01:00'},

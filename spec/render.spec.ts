@@ -6,7 +6,7 @@ import {layoutLayeredEvents} from '../src/render';
 
 describe('Render', function() {
   it('should correctly lay out layered events', function() {
-    let events = [
+    const events = [
       {day: 1, startMinute: 5, endMinute: 25},
       {day: 1, startMinute: 0, endMinute: 15},
       {day: 1, startMinute: 20, endMinute: 35},
@@ -15,7 +15,7 @@ describe('Render', function() {
       {day: 2, startMinute: 10, endMinute: 35},
     ] as AcademicEvent[];
 
-    let result = layoutLayeredEvents(events);
+    const result = layoutLayeredEvents(events);
 
     expect(result).to.deep.equal([
       {

@@ -15,13 +15,12 @@ import * as testData from '../testdata.json';
 
 export function loadTestCatalog(): Promise<Catalog> {
   return new Promise(function(resolve, _reject) {
-    let testDataCopy = JSON.parse(JSON.stringify(testData));
-    let result: Catalog = testDataCopy as any as Catalog;
+    const testDataCopy = JSON.parse(JSON.stringify(testData));
+    const result: Catalog = testDataCopy as any as Catalog;
     fixRawCatalog(result);
     resolve(result);
   });
 }
-
 
 if (typeof ttime_thorough != 'undefined') {
   console.info('Thorough test mode active');
@@ -33,7 +32,7 @@ describe('Scheduler', function() {
    * Return a copy of default filter settings
    */
   function getDefaultFilterSettings(): FilterSettings {
-    let nullRating = {
+    const nullRating = {
       earliestStart: null,
       freeDays: null,
       latestFinish: null,
@@ -50,13 +49,13 @@ describe('Scheduler', function() {
 
   describe('Cartesian products', function() {
     it('should calculate correctly in trivial cases', function() {
-      let a = [[1, 2]];
+      const a = [[1, 2]];
       expect(cartesian(...a)).to.deep.equal([[1], [2]]);
-      let b = [[1, 2, 3]];
+      const b = [[1, 2, 3]];
       expect(cartesian(...b)).to.deep.equal([[1], [2], [3]]);
     });
     it('should caculate correctly in nontrivial cases', function() {
-      let a = [[1, 2], [3, 4, 6]];
+      const a = [[1, 2], [3, 4, 6]];
       expect(cartesian(...a)).to.deep.equal([
         [1, 3],
         [1, 4],
@@ -69,7 +68,7 @@ describe('Scheduler', function() {
     if (THOROUGH_TEST_MODE) {
       it('should not crash with large inputs', function() {
         this.timeout(10000);
-        let a = [
+        const a = [
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -84,7 +83,7 @@ describe('Scheduler', function() {
   });
 
   it('should have one faculty', function(done) {
-    loadTestCatalog().then(catalog => {
+    loadTestCatalog().then((catalog) => {
       expect(catalog.length).to.equal(1);
       done();
     });
@@ -97,31 +96,31 @@ describe('Scheduler', function() {
       loadTestCatalog().then(function(c) {
         catalog = c;
         algebra =
-            catalog[0].courses.find(course => course.id == algebraCourseID);
+            catalog[0].courses.find((course) => course.id == algebraCourseID);
         expect(algebra).to.not.be.undefined;
         done();
       });
     });
 
     it('should get the right amount of different schedules', function() {
-      let settings = getDefaultFilterSettings();
+      const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
 
-      let schedules = generateSchedules(new Set([algebra]), settings);
+      const schedules = generateSchedules(new Set([algebra]), settings);
       expect(schedules.length).to.equal(33);
     });
 
     it('should have one lecture and one tutorial in each schedule', function() {
-      let settings = getDefaultFilterSettings();
+      const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
 
-      let schedules = generateSchedules(new Set([algebra]), settings);
-      let want = new Map([['lecture', 1], ['tutorial', 1]]);
+      const schedules = generateSchedules(new Set([algebra]), settings);
+      const want = new Map([['lecture', 1], ['tutorial', 1]]);
       schedules.forEach(function(schedule) {
         expect(schedule.events.length).to.equal(2);
-        let typeCounts = new Map();
+        const typeCounts = new Map();
         schedule.events.forEach(function(ev) {
-          let type = ev.group.type;
+          const type = ev.group.type;
           if (!typeCounts.has(type)) {
             typeCounts.set(type, 0);
           }
@@ -132,38 +131,38 @@ describe('Scheduler', function() {
     });
 
     it('should have the expected number of schdules', function() {
-      let settings = getDefaultFilterSettings();
+      const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
 
-      let schedules = generateSchedules(new Set([algebra]), settings);
+      const schedules = generateSchedules(new Set([algebra]), settings);
       expect(schedules.length).to.equal(33);
     });
 
     it('should schedule with 104166.11 if not forbidden', function() {
-      let settings = getDefaultFilterSettings();
+      const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
-      let schedules = generateSchedules(new Set([algebra]), settings);
+      const schedules = generateSchedules(new Set([algebra]), settings);
 
-      let schedulesWithGroup = schedules.filter(
-          schedule => schedule.events.map(x => x.group.id).includes(11));
+      const schedulesWithGroup = schedules.filter(
+          (schedule) => schedule.events.map((x) => x.group.id).includes(11));
 
       expect(schedulesWithGroup.length).to.be.greaterThan(0);
     });
 
     it('should not schedule with 104166.11 if not forbidden', function() {
-      let settings = getDefaultFilterSettings();
+      const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
       settings.forbiddenGroups = ['104166.11'];
-      let schedules = generateSchedules(new Set([algebra]), settings);
+      const schedules = generateSchedules(new Set([algebra]), settings);
 
-      let schedulesWithGroup = schedules.filter(
-          schedule => schedule.events.map(x => x.group.id).includes(11));
+      const schedulesWithGroup = schedules.filter(
+          (schedule) => schedule.events.map((x) => x.group.id).includes(11));
 
       expect(schedulesWithGroup.length).to.equal(0);
     });
 
     it('should schedule just lectures if all tutorials forbidden', function() {
-      let settings = getDefaultFilterSettings();
+      const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
       settings.forbiddenGroups = [
         '104166.11',
@@ -180,25 +179,31 @@ describe('Scheduler', function() {
         '104166.34',
       ];
 
-      let schedules = generateSchedules(new Set([algebra]), settings);
+      const schedules = generateSchedules(new Set([algebra]), settings);
       expect(schedules.length).to.equal(3);
-      expect(schedules.map(x => x.events.length)).to.deep.equal([1, 1, 1]);
+      expect(schedules.map((x) => x.events.length)).to.deep.equal([1, 1, 1]);
     });
   });
 
   describe('schedule ratings', function() {
     describe('numRuns', function() {
-      let eventA = {startMinute: 0, endMinute: 60, location: 'Ulman 105'} as
+      const eventA = {startMinute: 0, endMinute: 60, location: 'Ulman 105'} as
           AcademicEvent;
-      let eventB = {startMinute: 60, endMinute: 120, location: 'Ulman 350'} as
+      const eventB = {startMinute: 60, endMinute: 120, location: 'Ulman 350'} as
           AcademicEvent;
-      let eventC = {startMinute: 120, endMinute: 180, location: 'Meyer 750'} as
+      const eventC = {
+        startMinute: 120,
+        endMinute: 180,
+        location: 'Meyer 750'
+      } as AcademicEvent;
+      const eventD = {
+        startMinute: 120,
+        endMinute: 180,
+        location: 'Ulman 200'
+      } as AcademicEvent;
+      const eventE = {startMinute: 120, endMinute: 180 /* no location */} as
           AcademicEvent;
-      let eventD = {startMinute: 120, endMinute: 180, location: 'Ulman 200'} as
-          AcademicEvent;
-      let eventE = {startMinute: 120, endMinute: 180 /* no location */} as
-          AcademicEvent;
-      let eventF = {startMinute: 180, endMinute: 240, location: 'Taub 1'} as
+      const eventF = {startMinute: 180, endMinute: 240, location: 'Taub 1'} as
           AcademicEvent;
       it('should count if events have different buildings', function() {
         expect(rate([eventA, eventB, eventC]).numRuns).to.equal(1);
@@ -214,12 +219,12 @@ describe('Scheduler', function() {
       });
     });
     describe('freeDays', function() {
-      let evA = {day: 0} as AcademicEvent;
-      let evAA = {day: 0} as AcademicEvent;
-      let evB = {day: 1} as AcademicEvent;
-      let evC = {day: 2} as AcademicEvent;
-      let evD = {day: 3} as AcademicEvent;
-      let evE = {day: 4} as AcademicEvent;
+      const evA = {day: 0} as AcademicEvent;
+      const evAA = {day: 0} as AcademicEvent;
+      const evB = {day: 1} as AcademicEvent;
+      const evC = {day: 2} as AcademicEvent;
+      const evD = {day: 3} as AcademicEvent;
+      const evE = {day: 4} as AcademicEvent;
       it('should have 5 free days for no events', function() {
         expect(rate([]).freeDays).to.equal(5);
       });
@@ -234,11 +239,11 @@ describe('Scheduler', function() {
       });
     });
     describe('earliestStart and latestFinish', function() {
-      let evA = {day: 0, startMinute: 30, endMinute: 60} as AcademicEvent;
-      let evAA = {day: 0, startMinute: 120, endMinute: 190} as AcademicEvent;
-      let evB = {day: 1, startMinute: 150, endMinute: 300} as AcademicEvent;
-      let evC = {day: 2, startMinute: 120, endMinute: 190} as AcademicEvent;
-      let evD = {day: 4, startMinute: 30, endMinute: 31} as AcademicEvent;
+      const evA = {day: 0, startMinute: 30, endMinute: 60} as AcademicEvent;
+      const evAA = {day: 0, startMinute: 120, endMinute: 190} as AcademicEvent;
+      const evB = {day: 1, startMinute: 150, endMinute: 300} as AcademicEvent;
+      const evC = {day: 2, startMinute: 120, endMinute: 190} as AcademicEvent;
+      const evD = {day: 4, startMinute: 30, endMinute: 31} as AcademicEvent;
       it('should correctly compute earliestStart', function() {
         expect(rate([evA, evAA, evB, evC, evD]).earliestStart).to.equal(0.5);
       });
