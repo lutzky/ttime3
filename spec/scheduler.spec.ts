@@ -14,7 +14,7 @@ declare var ttime_thorough: boolean;
 import * as testData from '../testdata.json';
 
 export function loadTestCatalog(): Promise<Catalog> {
-  return new Promise((resolve, _reject) => {
+  return new Promise((resolve, _ /* reject */) => {
     const testDataCopy = JSON.parse(JSON.stringify(testData));
     const result: Catalog = testDataCopy as any as Catalog;
     fixRawCatalog(result);
@@ -22,7 +22,7 @@ export function loadTestCatalog(): Promise<Catalog> {
   });
 }
 
-if (typeof ttime_thorough != 'undefined') {
+if (typeof ttime_thorough !== 'undefined') {
   console.info('Thorough test mode active');
   THOROUGH_TEST_MODE = true;
 }
@@ -41,9 +41,9 @@ describe('Scheduler', () => {
 
     return {
       forbiddenGroups: [],
-      ratingMin: nullRating,
-      ratingMax: nullRating,
       noCollisions: false,
+      ratingMax: nullRating,
+      ratingMin: nullRating,
     };
   }
 
@@ -96,8 +96,8 @@ describe('Scheduler', () => {
       loadTestCatalog().then((c) => {
         catalog = c;
         algebra =
-            catalog[0].courses.find((course) => course.id == algebraCourseID);
-        expect(algebra).to.not.be.undefined;
+            catalog[0].courses.find((course) => course.id === algebraCourseID);
+        expect(algebra).to.not.equal(undefined);
         done();
       });
     });
@@ -192,14 +192,16 @@ describe('Scheduler', () => {
       const eventB = {startMinute: 60, endMinute: 120, location: 'Ulman 350'} as
           AcademicEvent;
       const eventC = {
-        startMinute: 120,
         endMinute: 180,
-        location: 'Meyer 750'
+        startMinute: 120,
+
+        location: 'Meyer 750',
       } as AcademicEvent;
       const eventD = {
-        startMinute: 120,
         endMinute: 180,
-        location: 'Ulman 200'
+        startMinute: 120,
+
+        location: 'Ulman 200',
       } as AcademicEvent;
       const eventE = {startMinute: 120, endMinute: 180 /* no location */} as
           AcademicEvent;

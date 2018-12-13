@@ -89,9 +89,9 @@ export function parseCheeseFork(jsData: string): Catalog {
 
     if (!facultiesByName.has(facultyName)) {
       facultiesByName.set(facultyName, {
+        courses: [],
         name: facultyName,
         semester: 'cheesefork-unknown-semester',
-        courses: [],
       });
     }
 
@@ -100,15 +100,15 @@ export function parseCheeseFork(jsData: string): Catalog {
     const course: Course = {
       academicPoints: Number(dataCourse.general[hebrew.academicPoints]),
       faculty,
-      name: dataCourse.general[hebrew.courseName],
+      groups: [],
       id: Number(dataCourse.general[hebrew.courseId]),
       lecturerInCharge: dataCourse.general[hebrew.thoseInCharge],
+      name: dataCourse.general[hebrew.courseName],
       testDates: [
         dataCourse.general[hebrew.moed_a],
         dataCourse.general[hebrew.moed_b],
       ].map(parseCheeseForkTestDate)
                      .filter((x) => x != null),
-      groups: [],
     };
 
     const groupFirstAppearedInMetagroup: Map<number, number> = new Map();
@@ -134,14 +134,14 @@ export function parseCheeseFork(jsData: string): Catalog {
       if (!groupFirstAppearedInMetagroup.has(groupId)) {
         groupFirstAppearedInMetagroup.set(groupId, metaGroupId);
       }
-      if (groupFirstAppearedInMetagroup.get(groupId) != metaGroupId) {
+      if (groupFirstAppearedInMetagroup.get(groupId) !== metaGroupId) {
         return;
       }
 
       if (!groupsById.has(groupId)) {
         let type = '';
         let desc = '';
-        if (facultyName == hebrew.sport) {
+        if (facultyName === hebrew.sport) {
           type = 'sport';
           desc = dataSchedule[hebrew.type];
         } else {
@@ -150,12 +150,12 @@ export function parseCheeseFork(jsData: string): Catalog {
         }
 
         groupsById.set(groupId, {
-          id: groupId,
-          description: desc,
           course,
+          description: desc,
+          events: [],
+          id: groupId,
           teachers: [],
           type,
-          events: [],
         });
       }
 
@@ -164,12 +164,12 @@ export function parseCheeseFork(jsData: string): Catalog {
       const times = parseCheeseForkHour(dataSchedule[hebrew.hour]);
 
       const event: AcademicEvent = {
-        group,
         day: hebrew.dayLetters.indexOf(dataSchedule[hebrew.day]),
-        startMinute: times[0],
         endMinute: times[1],
+        group,
         location:
             dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
+        startMinute: times[0],
       };
 
       {

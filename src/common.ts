@@ -1,5 +1,7 @@
 import {parseCheeseFork} from './cheesefork';
 
+/* tslint:disable:max-classes-per-file */
+
 export class Faculty {
   public name: string;
   public semester: string;
@@ -69,12 +71,14 @@ export class DateObj {
   public day: number;
 }
 
+/* tslint:enable:max-classes-per-file */
+
 /**
  * Sorts events by start time
  */
 export function sortEvents(events: AcademicEvent[]) {
   events.sort((a, b) => {
-    if (a.day != b.day) {
+    if (a.day !== b.day) {
       return a.day - b.day;
     }
     return a.startMinute - b.startMinute;
@@ -89,7 +93,7 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
   sortEvents(e);
 
   for (let i = 0; i < e.length - 1; i++) {
-    if (e[i].day == e[i + 1].day) {
+    if (e[i].day === e[i + 1].day) {
       if (e[i + 1].startMinute < e[i].endMinute) {
         return true;
       }
@@ -107,10 +111,10 @@ export function loadCatalog(url: string): Promise<Catalog> {
     const req = new XMLHttpRequest();
     req.open('GET', url);
     req.onload = () => {
-      if (req.status == 200) {
+      if (req.status === 200) {
         let result: Catalog = null;
         try {
-          if (req.response[0] == '[') {
+          if (req.response[0] === '[') {
             result = JSON.parse(req.response as string);
           } else {
             result = parseCheeseFork(req.response as string);
