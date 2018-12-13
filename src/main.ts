@@ -23,6 +23,7 @@ class Settings {
 
 const defaultCatalogUrl =
     'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
+(window as any).defaultCatalogUrl = defaultCatalogUrl;
 
 /**
  * Set the given catalog URL and save settings. For use from HTML.
