@@ -1,7 +1,9 @@
 let schedulerDebugLogging = false;
 
 export function setDebug(debugMode: boolean) {
-  console.info('Called scheduler.setDebug with', debugMode);
+  if (debugMode) {
+    console.info('Called scheduler.setDebug with', debugMode);
+  }
   schedulerDebugLogging = debugMode;
 }
 
