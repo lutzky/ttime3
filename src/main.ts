@@ -43,7 +43,7 @@ function catalogUrlChanged() {
   saveSettings();
 }
 
-const selectedCourses = new Set();
+const selectedCourses = new Set<Course>();
 
 /**
  * Catalog of all courses
