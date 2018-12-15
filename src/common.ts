@@ -1,4 +1,5 @@
 import {parseCheeseFork} from './cheesefork';
+import {ScheduleRating} from './rating';
 
 /* tslint:disable:max-classes-per-file */
 
@@ -40,22 +41,6 @@ export class AcademicEvent {
 export class Schedule {
   public events: AcademicEvent[];
   public rating: ScheduleRating;
-}
-
-/**
- * earliestStart and latestFinish are in hours (e.g. 1:30PM is 13.5).
- *
- * numRuns is the amount of occurences where two adjacent events (endMinute
- * of the first one equals startMinute of the second, same day) are in the
- * same room.
- *
- * freeDays is the number of days in Sun-Thu with no events.
- */
-export class ScheduleRating {
-  public earliestStart: number;
-  public latestFinish: number;
-  public numRuns: number;
-  public freeDays: number;
 }
 
 export class FilterSettings {

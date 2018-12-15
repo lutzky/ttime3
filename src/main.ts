@@ -4,8 +4,9 @@
 const mainDebugLogging = false;
 
 import {groupsByType, loadCatalog, sortEvents} from './common';
-import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule, ScheduleRating} from './common';
+import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
 import {displayName, formatDate, minutesToTime} from './formatting';
+import {ScheduleRating} from './rating';
 import {renderSchedule} from './render';
 
 /**

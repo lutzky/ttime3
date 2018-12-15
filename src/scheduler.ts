@@ -4,43 +4,11 @@
 //   schedulerDebugLogging = true;
 const schedulerDebugLogging = false;
 
-import {AcademicEvent, Course, FilterSettings, Group, Schedule, ScheduleRating} from './common';
-import {eventsCollide, groupsByType, sortEvents} from './common';
+import {Course, FilterSettings, Group, Schedule} from './common';
+import {eventsCollide, groupsByType} from './common';
 
 import cartesian from './cartesian';
-
-/**
- * Return the building in which ev happens
- */
-function eventBuilding(ev: AcademicEvent): string {
-  if (ev.location) {
-    return ev.location.split(' ')[0];
-  } else {
-    return ev.location;
-  }
-}
-
-/**
- * Count instances in which events involve running between different buildings
- * in adjacent classes.
- */
-function countRuns(events: AcademicEvent[]): number {
-  const e = events.slice();
-  let result = 0;
-  sortEvents(e);
-  for (let i = 0; i < e.length - 1; i++) {
-    if (e[i].day === e[i + 1].day) {
-      if (e[i + 1].startMinute === e[i].endMinute) {
-        const b1 = eventBuilding(e[i]);
-        const b2 = eventBuilding(e[i + 1]);
-        if (b1 && b2 && b1 !== b2) {
-          result++;
-        }
-      }
-    }
-  }
-  return result;
-}
+import rate from './rating';
 
 /**
  * Returns true iff schedule has no collisions
@@ -150,33 +118,6 @@ function filterByRatings(
       });
 
   return schedules;
-}
-
-/**
- * Returns the number of free days given an event set
- */
-function countFreeDays(events: AcademicEvent[]): number {
-  const hasClasses = [false, false, false, false, false];
-
-  events.forEach((event) => {
-    hasClasses[event.day] = true;
-  });
-
-  return hasClasses.filter((x) => x === false).length;
-}
-
-/**
- * Rate the given events as a schedule
- *
- * TODO(lutzky): rate is exported for testing purposes
- */
-export function rate(events: AcademicEvent[]): ScheduleRating {
-  return {
-    earliestStart: Math.min(...events.map((e) => e.startMinute / 60.0)),
-    freeDays: countFreeDays(events),
-    latestFinish: Math.max(...events.map((e) => e.endMinute / 60.0)),
-    numRuns: countRuns(events),
-  };
 }
 
 /**

@@ -1,8 +1,10 @@
 import {expect} from 'chai';
 
 import {AcademicEvent, Catalog, Course, FilterSettings} from '../src/common';
-import {fixRawCatalog, ScheduleRating} from '../src/common';
-import {generateSchedules, rate} from '../src/scheduler';
+import {fixRawCatalog} from '../src/common';
+import {ScheduleRating} from '../src/rating';
+import rate from '../src/rating';
+import {generateSchedules} from '../src/scheduler';
 
 const algebraCourseID = 104166;
 
