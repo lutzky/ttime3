@@ -7,6 +7,8 @@ const schedulerDebugLogging = false;
 import {AcademicEvent, Course, FilterSettings, Group, Schedule, ScheduleRating} from './common';
 import {eventsCollide, groupsByType, sortEvents} from './common';
 
+import cartesian from './cartesian';
+
 /**
  * Return the building in which ev happens
  */
@@ -45,24 +47,6 @@ function countRuns(events: AcademicEvent[]): number {
  */
 function filterNoCollisions(schedule: Schedule): boolean {
   return !eventsCollide(schedule.events);
-}
-
-/**
- * Return a cartesian product of arrays
- *
- * Note: If changing this method, test with "make karma_thorough".
- *
- * TODO(lutzky): cartesian is exported for testing purposes
- */
-export function cartesian<T>(...arrays: T[][]): T[][] {
-  if (arrays.length === 0) {
-    return [[]];
-  }
-
-  const subCart = cartesian(...arrays.slice(1));
-  return arrays[0]
-      .map((x) => subCart.map((y) => [x].concat(y)))
-      .reduce((a, b) => a.concat(b));
 }
 
 /**

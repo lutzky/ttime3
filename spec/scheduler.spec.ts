@@ -1,15 +1,10 @@
-
 import {expect} from 'chai';
 
 import {AcademicEvent, Catalog, Course, FilterSettings} from '../src/common';
 import {fixRawCatalog, ScheduleRating} from '../src/common';
-import {cartesian, generateSchedules, rate} from '../src/scheduler';
+import {generateSchedules, rate} from '../src/scheduler';
 
 const algebraCourseID = 104166;
-
-let THOROUGH_TEST_MODE = false;
-
-declare var ttime_thorough: boolean;
 
 import * as testData from '../testdata.json';
 
@@ -20,11 +15,6 @@ export function loadTestCatalog(): Promise<Catalog> {
     fixRawCatalog(result);
     resolve(result);
   });
-}
-
-if (typeof ttime_thorough !== 'undefined') {
-  console.info('Thorough test mode active');
-  THOROUGH_TEST_MODE = true;
 }
 
 describe('Scheduler', () => {
@@ -46,41 +36,6 @@ describe('Scheduler', () => {
       ratingMin: nullRating,
     };
   }
-
-  describe('Cartesian products', () => {
-    it('should calculate correctly in trivial cases', () => {
-      const a = [[1, 2]];
-      expect(cartesian(...a)).to.deep.equal([[1], [2]]);
-      const b = [[1, 2, 3]];
-      expect(cartesian(...b)).to.deep.equal([[1], [2], [3]]);
-    });
-    it('should caculate correctly in nontrivial cases', () => {
-      const a = [[1, 2], [3, 4, 6]];
-      expect(cartesian(...a)).to.deep.equal([
-        [1, 3],
-        [1, 4],
-        [1, 6],
-        [2, 3],
-        [2, 4],
-        [2, 6],
-      ]);
-    });
-    if (THOROUGH_TEST_MODE) {
-      it('should not crash with large inputs', () => {
-        this.timeout(10000);
-        const a = [
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        ];
-        expect(() => cartesian(...a)).to.not.throw();
-      });
-    }
-  });
 
   it('should have one faculty', (done) => {
     loadTestCatalog().then((catalog) => {
