@@ -1,8 +1,12 @@
 const ctx: Worker = self as any;
 
-import {generateSchedules} from './scheduler';
+import {generateSchedules, setDebug} from './scheduler';
 
 ctx.onmessage = (e: MessageEvent) => {
+  if (e.data.debug !== undefined) {
+    setDebug(e.data.debug);
+    return;
+  }
   try {
     const schedules = generateSchedules(e.data.courses, e.data.filterSettings);
     ctx.postMessage(schedules);

@@ -1,7 +1,8 @@
-// To enable debugging, type the following into your Javascript console:
-//
-//   mainDebugLogging = true
-const mainDebugLogging = false;
+let mainDebugLogging = false;
+
+if (new URL(window.location.href).searchParams.get('ttime_debug')) {
+  mainDebugLogging = true;
+}
 
 import {groupsByType, loadCatalog, sortEvents} from './common';
 import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
@@ -455,6 +456,7 @@ function refreshSelectedCourses() {
 
 import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
 const schedulerWorker = new SchedulerWorker();
+schedulerWorker.postMessage({debug: mainDebugLogging});
 
 /**
  * Respond to scheduling result from worker

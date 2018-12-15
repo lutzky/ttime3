@@ -1,8 +1,9 @@
-// To enable debugging, go to your JavaScript console, switch the "JavaScript
-// context" to scheduler_worker.js, and type the following into the console:
-//
-//   schedulerDebugLogging = true;
-const schedulerDebugLogging = false;
+let schedulerDebugLogging = false;
+
+export function setDebug(debugMode: boolean) {
+  console.info('Called scheduler.setDebug with', debugMode);
+  schedulerDebugLogging = debugMode;
+}
 
 import {Course, FilterSettings, Group, Schedule} from './common';
 import {eventsCollide, groupsByType} from './common';

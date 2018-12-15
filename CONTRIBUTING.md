@@ -17,6 +17,8 @@ Requirements: `npm`.
 * Run `npm start` to run a local in a window - this will update the generated javascript when files are changed. This does not modify the production output.
 * Run `npm run build` to update the production version in `dist/`.
 
+To enable additional debug logging, add the parameter `?ttime_debug=1` to the URL.
+
 ## Releasing a version
 
 The `dist` directory holds a minified, no-debug-info version of the webpack. To update it, run `npm run build`. Test the output using `npm run serve:production`.
