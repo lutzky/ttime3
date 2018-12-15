@@ -354,6 +354,13 @@ function saveSettings() {
 
   window.localStorage.setItem('ttime3_settings', JSON.stringify(settings));
 
+  (window as any).gtag('event', 'saveSettings-catalog-url', {
+    value: settings.catalogUrl,
+  });
+  (window as any).gtag('event', 'saveSettings-noCollisions', {
+    value: settings.filterSettings.noCollisions,
+  });
+
   if (mainDebugLogging) {
     console.info('Saved settings:', settings);
   }
@@ -379,6 +386,9 @@ function addSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Selected', course);
   }
+  (window as any).gtag('event', 'addCourse', {
+    value: course.id,
+  });
   selectedCourses.add(course);
   courseAddButtons.get(course.id).disabled = true;
   courseAddLabels.get(course.id).classList.add('disabled-course-label');
@@ -409,6 +419,9 @@ function delSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Unselected', course);
   }
+  (window as any).gtag('event', 'delCourse', {
+    value: course.id,
+  });
   selectedCourses.delete(course);
   courseAddButtons.get(course.id).disabled = false;
   courseAddLabels.get(course.id).classList.remove('disabled-course-label');
@@ -585,6 +598,11 @@ function getSchedules() {
   $('#exception-occurred').hide();
   $('#no-schedules').hide();
   $('#initial-instructions').hide();
+
+  (window as any).gtag('event', 'generateSchedules');
+  (window as any).gtag('event', 'generateSchedules-num-courses', {
+    value: selectedCourses.size,
+  });
 
   const coursesToSchedule = new Set(selectedCourses);
   try {
