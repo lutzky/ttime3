@@ -8,7 +8,7 @@ import {groupsByType, loadCatalog, sortEvents} from './common';
 import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
 import {displayName, formatDate, minutesToTime} from './formatting';
 import {ScheduleRating} from './rating';
-import {renderSchedule} from './render';
+import * as render from './render';
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
@@ -120,9 +120,7 @@ function addForbiddenGroup(group: Group) {
 
   updateForbiddenGroups();
 }
-// TODO(lutzky): Making addForbiddenGroup available to render.ts in this way
-// is an ugly hack.
-(window as any).addForbiddenGroup = addForbiddenGroup;
+render.setAddForbiddenGroupCallback(addForbiddenGroup);
 
 /**
  * Remove the given group from the forbidden groups
@@ -694,7 +692,7 @@ function goToSchedule(i: number) {
   const schedule = possibleSchedules[i];
 
   writeScheduleContents($('#schedule-contents'), schedule);
-  renderSchedule(
+  render.renderSchedule(
       $('#rendered-schedule')[0], schedule, getCourseColorMap(selectedCourses));
 }
 

@@ -1,4 +1,4 @@
-import {AcademicEvent, Schedule} from './common';
+import {AcademicEvent, Group, Schedule} from './common';
 import {eventsCollide} from './common';
 import {displayName, minutesToTime} from './formatting';
 import layerize from './layerize';
@@ -51,6 +51,12 @@ export function renderSchedule(
   addGridLines(target, schedule);
 }
 
+let addForbiddenGroup: (g: Group) => void = null;
+
+export function setAddForbiddenGroupCallback(f: (g: Group) => void) {
+  addForbiddenGroup = f;
+}
+
 /**
  * Annotate the div with the actualy contents of the event
  */
@@ -71,18 +77,20 @@ function annotateEvent(target: HTMLElement, event: AcademicEvent) {
   location.innerText = event.location;
   target.appendChild(location);
 
-  const forbidDiv = document.createElement('div');
-  forbidDiv.className = 'forbid';
-  const forbidLink = document.createElement('a');
-  forbidLink.innerHTML = '<i class="fas fa-ban"></i>';
-  forbidLink.href = '#/';
-  forbidLink.title = 'Forbid this group';
-  forbidLink.onclick = () => {
-    $(forbidLink).fadeOut(100).fadeIn(100);
-    (window as any).addForbiddenGroup(event.group);
-  };
-  forbidDiv.appendChild(forbidLink);
-  target.appendChild(forbidDiv);
+  if (addForbiddenGroup) {
+    const forbidDiv = document.createElement('div');
+    forbidDiv.className = 'forbid';
+    const forbidLink = document.createElement('a');
+    forbidLink.innerHTML = '<i class="fas fa-ban"></i>';
+    forbidLink.href = '#/';
+    forbidLink.title = 'Forbid this group';
+    forbidLink.onclick = () => {
+      $(forbidLink).fadeOut(100).fadeIn(100);
+      addForbiddenGroup(event.group);
+    };
+    forbidDiv.appendChild(forbidLink);
+    target.appendChild(forbidDiv);
+  }
 }
 
 const gridDensity = 30;
