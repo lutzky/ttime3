@@ -1,8 +1,7 @@
-
 import {expect} from 'chai';
 
-import {AcademicEvent} from '../src/common';
-import {layoutLayeredEvents} from '../src/render';
+import {AcademicEvent, eventsCollide} from '../src/common';
+import layerize from '../src/layerize';
 
 describe('Render', () => {
   it('should correctly lay out layered events', () => {
@@ -15,36 +14,42 @@ describe('Render', () => {
       {day: 2, startMinute: 10, endMinute: 35},
     ] as AcademicEvent[];
 
-    const result = layoutLayeredEvents(events);
+    const result = layerize(events, eventsCollide);
 
     expect(result).to.deep.equal([
       {
-        event: events[0],
+        obj: events[0],
+
         layer: 0,
         numLayers: 2,
       },
       {
-        event: events[1],
+        obj: events[1],
+
         layer: 1,
         numLayers: 2,
       },
       {
-        event: events[2],
+        obj: events[2],
+
         layer: 1,
         numLayers: 2,
       },
       {
-        event: events[3],
+        obj: events[3],
+
         layer: 0,
         numLayers: 3,
       },
       {
-        event: events[4],
+        obj: events[4],
+
         layer: 1,
         numLayers: 3,
       },
       {
-        event: events[5],
+        obj: events[5],
+
         layer: 2,
         numLayers: 3,
       },

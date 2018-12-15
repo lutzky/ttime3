@@ -1,107 +1,7 @@
 import {AcademicEvent, Schedule} from './common';
 import {eventsCollide} from './common';
 import {displayName, minutesToTime} from './formatting';
-
-/**
- * Layered events for rendering on screen
- *
- * Explanation: Suppose you have events A, B, C, that collide like so (time
- * being horizontal):
- *
- *    [AAAAAAA]
- * [BBBBBB]
- *         [CCCCCC]
- *
- * Because the collisions are A-B and A-C (but never B-C), they can be laid
- * out, for example, like so:
- *
- * [BBBBBB][CCCCCC]
- *    [AAAAAAA]
- *
- * In this case, the numLayers for all events is 2, B and C are on layer 0, and
- * A is on layer 1. If C were to start a bit earlier, though, three layers would
- * be needed:
- *
- * [BBBBBB]
- *      [CCCCCC]
- *    [AAAAAAA]
- *
- * In this case the numLayers for all events is 3, and B, C, and A are on layers
- * 0, 1, and 2 respectively.
- */
-class LayeredEvent {
-  public event: AcademicEvent;
-  public layer: number;
-  public numLayers: number;
-}
-
-/**
- * Sort events into buckets of colliding events.
- *
- * Shamelessly lifted from boazg at
- * https://github.com/lutzky/ttime/blob/master/lib/ttime/tcal/tcal.rb
- *
- * TODO(lutzky): This is exported for testing purposes only.
- */
-export function layoutLayeredEvents(events: AcademicEvent[]): LayeredEvent[] {
-  const result: LayeredEvent[] = [];
-
-  let remaining = events.slice();
-
-  while (remaining.length > 0) {
-    let selected = new Set([remaining[0]]);
-    let selectedMoreEvents = true;
-
-    while (selectedMoreEvents) {
-      selectedMoreEvents = false;
-      const oldSelected = selected;
-      selected = new Set();
-      oldSelected.forEach((s) => {
-        selected.add(s);
-        remaining.forEach((r) => {
-          if (eventsCollide([r, s])) {
-            selected.add(r);
-            selectedMoreEvents = true;
-          }
-        });
-      });
-
-      remaining = remaining.filter((x) => !selected.has(x));
-    }
-
-    const layers: AcademicEvent[][] = [];
-
-    selected.forEach((s) => {
-      let assignedToLayer = false;
-      layers.some((layer, _) => {
-        if (!eventsCollide(layer.concat([s]))) {
-          assignedToLayer = true;
-          layer.push(s);
-          return true;
-        }
-        return false;
-      });
-
-      if (!assignedToLayer) {
-        // No layer has been assigned yet, so all layers must collide with
-        // s. Create a new one.
-        layers.push([s]);
-      }
-    });
-
-    layers.forEach((l, i) => {
-      l.forEach((s) => {
-        result.push({
-          event: s,
-          layer: i,
-          numLayers: layers.length,
-        });
-      });
-    });
-  }
-
-  return result;
-}
+import layerize from './layerize';
 
 /**
  * Get the start time of the earliest event in the schedule
@@ -129,11 +29,11 @@ export function renderSchedule(
   const latest = getLatest(schedule);
   const scale = 100.0 / (latest - earliest);
 
-  const layeredEvents = layoutLayeredEvents(schedule.events);
+  const layeredEvents = layerize(schedule.events, eventsCollide);
 
   layeredEvents.forEach((le) => {
     const eventDiv = document.createElement('div');
-    const event = le.event;
+    const event = le.obj;
     eventDiv.className = 'event';
     const colors = courseColors.get(event.group.course.id);
     eventDiv.style.backgroundColor = colors[0];
