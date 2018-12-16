@@ -7,6 +7,7 @@ if (new URL(window.location.href).searchParams.get('ttime_debug')) {
 import {groupsByType, loadCatalog, sortEvents} from './common';
 import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
 import {displayName, formatDate, minutesToTime} from './formatting';
+import getNicknames from './nicknames';
 import {ScheduleRating} from './rating';
 import * as render from './render';
 
@@ -100,7 +101,7 @@ function groupHeaderForCatalog(group: Group): JQuery {
 /**
  * Forbidden groups, as formatted using groupIDString
  */
-let forbiddenGroups: Set<string> = new Set();
+let forbiddenGroups = new Set<string>();
 
 /**
  * A string identifier representing a given group. Used in forbiddenGroups.
@@ -260,7 +261,9 @@ function courseLabel(course: Course): HTMLElement {
       const infoDiv = document.createElement('div');
       $(span).data('infoDiv', infoDiv);
       infoDiv.appendChild(htmlDescribeCourse(course));
-      // showCourseDebugInfo(course);
+      if (mainDebugLogging) {
+        console.info(course);
+      }
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
       $(span).data('ttime3_expanded', true);
@@ -883,28 +886,6 @@ function byDay(schedule: Schedule): AcademicEvent[][] {
  */
 function getCourseByID(id: number): Course {
   return currentCatalogByCourseID.get(id);
-}
-
-/**
- * Gets nicknames or abbreviations for a course
- */
-function getNicknames(course: Course): string {
-  const result = [];
-
-  if (course.name.includes('חשבון דיפרנציאלי ואינטגרלי')) {
-    result.push('חדוא', 'חדו"א');
-  }
-  if (course.name.includes('מדעי המחשב')) {
-    result.push('מדמח', 'מדמ"ח');
-  }
-  if (course.name.includes('פיסיקה')) {
-    result.push('פיזיקה');
-  }
-  if (course.name.includes('אנליזה נומרית')) {
-    result.push('נומריזה');
-  }
-
-  return result.join(' ');
 }
 
 /**
