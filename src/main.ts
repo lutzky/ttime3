@@ -354,11 +354,13 @@ function saveSettings() {
 
   window.localStorage.setItem('ttime3_settings', JSON.stringify(settings));
 
-  (window as any).gtag('event', 'saveSettings-catalog-url', {
-    value: settings.catalogUrl,
+  (window as any).gtag('event', settings.catalogUrl, {
+    event_category: 'saveSettings',
+    event_label: 'catalog-url',
   });
-  (window as any).gtag('event', 'saveSettings-noCollisions', {
-    value: settings.filterSettings.noCollisions,
+  (window as any).gtag('event', settings.filterSettings.noCollisions, {
+    event_category: 'saveSettings',
+    event_label: 'no-collisions',
   });
 
   if (mainDebugLogging) {
@@ -386,8 +388,9 @@ function addSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Selected', course);
   }
-  (window as any).gtag('event', 'addCourse', {
-    value: course.id,
+  (window as any).gtag('event', `${course.id}`, {
+    event_category: 'SelectCourses',
+    event_label: 'addCourse',
   });
   selectedCourses.add(course);
   courseAddButtons.get(course.id).disabled = true;
@@ -419,8 +422,9 @@ function delSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info('Unselected', course);
   }
-  (window as any).gtag('event', 'delCourse', {
-    value: course.id,
+  (window as any).gtag('event', `${course.id}`, {
+    event_category: 'SelectCourses',
+    event_label: 'delCourse',
   });
   selectedCourses.delete(course);
   courseAddButtons.get(course.id).disabled = false;
