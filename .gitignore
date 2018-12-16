@@ -2,4 +2,4 @@
 .*.swp
 
 /built
-/dev-server/dist/
+/dist
