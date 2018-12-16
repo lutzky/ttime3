@@ -43,6 +43,7 @@ function setCatalogUrl(url: string) {
 function catalogUrlChanged() {
   saveSettings();
 }
+(window as any).catalogUrlChanged = catalogUrlChanged;
 
 const selectedCourses = new Set<Course>();
 
