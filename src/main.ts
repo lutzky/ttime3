@@ -260,7 +260,9 @@ function courseLabel(course: Course): HTMLElement {
       const infoDiv = document.createElement('div');
       $(span).data('infoDiv', infoDiv);
       infoDiv.appendChild(htmlDescribeCourse(course));
-      // showCourseDebugInfo(course);
+      if (mainDebugLogging) {
+        console.info(course);
+      }
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
       $(span).data('ttime3_expanded', true);
