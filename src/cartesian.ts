@@ -1,7 +1,7 @@
 /**
  * Return a cartesian product of arrays
  *
- * Note: If changing this method, test with "make karma_thorough".
+ * Note: If changing this method, test with "npm run karma:thorough".
  */
 export default function cartesian<T>(...arrays: T[][]): T[][] {
   if (arrays.length === 0) {
