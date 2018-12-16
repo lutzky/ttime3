@@ -100,7 +100,7 @@ function groupHeaderForCatalog(group: Group): JQuery {
 /**
  * Forbidden groups, as formatted using groupIDString
  */
-let forbiddenGroups: Set<string> = new Set();
+let forbiddenGroups = new Set<string>();
 
 /**
  * A string identifier representing a given group. Used in forbiddenGroups.
