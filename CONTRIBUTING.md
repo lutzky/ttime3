@@ -22,3 +22,7 @@ To enable additional debug logging, add the parameter `?ttime_debug=1` to the UR
 ## Releasing a version
 
 The `dist` directory holds a minified, no-debug-info version of the webpack. To update it, run `npm run build`. Test the output using `npm run serve:production`.
+
+In the `master` branch, this directory is empty (and gitignore'd). Travis builds and deploys this automatically to the `gh-pages` branch. Other files should be identical in the `gh-pages` branch, but should not take up extra space in the git repository as they'd be represented by the same blob.
+
+If Travis CI is not operating correctly, deploy manually by merging `master` into `gh-pages`, running `npm run build`, and force-adding the files in the `dist` directory.
