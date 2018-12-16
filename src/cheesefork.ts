@@ -82,8 +82,6 @@ export function parseCheeseFork(jsData: string): Catalog {
 
   const data = JSON.parse(jsData.substring(cheeseForkPrefix.length));
 
-  console.info('Experimental CheeseFork parser. First course: ', data[0]);
-
   data.forEach((dataCourse: any) => {
     const facultyName = dataCourse.general[hebrew.faculty];
 
