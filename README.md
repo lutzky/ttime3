@@ -2,11 +2,23 @@
 
 TTime3 is a web app intended to help Technion students build a timetable. Report bugs at https://github.com/lutzky/ttime3/issues. Developer instructions are at [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Usage:
+## Bug reports and feature requests
 
-1. Add courses from the Catalog
-1. Select filters in Settings
-1. Under Schedules, click Generate Schedules
+Please email all bug reports and feature requests to ohad@lutzky.net. If you have a Github account, feel free to create [issues](https://github.com/lutzky/ttime3/issues).
+
+## Usage
+
+1. Add courses from the Catalog - type part of the course name or ID.
+    1. Remove courses by clicking 🗑️
+    1. Get detailed course information by clicking ℹ️
+1. Click Generate Schedules
+1. Each schedule receives multiple ratings (earliest start, latest finish, etc.) - click any of those to sort by that rating; click again to sort descending.
+1. To forbid a certain group in a schedule, click the 🚫 sign in its corner. That group will not be selected the next time schedules are generated. (You can undo this under Settings).
+1. Under Settings, you can:
+    * Change the catalog URL - use the presets there, click "More info" for an explanation. This requires pressing "Apply" afterwards.
+    * Allow collisions (uncheck "No collisions")
+    * Filter (minimal and maximal values for each rating)
+    * Add custom events (e.g. weekly time commitments that aren't courses)
 
 ## Data source
 
