@@ -1,0 +1,10 @@
+Language: JavaScript
+BasedOnStyle: Google
+JavaScriptQuotes: Single
+BreakBeforeBraces: 'Custom'
+BraceWrapping: {
+	AfterClass: 'false'
+	AfterFunction: 'false'
+	BeforeCatch: 'false'
+	IndentBraces: 'false'
+}

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+OPTS=`getopt -o f --long fix -n 'testloop' -- "$@"`
+
+if [ $? != 0 ] ; then echo "Usage: $0 [--fix]" >&2 ; exit 1 ; fi
+
+eval set -- "$OPTS"
+
+while true; do
+  case "$1" in
+    -f | --fix ) export TESTLOOP_FIX=true; shift ;;
+    -- ) shift; break ;;
+    * ) break ;;
+  esac
+done
+
+exec npx supervisor -e '.ts' -n exit -x make all
