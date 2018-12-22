@@ -8,6 +8,6 @@ if [[ $1 == "fix" ]]; then
   node_modules/.bin/clang-format -i $(find src/ spec/ -name '*.ts')
 fi
 
-exec diff -u \
-  <(find src/ spec/ -name '*.ts' -exec cat {} \;) \
-  <(find src/ spec/ -name '*.ts' -exec node_modules/.bin/clang-format {} \;) \
+for file in $(find src/ spec/ -name '*.ts'); do
+	diff --label $file --label $file -u $file <(node_modules/.bin/clang-format $file)
+done
