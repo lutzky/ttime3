@@ -9,5 +9,5 @@ if [[ $1 == "fix" ]]; then
 fi
 
 for file in $(find src/ spec/ -name '*.ts'); do
-	diff --label $file --label $file --color -u $file <(node_modules/.bin/clang-format $file)
+	diff --label $file --label $file -u $file <(node_modules/.bin/clang-format $file)
 done
