@@ -19,5 +19,17 @@ export default function getNicknames(course: Course): string {
     result.push('נומריזה');
   }
 
+  result.push(course.faculty.name);
+
+  if (course.lecturerInCharge !== '') {
+    result.push(course.lecturerInCharge);
+  }
+
+  if (course.groups) {
+    for (const group of course.groups) {
+      result.push(...group.teachers);
+    }
+  }
+
   return result.join(' ');
 }
