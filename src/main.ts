@@ -4,11 +4,13 @@ if (new URL(window.location.href).searchParams.get('ttime_debug')) {
   mainDebugLogging = true;
 }
 
-import {groupsByType, loadCatalog, sortEvents} from './common';
+import {DateObj, groupsByType, loadCatalog, sortEvents} from './common';
 import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
 import {displayName, formatDate, minutesToTime} from './formatting';
-import getNicknames from './nicknames';
 import {ScheduleRating} from './rating';
+
+import DateSet from './dateset';
+import getNicknames from './nicknames';
 import * as render from './render';
 
 /**
@@ -22,6 +24,7 @@ class Settings {
   public customEvents: string;
   public catalogUrl: string;
   public filterSettings: FilterSettings;
+  public minTestDateDistance: number;
 }
 
 const defaultCatalogUrl =
@@ -46,6 +49,12 @@ function catalogUrlChanged() {
 (window as any).catalogUrlChanged = catalogUrlChanged;
 
 const selectedCourses = new Set<Course>();
+
+let selectedCoursesTestDates = new DateSet([]);
+
+function getTestDates(): DateSet {
+  return selectedCoursesTestDates;
+}
 
 /**
  * Catalog of all courses
@@ -401,6 +410,7 @@ function addSelectedCourse(course: Course) {
   courseAddLabels.get(course.id).classList.add('disabled-course-label');
   saveSettings();
   refreshSelectedCourses();
+  updateTestDates();
 }
 
 /**
@@ -435,10 +445,25 @@ function delSelectedCourse(course: Course) {
   courseAddLabels.get(course.id).classList.remove('disabled-course-label');
   saveSettings();
   refreshSelectedCourses();
+  updateTestDates();
+}
+
+function updateTestDates() {
+  const rawTestDates: DateObj[] = [];
+  for (const course of selectedCourses) {
+    if (course.testDates) {
+      rawTestDates.push(...course.testDates);
+    }
+  }
+  selectedCoursesTestDates = new DateSet(rawTestDates);
+  const selectize = $('#courses-selectize')[0].selectize;
+  if (selectize) {
+    selectize.clearCache();
+  }
 }
 
 /**
- * Redraw the list of selected courses
+ * Redraw the list of selected courses, and update the list of test dates
  */
 function refreshSelectedCourses() {
   const nscheds = Number(totalPossibleSchedules(selectedCourses));
@@ -915,6 +940,26 @@ function coursesSelectizeSetup() {
   selectBox.selectize({
     optgroups,
     options: opts,
+    render: {
+      option(data, escape) {
+        let redColor = false;
+        const course = getCourseByID(data.value);
+        if (course.testDates) {
+          course.testDates.forEach((testDate: DateObj) => {
+            if (!getTestDates().fitsWithDistance(
+                    testDate, settings.minTestDateDistance)) {
+              redColor = true;
+            }
+          });
+        }
+        return $('<div>', {
+                 class: 'option',
+                 style: redColor ? 'color: red' : null,
+                 text: escape(data.text),
+               })[0]
+            .outerHTML;
+      },
+    },
     searchField: ['text', 'nicknames'],
     onItemAdd(courseID) {
       if (courseID === '') {
@@ -955,6 +1000,7 @@ function loadSettings(s: string): Settings {
       ratingMin: getNullRating(),
     },
     forbiddenGroups: [],
+    minTestDateDistance: 5,
     selectedCourses: [],
   };
 
@@ -969,6 +1015,7 @@ function loadSettings(s: string): Settings {
 
   $('#catalog-url').val(result.catalogUrl);
   $('#custom-events-textarea').val(result.customEvents);
+  $('#min-test-date-distance-display').text(result.minTestDateDistance);
 
   {
     const fs = result.filterSettings;
