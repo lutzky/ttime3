@@ -454,6 +454,28 @@ function updateTestDates() {
   if (selectize) {
     selectize.clearCache();
   }
+  const ul = $('<ul>', {class: 'list-group'});
+  $('#test-schedule').empty();
+  $('#test-schedule').append(ul);
+  const datesAndDistances = selectedCoursesTestDates.getDatesAndDistances();
+  for (let i = 0; i < datesAndDistances.length; i++) {
+    console.info('Adding to ul');
+    const [distance, date, course] = datesAndDistances[i];
+    const formattedDate = date.toISOString().slice(0, 10);
+    let formattedDistance = '';
+    if (i > 0) {
+      formattedDistance = `${distance}d`;
+      if (distance < settings.minTestDateDistance) {
+        formattedDistance =
+            `<span style="color: red; font-weight: bold">${distance}d</span>`;
+      }
+      formattedDistance += ' &rarr;';
+    }
+    ul.append($('<li>', {
+      class: 'list-group-item',
+      html: `${formattedDistance} ${formattedDate} - ${course.name}`,
+    }));
+  }
 }
 
 /**
