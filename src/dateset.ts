@@ -5,9 +5,11 @@ export default class DateSet {
   constructor(courses: Course[]) {
     this.dates = [];
     for (const course of courses) {
-      for (const testDate of course.testDates) {
-        const d = new Date(testDate.year, testDate.month, testDate.day);
-        this.dates.push([d, course]);
+      if (course.testDates) {
+        for (const testDate of course.testDates) {
+          const d = new Date(testDate.year, testDate.month, testDate.day);
+          this.dates.push([d, course]);
+        }
       }
     }
 
@@ -57,5 +59,24 @@ export default class DateSet {
     }
 
     return true;
+  }
+
+  public getDatesAndDistances(): Array<[number, Date, Course]> {
+    if (this.dates.length === 0) {
+      return [];
+    }
+
+    const result: Array<[number, Date, Course]> =
+        [[0, this.dates[0][0], this.dates[0][1]]];
+
+    for (let i = 1; i < this.dates.length; i++) {
+      const distance =
+          this.dates[i][0].getTime() - this.dates[i - 1][0].getTime();
+      const dInDays = Math.ceil(distance / (24 * 3600 * 1000));
+
+      result.push([dInDays, this.dates[i][0], this.dates[i][1]]);
+    }
+
+    return result;
   }
 }
