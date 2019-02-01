@@ -449,13 +449,7 @@ function delSelectedCourse(course: Course) {
 }
 
 function updateTestDates() {
-  const rawTestDates: DateObj[] = [];
-  for (const course of selectedCourses) {
-    if (course.testDates) {
-      rawTestDates.push(...course.testDates);
-    }
-  }
-  selectedCoursesTestDates = new DateSet(rawTestDates);
+  selectedCoursesTestDates = new DateSet(Array.from(selectedCourses));
   const selectize = $('#courses-selectize')[0].selectize;
   if (selectize) {
     selectize.clearCache();

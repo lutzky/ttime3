@@ -1,15 +1,19 @@
 import {expect} from 'chai';
 
-import {DateObj} from '../src/common';
+import {Course, DateObj} from '../src/common';
 import DateSet from '../src/dateset';
+
+function courseWithTest(dObj: DateObj): Course {
+  return {testDates: [dObj]} as Course;
+}
 
 describe('DateSet', () => {
   it('should know if they have a minimal existing interval', () => {
-    const d1: DateObj = {year: 2006, month: 5, day: 1};
+    const d1 = courseWithTest({year: 2006, month: 5, day: 1});
     // 2 days interval
-    const d2: DateObj = {year: 2006, month: 5, day: 3};
+    const d2 = courseWithTest({year: 2006, month: 5, day: 3});
     // 3 days interval
-    const d3: DateObj = {year: 2006, month: 5, day: 6};
+    const d3 = courseWithTest({year: 2006, month: 5, day: 6});
 
     const ds = new DateSet([d1, d2, d3]);
 
@@ -20,7 +24,7 @@ describe('DateSet', () => {
     /* tslint:enable:no-unused-expression */
   });
   it('should have an interval of 0 for one or no events', () => {
-    const d1: DateObj = {year: 2006, month: 5, day: 1};
+    const d1 = courseWithTest({year: 2006, month: 5, day: 1});
 
     const ds0 = new DateSet([]);
     const ds1 = new DateSet([d1]);
@@ -31,8 +35,8 @@ describe('DateSet', () => {
     /* tslint:enable:no-unused-expression */
   });
   it('indicate the correct interval for adding dates', () => {
-    const d1: DateObj = {year: 2006, month: 5, day: 1};
-    const d2: DateObj = {year: 2006, month: 5, day: 5};
+    const d1 = courseWithTest({year: 2006, month: 5, day: 1});
+    const d2 = courseWithTest({year: 2006, month: 5, day: 5});
 
     const ds = new DateSet([d1, d2]);
 

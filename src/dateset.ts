@@ -1,11 +1,17 @@
-import {DateObj} from './common';
+import {Course, DateObj} from './common';
 
 export default class DateSet {
-  private dates: Date[];
-  constructor(dateObjs: DateObj[]) {
-    this.dates = dateObjs.map(
-        (dObj: DateObj) => new Date(dObj.year, dObj.month, dObj.day));
-    this.dates.sort((a, b) => (a.getTime() - b.getTime()));
+  private dates: Array<[Date, Course]>;
+  constructor(courses: Course[]) {
+    this.dates = [];
+    for (const course of courses) {
+      for (const testDate of course.testDates) {
+        const d = new Date(testDate.year, testDate.month, testDate.day);
+        this.dates.push([d, course]);
+      }
+    }
+
+    this.dates.sort((a, b) => (a[0].getTime() - b[0].getTime()));
   }
 
   /**
@@ -22,7 +28,8 @@ export default class DateSet {
     const dInMillisecs = days * 24 * 3600 * 1000;
 
     for (let i = 0; i < this.dates.length - 1; i++) {
-      const distance = this.dates[i + 1].getTime() - this.dates[i].getTime();
+      const distance =
+          this.dates[i + 1][0].getTime() - this.dates[i][0].getTime();
       if (distance < dInMillisecs) {
         return false;
       }
@@ -43,7 +50,7 @@ export default class DateSet {
     const dateAsObj = new Date(date.year, date.month, date.day);
 
     for (const existingDate of this.dates) {
-      if (Math.abs(dateAsObj.getTime() - existingDate.getTime()) <
+      if (Math.abs(dateAsObj.getTime() - existingDate[0].getTime()) <
           dInMillisecs) {
         return false;
       }
