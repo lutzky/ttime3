@@ -248,6 +248,20 @@
           <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the
           catalog.</p>
 
+          <h3>Test schedule</h3>
+          <form style="max-width: 400px">
+            <div class="row">
+              <div class="col col-form-label" title="Tests less than this many
+              days apart are considered 'too close">Close test distance</div>
+              <div class="col">
+                <input class="form-control" id="close-test-distance"
+                                            placeholder="5"
+                                            onchange="saveSettings()"
+                                            type="number" />
+              </div>
+            </div>
+          </form>
+
           <h3>Custom events</h3>
 
           <div class="form-group" style="font-family: monospace">
