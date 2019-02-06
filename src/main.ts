@@ -351,6 +351,13 @@ function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map((c) => c.id);
   settings.customEvents = $('#custom-events-textarea').val() as string;
   settings.catalogUrl = $('#catalog-url').val() as string;
+
+  settings.minTestDateDistance = getNumInputValueWithDefault(
+      $('#close-test-distance')[0] as HTMLInputElement, 5);
+  // Reflecting this back to the UI here is a bit of a hack :/
+  $('#min-test-date-distance-display').text(settings.minTestDateDistance);
+  updateTestDates();
+
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
     noCollisions: getCheckboxValueById('filter.noCollisions'),
@@ -1032,6 +1039,7 @@ function loadSettings(s: string): Settings {
   $('#catalog-url').val(result.catalogUrl);
   $('#custom-events-textarea').val(result.customEvents);
   $('#min-test-date-distance-display').text(result.minTestDateDistance);
+  $('#close-test-distance').val(result.minTestDateDistance);
 
   {
     const fs = result.filterSettings;
