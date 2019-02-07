@@ -466,7 +466,6 @@ function updateTestDates() {
   $('#test-schedule').append(ul);
   const datesAndDistances = selectedCoursesTestDates.getDatesAndDistances();
   for (let i = 0; i < datesAndDistances.length; i++) {
-    console.info('Adding to ul');
     const [distance, date, course] = datesAndDistances[i];
     const formattedDate = date.toISOString().slice(0, 10);
     let formattedDistance = '';
