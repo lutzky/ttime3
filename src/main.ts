@@ -25,6 +25,7 @@ class Settings {
   public catalogUrl: string;
   public filterSettings: FilterSettings;
   public minTestDateDistance: number;
+  public hideCoursesWithCloseTests: boolean;
 }
 
 const defaultCatalogUrl =
@@ -351,6 +352,8 @@ function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map((c) => c.id);
   settings.customEvents = $('#custom-events-textarea').val() as string;
   settings.catalogUrl = $('#catalog-url').val() as string;
+  settings.hideCoursesWithCloseTests =
+      $('#hide-courses-with-close-tests').prop('checked') as boolean;
 
   settings.minTestDateDistance = getNumInputValueWithDefault(
       $('#close-test-distance')[0] as HTMLInputElement, 5);
@@ -461,12 +464,16 @@ function updateTestDates() {
   if (selectize) {
     selectize.clearCache();
   }
+  $('#how-to-show-close-test-courses')
+      .html(
+          settings.hideCoursesWithCloseTests ?
+              'hidden' :
+              'shown in <span style="color: red">red</span>');
   const ul = $('<ul>', {class: 'list-group'});
   $('#test-schedule').empty();
   $('#test-schedule').append(ul);
   const datesAndDistances = selectedCoursesTestDates.getDatesAndDistances();
   for (let i = 0; i < datesAndDistances.length; i++) {
-    console.info('Adding to ul');
     const [distance, date, course] = datesAndDistances[i];
     const formattedDate = date.toISOString().slice(0, 10);
     let formattedDistance = '';
@@ -965,19 +972,21 @@ function coursesSelectizeSetup() {
     options: opts,
     render: {
       option(data, escape) {
-        let redColor = false;
+        let hasCloseTest = false;
+        const closeTestStyle =
+            settings.hideCoursesWithCloseTests ? 'display: none' : 'color: red';
         const course = getCourseByID(data.value);
         if (course.testDates) {
           course.testDates.forEach((testDate: DateObj) => {
             if (!getTestDates().fitsWithDistance(
                     testDate, settings.minTestDateDistance)) {
-              redColor = true;
+              hasCloseTest = true;
             }
           });
         }
         return $('<div>', {
                  class: 'option',
-                 style: redColor ? 'color: red' : null,
+                 style: hasCloseTest ? closeTestStyle : null,
                  text: escape(data.text),
                })[0]
             .outerHTML;
@@ -1023,6 +1032,7 @@ function loadSettings(s: string): Settings {
       ratingMin: getNullRating(),
     },
     forbiddenGroups: [],
+    hideCoursesWithCloseTests: false,
     minTestDateDistance: 5,
     selectedCourses: [],
   };
@@ -1038,6 +1048,8 @@ function loadSettings(s: string): Settings {
 
   $('#catalog-url').val(result.catalogUrl);
   $('#custom-events-textarea').val(result.customEvents);
+  $('#hide-courses-with-close-tests')
+      .prop('checked', result.hideCoursesWithCloseTests);
   $('#min-test-date-distance-display').text(result.minTestDateDistance);
   $('#close-test-distance').val(result.minTestDateDistance);
 
