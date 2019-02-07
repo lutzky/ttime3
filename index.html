@@ -143,10 +143,10 @@
               </div>
               <div>
                 <small class="text-muted">
-                  Courses in <span style="color:red">red</span> have a test
-                  fewer than
+                  Courses with a close test (fewer than
                   <span id="min-test-date-distance-display">[loading]</span>
-                  days away from a test in an already-selected course.
+                  days away from a test in an already-selected course) are
+                  <span id="how-to-show-close-test-courses">[loading]</span>.
                 </small>
               </div>
               <div id="gen-schedules-button">
@@ -251,14 +251,25 @@
           <h3>Test schedule</h3>
           <form style="max-width: 400px">
             <div class="row">
-              <div class="col col-form-label" title="Tests less than this many
-              days apart are considered 'too close">Close test distance</div>
+              <div class="col col-form-label" title="Tests less than this many days apart are considered 'too close'">
+                Close test distance
+              </div>
               <div class="col">
                 <input class="form-control" id="close-test-distance"
                                             placeholder="5"
                                             onchange="saveSettings()"
                                             type="number" />
               </div>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox"
+                     onchange="saveSettings()"
+                     id="hide-courses-with-close-tests">
+              <label class="form-check-label"
+                for="hide-courses-with-close-tests"
+                title="When adding courses, ones with tests closer than 'close test distance' away will be hidden (instead of shown in red)">
+                Hide courses that have a close test
+              </label>
             </div>
           </form>
 
