@@ -37,9 +37,15 @@ export function generateSchedules(
   const groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
+  if (settings.noCollisions) {
+    schedules = filterWithDelta(schedules, filterNoCollisions, 'noCollisions');
+  }
+
   if (schedulerDebugLogging) {
     console.info(`${schedules.length} total schedules`);
   }
+
+  rateSchedules(schedules);
 
   schedules = runAllFilters(schedules, settings);
 
@@ -130,6 +136,12 @@ function groupsToSchedule(groups: Group[]): Schedule {
   const e = groups.reduce((a, b) => a.concat(b.events), []);
   return {
     events: e,
-    rating: rate(e),
+    rating: null,
   };
+}
+
+function rateSchedules(schedules: Schedule[]) {
+  for (const schedule of schedules) {
+    schedule.rating = rate(schedule.events);
+  }
 }
