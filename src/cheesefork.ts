@@ -49,7 +49,7 @@ function parseCheeseForkTestDate(s: string): DateObj {
  *
  * @param jsData - Cheesefork courses_*.js data
  */
-export function parseCheeseFork(jsData: string): Catalog {
+export function parse(jsData: string): Catalog {
   const cheeseForkPrefix = 'var courses_from_rishum = ';
 
   const hebrew = {
@@ -188,4 +188,41 @@ export function parseCheeseFork(jsData: string): Catalog {
   });
 
   return Array.from(facultiesByName.values());
+}
+
+export function catalogNameFromUrl(url: string): string {
+  return 'Cheesefork ' + url.substr(url.lastIndexOf('_') + 1, 6);
+}
+
+export function getCatalogs(): Promise<Array<[string, string]>> {
+  return new Promise((resolve, reject) => {
+    const apiURL =
+        'https://api.github.com/repos/michael-maltsev/cheese-fork/contents/courses?ref=gh-pages';
+    const req = new XMLHttpRequest();
+    req.open('GET', apiURL);
+    req.onload = () => {
+      if (req.status !== 200) {
+        reject(Error(req.statusText));
+        return;
+      }
+      try {
+        const result = JSON.parse(req.response as string);
+        const minified: string[] =
+            result.map((r: any): string => r.download_url)
+                .filter((url: string) => url.endsWith('.min.js'));
+        const tuples: Array<[string, string]> = minified.map(
+            (url: string): [string, string] => [catalogNameFromUrl(url), url]);
+        resolve(tuples);
+      } catch (err) {
+        reject(err);
+      }
+    };
+
+    req.onerror = () => {
+      reject(Error('Network Error'));
+      return;
+    };
+
+    req.send();
+  });
 }
