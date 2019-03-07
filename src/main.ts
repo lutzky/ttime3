@@ -1159,6 +1159,8 @@ loadCatalog(settings.catalogUrl)
               console.error(`Failed to add course ${id}:`, error);
             }
           });
+          $('#selected-courses-semester-indicator')
+              .text(currentCatalog[0].semester);
           coursesSelectizeSetup();
         },
         (error) => {
