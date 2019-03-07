@@ -49,6 +49,52 @@ function catalogUrlChanged() {
 }
 (window as any).catalogUrlChanged = catalogUrlChanged;
 
+function getCheeseForkCatalogs(): Promise<Array<[string, string]>> {
+  return new Promise((resolve, reject) => {
+    const apiURL =
+        'https://api.github.com/repos/michael-maltsev/cheese-fork/contents/courses?ref=gh-pages';
+    const req = new XMLHttpRequest();
+    req.open('GET', apiURL);
+    req.onload = () => {
+      if (req.status !== 200) {
+        reject(Error(req.statusText));
+        return;
+      }
+      try {
+        const result = JSON.parse(req.response as string);
+        const minified: string[] =
+            result.map((r: any): string => r.download_url)
+                .filter((url: string) => url.endsWith('.min.js'));
+        const tuples: Array<[string, string]> = minified.map((s: string): [
+          string, string
+        ] => ['Cheesefork ' + s.substr(s.lastIndexOf('_') + 1, 6), s]);
+        resolve(tuples);
+      } catch (err) {
+        reject(err);
+      }
+    };
+
+    req.onerror = () => {
+      reject(Error('Network Error'));
+      return;
+    };
+
+    req.send();
+  });
+}
+(window as any).getCheeseForkCatalogs = getCheeseForkCatalogs;
+
+getCheeseForkCatalogs().then((catalogs) => {
+  for (const [catalogName, catalogUrl] of catalogs.sort().reverse()) {
+    $('#cheesefork-catalog-selectors').append($('<a>', {
+      class: 'dropdown-item',
+      click: () => setCatalogUrl(catalogUrl),
+      href: '#/',
+      text: catalogName,
+    }));
+  }
+});
+
 const selectedCourses = new Set<Course>();
 
 let selectedCoursesTestDates = new DateSet([]);
