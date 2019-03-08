@@ -1,3 +1,5 @@
+import {XMLHttpRequest} from 'xmlhttprequest-ts';
+
 import {AcademicEvent, Catalog, Course, DateObj, Faculty, Group} from './common';
 
 /**
@@ -202,11 +204,11 @@ export function getCatalogs(): Promise<Array<[string, string]>> {
     req.open('GET', apiURL);
     req.onload = () => {
       if (req.status !== 200) {
-        reject(Error(req.statusText));
+        reject(Error(`HTTP ${req.status}: ${req.statusText}`));
         return;
       }
       try {
-        const result = JSON.parse(req.response as string);
+        const result = JSON.parse(req.responseText);
         const minified: string[] =
             result.map((r: any): string => r.download_url)
                 .filter((url: string) => url.endsWith('.min.js'));

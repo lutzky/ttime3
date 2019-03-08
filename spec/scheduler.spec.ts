@@ -39,10 +39,9 @@ describe('Scheduler', () => {
     };
   }
 
-  it('should have one faculty', (done) => {
-    loadTestCatalog().then((catalog) => {
+  it('should have one faculty', () => {
+    return loadTestCatalog().then((catalog) => {
       expect(catalog.length).to.equal(1);
-      done();
     });
   });
 

@@ -14,9 +14,6 @@ if (process.env.CHROME_HEADLESS) {
 
 module.exports = function(config) {
   config.set({
-    node: {
-      fs: 'empty',
-    },
     basePath: '',
     frameworks: ['mocha', 'chai'],
     files: extra_files.concat(['spec/**/*.ts']),
@@ -25,6 +22,10 @@ module.exports = function(config) {
     browsers: browsers,
     webpack: {
       mode: 'development',
+      node: {
+        fs: 'empty',
+        child_process: 'empty',
+      },
       module: webpackConfig().module,
       resolve: webpackConfig().resolve
     },
