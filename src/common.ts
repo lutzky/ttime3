@@ -1,6 +1,5 @@
-import {XMLHttpRequest} from 'xmlhttprequest-ts';
-
 import * as cheesefork from './cheesefork';
+
 import {ScheduleRating} from './rating';
 
 /* tslint:disable:max-classes-per-file */
@@ -101,10 +100,10 @@ export function loadCatalog(url: string): Promise<Catalog> {
       if (req.status === 200) {
         let result: Catalog = null;
         try {
-          if (req.responseText[0] === '[') {
-            result = JSON.parse(req.responseText);
+          if (req.response[0] === '[') {
+            result = JSON.parse(req.response as string);
           } else {
-            result = cheesefork.parse(req.responseText);
+            result = cheesefork.parse(req.response as string);
             for (const faculty of result) {
               faculty.semester = cheesefork.catalogNameFromUrl(url);
             }
