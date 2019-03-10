@@ -6,6 +6,9 @@ import {ScheduleRating} from '../src/rating';
 import rate from '../src/rating';
 import {generateSchedules} from '../src/scheduler';
 
+// https://mochajs.org/#arrow-functions
+/* tslint:disable:only-arrow-functions */
+
 const algebraCourseID = 104166;
 
 import * as testData from '../testdata.json';
@@ -19,7 +22,7 @@ export function loadTestCatalog(): Promise<Catalog> {
   });
 }
 
-describe('Scheduler', () => {
+describe('Scheduler', function() {
   /**
    * Return a copy of default filter settings
    */
@@ -39,13 +42,13 @@ describe('Scheduler', () => {
     };
   }
 
-  it('should have one faculty', () => {
+  it('should have one faculty', function() {
     return loadTestCatalog().then((catalog) => {
       expect(catalog.length).to.equal(1);
     });
   });
 
-  describe('when scheduling for just Algebra A', () => {
+  describe('when scheduling for just Algebra A', function() {
     let catalog: Catalog = null;
     let algebra: Course = null;
     beforeEach((done) => {
@@ -58,7 +61,7 @@ describe('Scheduler', () => {
       });
     });
 
-    it('should get the right amount of different schedules', () => {
+    it('should get the right amount of different schedules', function() {
       const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
 
@@ -66,7 +69,7 @@ describe('Scheduler', () => {
       expect(schedules.length).to.equal(33);
     });
 
-    it('should have one lecture and one tutorial in each schedule', () => {
+    it('should have one lecture and one tutorial in each schedule', function() {
       const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
 
@@ -86,7 +89,7 @@ describe('Scheduler', () => {
       });
     });
 
-    it('should have the expected number of schdules', () => {
+    it('should have the expected number of schdules', function() {
       const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
 
@@ -94,7 +97,7 @@ describe('Scheduler', () => {
       expect(schedules.length).to.equal(33);
     });
 
-    it('should schedule with 104166.11 if not forbidden', () => {
+    it('should schedule with 104166.11 if not forbidden', function() {
       const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
       const schedules = generateSchedules(new Set([algebra]), settings);
@@ -105,7 +108,7 @@ describe('Scheduler', () => {
       expect(schedulesWithGroup.length).to.be.greaterThan(0);
     });
 
-    it('should not schedule with 104166.11 if not forbidden', () => {
+    it('should not schedule with 104166.11 if not forbidden', function() {
       const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
       settings.forbiddenGroups = ['104166.11'];
@@ -117,7 +120,7 @@ describe('Scheduler', () => {
       expect(schedulesWithGroup.length).to.equal(0);
     });
 
-    it('should schedule just lectures if all tutorials forbidden', () => {
+    it('should schedule just lectures if all tutorials forbidden', function() {
       const settings = getDefaultFilterSettings();
       settings.noCollisions = true;
       settings.forbiddenGroups = [
@@ -141,8 +144,8 @@ describe('Scheduler', () => {
     });
   });
 
-  describe('schedule ratings', () => {
-    describe('numRuns', () => {
+  describe('schedule ratings', function() {
+    describe('numRuns', function() {
       const eventA = {startMinute: 0, endMinute: 60, location: 'Ulman 105'} as
           AcademicEvent;
       const eventB = {startMinute: 60, endMinute: 120, location: 'Ulman 350'} as
@@ -163,49 +166,49 @@ describe('Scheduler', () => {
           AcademicEvent;
       const eventF = {startMinute: 180, endMinute: 240, location: 'Taub 1'} as
           AcademicEvent;
-      it('should count if events have different buildings', () => {
+      it('should count if events have different buildings', function() {
         expect(rate([eventA, eventB, eventC]).numRuns).to.equal(1);
       });
-      it('should count 0 if everything is in the same building', () => {
+      it('should count 0 if everything is in the same building', function() {
         expect(rate([eventA, eventB, eventD]).numRuns).to.equal(0);
       });
-      it('should not count missing locations as different', () => {
+      it('should not count missing locations as different', function() {
         expect(rate([eventA, eventB, eventE]).numRuns).to.equal(0);
       });
-      it('should count multiple runs', () => {
+      it('should count multiple runs', function() {
         expect(rate([eventB, eventC, eventF]).numRuns).to.equal(2);
       });
     });
-    describe('freeDays', () => {
+    describe('freeDays', function() {
       const evA = {day: 0} as AcademicEvent;
       const evAA = {day: 0} as AcademicEvent;
       const evB = {day: 1} as AcademicEvent;
       const evC = {day: 2} as AcademicEvent;
       const evD = {day: 3} as AcademicEvent;
       const evE = {day: 4} as AcademicEvent;
-      it('should have 5 free days for no events', () => {
+      it('should have 5 free days for no events', function() {
         expect(rate([]).freeDays).to.equal(5);
       });
-      it('should have 0 free days for one event per day', () => {
+      it('should have 0 free days for one event per day', function() {
         expect(rate([evA, evB, evC, evD, evE]).freeDays).to.equal(0);
       });
-      it('should have 3 free days for two events, one per day', () => {
+      it('should have 3 free days for two events, one per day', function() {
         expect(rate([evD, evE]).freeDays).to.equal(3);
       });
-      it('should have 1 free days for 5 events over 4 days', () => {
+      it('should have 1 free days for 5 events over 4 days', function() {
         expect(rate([evA, evAA, evC, evD, evE]).freeDays).to.equal(1);
       });
     });
-    describe('earliestStart and latestFinish', () => {
+    describe('earliestStart and latestFinish', function() {
       const evA = {day: 0, startMinute: 30, endMinute: 60} as AcademicEvent;
       const evAA = {day: 0, startMinute: 120, endMinute: 190} as AcademicEvent;
       const evB = {day: 1, startMinute: 150, endMinute: 300} as AcademicEvent;
       const evC = {day: 2, startMinute: 120, endMinute: 190} as AcademicEvent;
       const evD = {day: 4, startMinute: 30, endMinute: 31} as AcademicEvent;
-      it('should correctly compute earliestStart', () => {
+      it('should correctly compute earliestStart', function() {
         expect(rate([evA, evAA, evB, evC, evD]).earliestStart).to.equal(0.5);
       });
-      it('should correctly compute latestFinish', () => {
+      it('should correctly compute latestFinish', function() {
         expect(rate([evA, evAA, evB, evC, evD]).latestFinish).to.equal(5);
       });
     });
