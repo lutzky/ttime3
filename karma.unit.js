@@ -8,6 +8,10 @@ if (process.env.TTIME_THOROUGH) {
 
 let browsers = [];
 
+if (process.env.FIREFOX_HEADLESS) {
+  browsers.push('FirefoxHeadless');
+}
+
 if (process.env.CHROME_HEADLESS) {
   browsers.push('ChromeHeadless');
 }
@@ -20,6 +24,12 @@ module.exports = function(config) {
     exclude: [],
     preprocessors: {'spec/**/*.ts': ['webpack']},
     browsers: browsers,
+    customLaunchers: {
+      'FirefoxHeadless': {
+        base: 'Firefox',
+        flags: ['-headless'],
+      }
+    },
     webpack: {
       mode: 'development',
       node: {
