@@ -7,7 +7,7 @@ node_js:
   - "node"
 script:
   - npm test
-  - CHROME_HEADLESS=1 npm run karma
+  - FIREFOX_HEADLESS=1 CHROME_HEADLESS=1 npm run karma
   - npm run build
 branches:
   except:
