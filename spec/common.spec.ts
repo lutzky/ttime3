@@ -1,10 +1,12 @@
-
 import {expect} from 'chai';
 
 import {AcademicEvent, eventsCollide} from '../src/common';
 
-describe('Common functions', () => {
-  it('should detect when events collide', () => {
+// https://mochajs.org/#arrow-functions
+/* tslint:disable:only-arrow-functions */
+
+describe('Common functions', function() {
+  it('should detect when events collide', function() {
     const events = [
       {day: 1, startMinute: 10, endMinute: 20},
       {day: 1, startMinute: 19, endMinute: 29},

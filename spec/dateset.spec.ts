@@ -3,12 +3,15 @@ import {expect} from 'chai';
 import {Course, DateObj} from '../src/common';
 import DateSet from '../src/dateset';
 
+// https://mochajs.org/#arrow-functions
+/* tslint:disable:only-arrow-functions */
+
 function courseWithTest(dObj: DateObj): Course {
   return {testDates: [dObj]} as Course;
 }
 
-describe('DateSet', () => {
-  it('should know if they have a minimal existing interval', () => {
+describe('DateSet', function() {
+  it('should know if they have a minimal existing interval', function() {
     const d1 = courseWithTest({year: 2006, month: 5, day: 1});
     // 2 days interval
     const d2 = courseWithTest({year: 2006, month: 5, day: 3});
@@ -23,7 +26,7 @@ describe('DateSet', () => {
     expect(ds.hasMinDistance(3)).to.be.false;
     /* tslint:enable:no-unused-expression */
   });
-  it('should have an interval of 0 for one or no events', () => {
+  it('should have an interval of 0 for one or no events', function() {
     const d1 = courseWithTest({year: 2006, month: 5, day: 1});
 
     const ds0 = new DateSet([]);
@@ -34,7 +37,7 @@ describe('DateSet', () => {
     expect(ds1.hasMinDistance(0)).to.be.true;
     /* tslint:enable:no-unused-expression */
   });
-  it('indicate the correct interval for adding dates', () => {
+  it('indicate the correct interval for adding dates', function() {
     const d1 = courseWithTest({year: 2006, month: 5, day: 1});
     const d2 = courseWithTest({year: 2006, month: 5, day: 5});
 
