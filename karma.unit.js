@@ -34,7 +34,6 @@ module.exports = function(config) {
       mode: 'development',
       node: {
         fs: 'empty',
-        child_process: 'empty',
       },
       module: webpackConfig().module,
       resolve: webpackConfig().resolve
