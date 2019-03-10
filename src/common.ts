@@ -95,15 +95,15 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
 export function loadCatalog(url: string): Promise<Catalog> {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
-    req.open('GET', url);
+    req.open('GET', url, true);
     req.onload = () => {
       if (req.status === 200) {
         let result: Catalog = null;
         try {
-          if (req.response[0] === '[') {
-            result = JSON.parse(req.response as string);
+          if (req.responseText[0] === '[') {
+            result = JSON.parse(req.responseText);
           } else {
-            result = cheesefork.parse(req.response as string);
+            result = cheesefork.parse(req.responseText);
             for (const faculty of result) {
               faculty.semester = cheesefork.catalogNameFromUrl(url);
             }
