@@ -12,7 +12,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "target": "es2018"
+    "target": "es2018",
+    "lib": ["es2018", "dom"]
   },
   "include": [
     "./src/**/*",
