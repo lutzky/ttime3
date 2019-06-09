@@ -3,6 +3,7 @@ install: npm install
 sudo: required
 addons:
   chrome: stable
+  firefox: latest
 node_js:
   - "node"
 script:
