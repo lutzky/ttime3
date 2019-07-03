@@ -10,7 +10,11 @@ describe('Cheesefork API', function() {
     expect(
         cheesefork.catalogNameFromUrl(
             'https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201802.min.js'))
-        .to.equal('Spring 2018 (CheeseFork)');
+        .to.equal('Spring 2019 (CheeseFork)');
+    expect(
+        cheesefork.catalogNameFromUrl(
+            'https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201801.min.js'))
+        .to.equal('Winter 2018/19 (CheeseFork)');
   });
 });
 
