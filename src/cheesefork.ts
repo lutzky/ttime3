@@ -192,7 +192,8 @@ export function parse(jsData: string): Catalog {
 
 export function catalogNameFromUrl(url: string): string {
   const raw = url.substr(url.lastIndexOf('_') + 1, 6);
-  const semesterNames = { "01": "Winter", "02": "Spring", "03": "Summer" };
+  const semesterNames: { [semester: string]: string } =
+        { "01": "Winter", "02": "Spring", "03": "Summer" };
   var year = raw.slice(0, 4)
   var semester = raw.slice(4)
   if (semester === "01")
