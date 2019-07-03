@@ -195,9 +195,11 @@ export function catalogNameFromUrl(url: string): string {
   const semesterNames:
       {[semester: string]:
            string} = {'01': 'Winter', '02': 'Spring', '03': 'Summer'};
-  var year = raw.slice(0, 4)
-  var semester = raw.slice(4)
-  if (semester === '01') year = year + '/' + String(Number(year) + 1).slice(2);
+  let year = raw.slice(0, 4);
+  const semester = raw.slice(4);
+  if (semester === '01') {
+    year = year + '/' + String(Number(year) + 1).slice(2);
+  }
   return semesterNames[semester] + ' ' + year + ' (CheeseFork)';
 }
 
