@@ -10,7 +10,7 @@ describe('Cheesefork API', function() {
     expect(
         cheesefork.catalogNameFromUrl(
             'https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201802.min.js'))
-        .to.equal('Cheesefork 201802');
+        .to.equal('Spring 2018 (CheeseFork)');
   });
 });
 
@@ -29,7 +29,7 @@ describe('Cheesefork API Integration test', function() {
       expect(catalogs.length).to.be.above(2);
       for (const [name, url] of catalogs) {
         expect(url).to.include('https://');
-        expect(name).to.include('Cheesefork');
+        expect(name).to.include('CheeseFork');
       }
     });
   });
