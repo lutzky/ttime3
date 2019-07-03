@@ -24,6 +24,11 @@ module.exports = function(config) {
     exclude: [],
     preprocessors: {'spec/**/*.ts': ['webpack']},
     browsers: browsers,
+    client: {
+      args: process.env.GITHUB_TOKEN ?
+          ['--github-token', process.env.GITHUB_TOKEN] :
+          []
+    },
     customLaunchers: {
       'FirefoxHeadless': {
         base: 'Firefox',
