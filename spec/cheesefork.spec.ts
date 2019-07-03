@@ -19,7 +19,7 @@ describe('Cheesefork API', function() {
 });
 
 describe('Cheesefork API Integration test', function() {
-  it('Should fetch reasonable-looking catalogs', function() {
+  xit('Should fetch reasonable-looking catalogs', function() {
     this.timeout(10000);
     if (typeof XMLHttpRequest === 'undefined') {
       // We intend to test the correct usage of XMLHttpRequest in the browser;
