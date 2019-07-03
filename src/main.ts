@@ -50,7 +50,7 @@ function catalogUrlChanged() {
 }
 (window as any).catalogUrlChanged = catalogUrlChanged;
 
-cheesefork.getCatalogs().then((catalogs) => {
+cheesefork.getCatalogs('').then((catalogs) => {
   for (const [catalogName, catalogUrl] of catalogs.sort().reverse()) {
     $('#cheesefork-catalog-selectors').append($('<a>', {
       class: 'dropdown-item',

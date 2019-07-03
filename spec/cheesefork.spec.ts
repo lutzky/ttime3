@@ -18,8 +18,22 @@ describe('Cheesefork API', function() {
   });
 });
 
+function getFlag(name: string): string {
+  const karma = (window as any).__karma__;
+  if (!karma) {
+    return '';
+  }
+  const args = karma.config.args;
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--' + name) {
+      return args[i + 1];
+    }
+  }
+  return '';
+}
+
 describe('Cheesefork API Integration test', function() {
-  xit('Should fetch reasonable-looking catalogs', function() {
+  it('Should fetch reasonable-looking catalogs', function() {
     this.timeout(10000);
     if (typeof XMLHttpRequest === 'undefined') {
       // We intend to test the correct usage of XMLHttpRequest in the browser;
@@ -29,7 +43,7 @@ describe('Cheesefork API Integration test', function() {
       return null;
     }
 
-    return cheesefork.getCatalogs().then((catalogs) => {
+    return cheesefork.getCatalogs(getFlag('github-token')).then((catalogs) => {
       expect(catalogs.length).to.be.above(2);
       for (const [name, url] of catalogs) {
         expect(url).to.include('https://');
