@@ -205,16 +205,32 @@ export function catalogNameFromUrl(url: string): string {
   return `${semesterNames[semester]} ${yearStr} (CheeseFork)`;
 }
 
-export function getCatalogs(): Promise<Array<[string, string]>> {
+/**
+ * Get all Cheesefork catalogs
+ *
+ * @param token - Github API token; if unsure, set to ''.
+ */
+export function getCatalogs(token: string): Promise<Array<[string, string]>> {
   return new Promise((resolve, reject) => {
     const apiURL =
         'https://api.github.com/repos/michael-maltsev/cheese-fork/contents/courses?ref=gh-pages';
     const req = new XMLHttpRequest();
     req.open('GET', apiURL, true);
+    if (token) {
+      console.info('Using API token');
+      // We use setRequestHeader rather than withCredentials due to CORS
+      // limitations; see https://stackoverflow.com/a/21851378/993214
+      req.setRequestHeader('Authorization', 'Basic ' + btoa('lutzky:' + token));
+    }
     req.onload = () => {
       if (req.status !== 200) {
         reject(Error(`HTTP ${req.status}: ${req.statusText}`));
         return;
+      }
+      if (token) {
+        for (const header of ['X-RateLimit-Limit', 'X-RateLimit-Remaining']) {
+          console.info(`${header}: ${req.getResponseHeader(header)}`);
+        }
       }
       try {
         const result = JSON.parse(req.responseText);
