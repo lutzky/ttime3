@@ -191,7 +191,18 @@ export function parse(jsData: string): Catalog {
 }
 
 export function catalogNameFromUrl(url: string): string {
-  return 'Cheesefork ' + url.substr(url.lastIndexOf('_') + 1, 6);
+  const raw = url.substr(url.lastIndexOf('_') + 1, 6);
+  const semesterNames:
+      {[semester: number]: string} = {1: 'Winter', 2: 'Spring', 3: 'Summer'};
+  const year = Number(raw.slice(0, 4));
+  const semester = Number(raw.slice(4));
+  let yearStr: string;
+  if (semester === 1) {
+    yearStr = `${year}/${String(year + 1).slice(2)}`;
+  } else {
+    yearStr = `${year + 1}`;
+  }
+  return `${semesterNames[semester]} ${yearStr} (CheeseFork)`;
 }
 
 export function getCatalogs(): Promise<Array<[string, string]>> {
