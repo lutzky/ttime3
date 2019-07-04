@@ -209,6 +209,8 @@ export function catalogNameFromUrl(url: string): string {
  * Get all Cheesefork catalogs
  *
  * @param token - Github API token; if unsure, set to ''.
+ *
+ * @returns [Name, URL] for all catalogs, sorted chronologically
  */
 export function getCatalogs(token: string): Promise<Array<[string, string]>> {
   return new Promise((resolve, reject) => {
@@ -239,7 +241,8 @@ export function getCatalogs(token: string): Promise<Array<[string, string]>> {
                 .filter((url: string) => url.endsWith('.min.js'));
         const tuples: Array<[string, string]> = minified.map(
             (url: string): [string, string] => [catalogNameFromUrl(url), url]);
-        resolve(tuples);
+        const sortedByURL = tuples.sort((a, b) => a[1] < b[1] ? -1 : 1);
+        resolve(sortedByURL);
       } catch (err) {
         reject(err);
       }
