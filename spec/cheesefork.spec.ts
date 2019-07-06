@@ -16,6 +16,11 @@ describe('Cheesefork API', function() {
             'https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201801.min.js'))
         .to.equal('Winter 2018/19 (CheeseFork)');
   });
+
+  it('Should correctly convert test dates', function() {
+    expect(cheesefork.parseCheeseForkTestDate('בתאריך 02.02.2020 יום א'))
+        .to.deep.equal(new Date(2020, 1, 2));
+  });
 });
 
 function getFlag(name: string): string {
