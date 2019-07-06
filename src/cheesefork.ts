@@ -31,7 +31,7 @@ const dateRegex = /([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})/;
  *
  * @param s - "Bla bla bla DD.MM.YYYY Bla bla bla"
  */
-function parseCheeseForkTestDate(s: string): DateObj {
+export function parseCheeseForkTestDate(s: string): DateObj {
   if (!s) {
     return null;
   }
