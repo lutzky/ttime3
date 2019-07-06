@@ -4,9 +4,9 @@ if (new URL(window.location.href).searchParams.get('ttime_debug')) {
   mainDebugLogging = true;
 }
 
-import {DateObj, groupsByType, loadCatalog, sortEvents} from './common';
+import {groupsByType, loadCatalog, sortEvents} from './common';
 import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
-import {displayName, formatDate, minutesToTime} from './formatting';
+import {displayName, minutesToTime} from './formatting';
 import {ScheduleRating} from './rating';
 
 import * as cheesefork from './cheesefork';
@@ -225,7 +225,7 @@ function htmlDescribeCourse(course: Course): HTMLElement {
   const testDates = $('<ul>');
   if (course.testDates) {
     course.testDates.forEach((d) => {
-      testDates.append($('<li>', {text: formatDate(d)}));
+      testDates.append($('<li>', {text: d.toDateString()}));
     });
   } else {
     testDates.append($('<li>', {text: '[unknown]'}));
@@ -988,7 +988,7 @@ function coursesSelectizeSetup() {
             settings.hideCoursesWithCloseTests ? 'display: none' : 'color: red';
         const course = getCourseByID(data.value);
         if (course.testDates) {
-          course.testDates.forEach((testDate: DateObj) => {
+          course.testDates.forEach((testDate: Date) => {
             if (!getTestDates().fitsWithDistance(
                     testDate, settings.minTestDateDistance)) {
               hasCloseTest = true;

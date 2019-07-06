@@ -1,4 +1,4 @@
-import {Course, DateObj, toDate} from './common';
+import {Course} from './common';
 
 export default class DateSet {
   private dates: Array<[Date, Course]>;
@@ -7,7 +7,7 @@ export default class DateSet {
     for (const course of courses) {
       if (course.testDates) {
         for (const testDate of course.testDates) {
-          this.dates.push([toDate(testDate), course]);
+          this.dates.push([testDate, course]);
         }
       }
     }
@@ -45,12 +45,11 @@ export default class DateSet {
    *
    * Returns true if DateSet is empty.
    */
-  public fitsWithDistance(date: DateObj, days: number): boolean {
+  public fitsWithDistance(date: Date, days: number): boolean {
     const dInMillisecs = days * 24 * 3600 * 1000;
 
     for (const existingDate of this.dates) {
-      if (Math.abs(toDate(date).getTime() - existingDate[0].getTime()) <
-          dInMillisecs) {
+      if (Math.abs(date.getTime() - existingDate[0].getTime()) < dInMillisecs) {
         return false;
       }
     }

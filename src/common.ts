@@ -27,7 +27,7 @@ export class Course {
   public id: number;
   public groups: Group[];
   public lecturerInCharge: string;
-  public testDates: DateObj[];
+  public testDates: Date[];
   public faculty?: Faculty;
 }
 
@@ -51,19 +51,7 @@ export class FilterSettings {
   public ratingMax: ScheduleRating;
 }
 
-export class DateObj {
-  public year: number;
-  public month: number;
-  public day: number;
-}
-
 /* tslint:enable:max-classes-per-file */
-
-export function toDate(d: DateObj): Date {
-  // TODO(lutzky): Replace this with a method, or use Date objects directly in
-  // catalog conversions.
-  return new Date(d.year, d.month - 1, d.day);
-}
 
 /**
  * Sorts events by start time
@@ -133,12 +121,26 @@ export function loadCatalog(url: string): Promise<Catalog> {
 }
 
 /**
+ * Convert {year,month,day} tuples to Date objects, if necessary
+ */
+function fixDate(d: any): Date {
+  if (d instanceof Date) {
+    return d;
+  }
+  return new Date(d.year, d.month - 1, d.day);
+}
+
+/**
  * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
+ * Also, fix dates as necessary
  */
 export function fixRawCatalog(catalog: Catalog) {
   catalog.forEach((faculty) => {
     faculty.courses.forEach((course) => {
       course.faculty = faculty;
+      if (course.testDates) {
+        course.testDates = course.testDates.map(fixDate);
+      }
       if (course.groups) {
         course.groups.forEach((group) => {
           group.course = course;

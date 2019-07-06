@@ -1,4 +1,4 @@
-import {AcademicEvent, Catalog, Course, DateObj, Faculty, Group} from './common';
+import {AcademicEvent, Catalog, Course, Faculty, Group} from './common';
 
 /**
  * This module implements support for importing data from cheeseFork
@@ -31,7 +31,7 @@ const dateRegex = /([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})/;
  *
  * @param s - "Bla bla bla DD.MM.YYYY Bla bla bla"
  */
-function parseCheeseForkTestDate(s: string): DateObj {
+export function parseCheeseForkTestDate(s: string): Date {
   if (!s) {
     return null;
   }
@@ -41,7 +41,12 @@ function parseCheeseForkTestDate(s: string): DateObj {
     console.warn('Failed to match date regex with: ', s);
     return null;
   }
-  return {day: Number(r[1]), month: Number(r[2]), year: Number(r[3])};
+
+  const year = Number(r[3]);
+  const month = Number(r[2]);
+  const day = Number(r[1]);
+  // Months are 0-indexed (Jan=0)
+  return new Date(year, month - 1, day);
 }
 
 /**
