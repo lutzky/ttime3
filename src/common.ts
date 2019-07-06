@@ -59,6 +59,12 @@ export class DateObj {
 
 /* tslint:enable:max-classes-per-file */
 
+export function toDate(d: DateObj): Date {
+  // TODO(lutzky): Replace this with a method, or use Date objects directly in
+  // catalog conversions.
+  return new Date(d.year, d.month - 1, d.day);
+}
+
 /**
  * Sorts events by start time
  */

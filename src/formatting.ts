@@ -1,4 +1,4 @@
-import {DateObj, Group} from './common';
+import {DateObj, Group, toDate} from './common';
 
 /**
  * Convert minutes-from-midnight to HH:MM
@@ -13,7 +13,7 @@ export function minutesToTime(minutes: number): string {
  * Format a DateObj as a string
  */
 export function formatDate(dateObj: DateObj): string {
-  return new Date(dateObj.year, dateObj.month, dateObj.day).toDateString();
+  return toDate(dateObj).toDateString();
 }
 
 /**
