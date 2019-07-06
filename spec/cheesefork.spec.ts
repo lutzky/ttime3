@@ -18,6 +18,15 @@ describe('Cheesefork API', function() {
   });
 });
 
+describe('Cheesefork API test date conversions', function() {
+  it('Should correctly convert test dates into date objects', function() {
+    expect(
+        cheesefork.parseCheeseForkTestDate(
+            'בתאריך 02.02.2020 יום א'))
+        .to.equal({day: 2, month: 2, year: 2020});
+  });
+});
+
 function getFlag(name: string): string {
   const karma = (window as any).__karma__;
   if (!karma) {
