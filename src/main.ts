@@ -487,7 +487,6 @@ function updateTestDates() {
   const datesAndDistances = selectedCoursesTestDates.getDatesAndDistances();
   for (let i = 0; i < datesAndDistances.length; i++) {
     const [distance, date, course] = datesAndDistances[i];
-    const formattedDate = date.toISOString().slice(0, 10);
     let formattedDistance = '';
     if (i > 0) {
       formattedDistance = `${distance}d`;
@@ -499,7 +498,7 @@ function updateTestDates() {
     }
     ul.append($('<li>', {
       class: 'list-group-item',
-      html: `${formattedDistance} ${formattedDate} - ${course.name}`,
+      html: `${formattedDistance} ${date.toDateString()} - ${course.name}`,
     }));
   }
 }
