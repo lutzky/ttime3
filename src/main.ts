@@ -29,10 +29,6 @@ class Settings {
   public hideCoursesWithCloseTests: boolean;
 }
 
-const defaultCatalogUrl =
-    'https://storage.googleapis.com/repy-176217.appspot.com/latest.json';
-(window as any).defaultCatalogUrl = defaultCatalogUrl;
-
 /**
  * Set the given catalog URL and save settings. For use from HTML.
  */
@@ -50,7 +46,8 @@ function catalogUrlChanged() {
 }
 (window as any).catalogUrlChanged = catalogUrlChanged;
 
-cheesefork.getCatalogs('').then((catalogs) => {
+const cheeseForkCatalogs = cheesefork.getCatalogs('');
+cheeseForkCatalogs.then((catalogs) => {
   for (const [catalogName, catalogUrl] of catalogs.reverse()) {
     $('#cheesefork-catalog-selectors').append($('<a>', {
       class: 'dropdown-item',
@@ -1034,7 +1031,7 @@ function getNullRating(): ScheduleRating {
  */
 function loadSettings(s: string): Settings {
   let result: Settings = {
-    catalogUrl: defaultCatalogUrl,
+    catalogUrl: '',
     customEvents: '',
     filterSettings: {
       forbiddenGroups: [],
@@ -1135,34 +1132,38 @@ const settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();
 
-loadCatalog(settings.catalogUrl)
-    .then(
-        (catalog) => {
-          if (mainDebugLogging) {
-            console.log('Loaded catalog:', catalog);
-          }
-          currentCatalog = catalog;
-          currentCatalogByCourseID = new Map();
+async function renderCatalog() {
+  try {
+    const cheeseForkLatest =
+        cheeseForkCatalogs.then((catalogs) => catalogs[catalogs.length - 1][1]);
+    const catalog =
+        await loadCatalog(settings.catalogUrl || await cheeseForkLatest);
+    if (mainDebugLogging) {
+      console.log('Loaded catalog:', catalog);
+    }
+    currentCatalog = catalog;
+    currentCatalogByCourseID = new Map();
 
-          currentCatalog.forEach((faculty) => {
-            faculty.courses.forEach((course) => {
-              currentCatalogByCourseID.set(course.id, course);
-            });
-          });
+    currentCatalog.forEach((faculty) => {
+      faculty.courses.forEach((course) => {
+        currentCatalogByCourseID.set(course.id, course);
+      });
+    });
 
-          writeCatalogSelector();
-          settings.selectedCourses.forEach((id) => {
-            try {
-              addSelectedCourseByID(id);
-            } catch (error) {
-              console.error(`Failed to add course ${id}:`, error);
-            }
-          });
-          $('#selected-courses-semester-indicator')
-              .text(currentCatalog[0].semester);
-          coursesSelectizeSetup();
-        },
-        (error) => {
-          $('#exception-occurred-catalog').show();
-          console.error('Failed to load catalog:', error);
-        });
+    writeCatalogSelector();
+    settings.selectedCourses.forEach((id) => {
+      try {
+        addSelectedCourseByID(id);
+      } catch (error) {
+        console.error(`Failed to add course ${id}:`, error);
+      }
+    });
+    $('#selected-courses-semester-indicator').text(currentCatalog[0].semester);
+    coursesSelectizeSetup();
+  } catch (error) {
+    $('#exception-occurred-catalog').show();
+    console.error('Failed to load catalog:', error);
+  }
+}
+
+renderCatalog();
