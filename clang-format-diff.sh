@@ -13,8 +13,11 @@ fi
 
 if [[ $1 == "fix" ]]; then
   $BINARY -i $(find src/ spec/ -name '*.ts')
+  node_modules/.bin/html-beautify --editorconfig -r index.html
 fi
 
 for file in $(find src/ spec/ -name '*.ts'); do
 	diff --label $file --label $file -u $file <($BINARY $file)
 done
+
+diff -u index.html <(node_modules/.bin/html-beautify --editorconfig index.html)

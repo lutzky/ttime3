@@ -2,331 +2,345 @@
 <html lang="en">
 
 <head>
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	 crossorigin="anonymous">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet"
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
 
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.default.min.css" integrity="sha256-ibvTNlNAB4VMqE5uFlnBME6hlparj5sEr1ovZ3B/bNA="
-	 crossorigin="anonymous" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.default.min.css"
+    integrity="sha256-ibvTNlNAB4VMqE5uFlnBME6hlparj5sEr1ovZ3B/bNA=" crossorigin="anonymous" />
 
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
-	 crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
+    integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
 
-	<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 
-	<link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png">
 
-	<title>TTime3</title>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-40939561-2">
+  <title>TTime3</title>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-40939561-2">
 
-	</script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-      gtag('config', 'UA-40939561-2');
-	</script>
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-40939561-2');
+
+  </script>
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="#"> <img src="ttime.svg" width="30"
-        height="30" class="d-inline-block align-top" alt="">
-        TTime3
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse"
-                                                   data-target="#navbarNav"
-                                                   aria-controls="navbarNav"
-                                                   aria-expanded="false"
-                                                   aria-label="Toggle
-                                                   navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="nav navbar-nav" role="tablist">
-          <li class="nav-item active">
-            <a class="nav-link" id="schedules-tab" data-toggle="tab"
-              href="#schedules" role="tab" aria-controls="schedules"
-              aria-selected="true">Schedules <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="catalog-tab" data-toggle="tab"
-            href="#catalog" role="tab" aria-controls="catalog"
-            aria-selected="false">Catalog</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="settings-tab" data-toggle="tab"
-            href="#settings" role="tab" aria-controls="settings"
-            aria-selected="false">Settings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link"
-               href="https://github.com/lutzky/ttime3/blob/master/README.md"
-               >Help</a>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"> <img src="ttime.svg" width="30" height="30"
+        class="d-inline-block align-top" alt="">
+      TTime3
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle
+                                                navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="nav navbar-nav" role="tablist">
+        <li class="nav-item active">
+          <a class="nav-link" id="schedules-tab" data-toggle="tab" href="#schedules" role="tab"
+            aria-controls="schedules" aria-selected="true">Schedules <span
+              class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="catalog-tab" data-toggle="tab" href="#catalog" role="tab"
+            aria-controls="catalog" aria-selected="false">Catalog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="settings-tab" data-toggle="tab" href="#settings" role="tab"
+            aria-controls="settings" aria-selected="false">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/lutzky/ttime3/blob/master/README.md">Help</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="alert alert-warning alert-dismissible collapse fade" id="old-catalog-alert"
+    role="alert">
+    <strong>You are using a custom catalog.</strong>
+    <a href="#/" onclick="setCatalogUrl(''); location.reload()">Click
+      here</a>
+    to use the default, most up-to-date catalog.</b>
+    <hr />
+    <small>Current catalog: <span id="old-catalog-alert-url"></span></small>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="container-fluid">
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="schedules" role="tabpanel"
+        aria-labelledby="schedules-tab">
+        <div class="row">
+          <div class="col-md-8">
+            <div id="initial-instructions" class="alert alert-info">
+              Add desired courses and click "Generate
+              Schedules".
+            </div>
+            <div id="no-schedules" style="display: none" class="alert
+             alert-warning">
+              No schedules are possible given the selected
+              courses and constraints.
+            </div>
+            <div id="rendered-schedule-container" style="display:none">
+              <table id="day-headers">
+                <tr>
+                  <th>&nbsp;
+                    <!-- Time column -->
+                  </th>
+                  <th>Sun<span class="hide-narrow">day</span>
+                  </th>
+                  <th>Mon<span class="hide-narrow">day</span>
+                  </th>
+                  <th>Tue<span class="hide-narrow">sday</span>
+                  </th>
+                  <th>Wed<span class="hide-narrow">nesday</span>
+                  </th>
+                  <th>Thu<span class="hide-narrow">rsday</span>
+                  </th>
+                </tr>
+              </table>
+              <div id="rendered-schedule"></div>
+            </div>
+          </div>
+          <div class="col-md-4" id="selected-courses-container">
+            <div id="schedule-browser" style="display: none">
+              <h4>Schedules</h4>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-secondary"
+                    onclick="prevSchedule()">&laquo;</button>
+                </div>
+                <label class="input-group-text">
+                  Schedule&nbsp;
+                  <span id="current-schedule-id">?</span>
+                  &nbsp;of&nbsp;
+                  <span id="num-schedules">?</span>
+                </label>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary"
+                    onclick="nextSchedule()">&raquo;</button>
+                </div>
+              </div>
+              <div id="schedule-contents"></div>
+            </div>
+
+            <h4>Selected courses</h4>
+            <span class="badge badge-info">
+              Semester:
+              <span id="selected-courses-semester-indicator">[loading]</span>
+            </span>
+            <div id="selected-courses"></div>
+            <select style="display: none" id="courses-selectize"
+              placeholder="Add course by name/id, teacher, or faculty">
+              <option value=""></option>
+            </select>
+            <div id="exception-occurred-scheduling" style="display: none" class="error">
+              An error has occurred while generating schedules. Please open your browser's
+              javascript console and examine the error there. If reporting a bug, please include
+              that output.
+            </div>
+            <div id="exception-occurred-catalog" style="display: none" class="error">
+              An error has occurred while loading the catalog. Please open your browser's
+              javascript console and examine the error there. If reporting a bug, please include
+              that output.
+            </div>
+            <div>
+              <small class="text-muted">
+                <span id="possible-schedules">0</span>
+                possible schedules before filtering
+              </small>
+            </div>
+            <div>
+              <small class="text-muted">
+                Courses with a close test (fewer than <span
+                  id="min-test-date-distance-display">[loading]</span> days away from a test in
+                an already-selected course) are <span
+                  id="how-to-show-close-test-courses">[loading]</span>.
+              </small>
+            </div>
+            <div id="gen-schedules-button">
+              <button disabled class="btn btn-primary btn-block" id="generate-schedules"
+                onclick="getSchedules()">
+                Generate schedules
+                <span class="float-right">
+                  <i id="spinner" style="display: none" class="fas fa-spinner fa-spin"></i>
+                </span>
+              </button>
+            </div>
+            <h4>Test schedule</h4>
+            <div id="test-schedule">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="catalog" role="tabpanel" aria-labelledby="catalog-tab">
+        <h2>Catalog</h2>
+        <div id="catalog">(Loading courses)</div>
+      </div>
+      <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+        <form>
+          <div class="form-group">
+            <label for="catalog-url">Catalog URL</label>
+            <input class="form-control" type="url" id="catalog-url"
+              placeholder="Leave empty to use latest Cheesefork catalog"
+              onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
+          </div>
+
+          <div class="dropdown form-group">
+            <button class="btn btn-secondary dropdown-toggle" type="button"
+              id="catalog-preset-dropdown-button" data-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false">
+              Presets
+            </button>
+            <div class="dropdown-menu" aria-labelledby="catalog-preset-dropdown-button">
+              <a class="dropdown-item" href="#/" onclick="setCatalogUrl('')">Cheesefork
+                Latest</a> <span id="cheesefork-catalog-selectors"></span>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#/"
+                onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/latest.json')">REPY
+                Latest</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#/" onclick="setCatalogUrl('testdata.json')">Local
+                test data</a>
+            </div>
+            <a class="btn btn-info" role="button" data-toggle="collapse" aria-expanded="false"
+              aria-controls="metacatalog-info" href="#metacatalog-info">
+              <i class="fas fa-info-circle"></i> More info
+            </a>
+          </div>
+          <div id="metacatalog-info" class="collapse">
+            <div class="card card-body">
+              <h5 class="card-title">Custom catalogs</h5>
+              <p>
+                The Cheesefork catalogs come from <a href="http://cheesefork.cf">Cheesefork</a>,
+                another Technion scheduler; these are generated from the Technion UG site. These are
+                maintained by <a href="https://github.com/michael-maltsev">@michael-maltsev</a>.
+              </p>
+              <p>
+                The UG data is usually higher-quality than REPY (as of 2019-07-07, at least). For
+                this reason, leaving the Catalog URL field empty causes TTime3 to use the latest
+                available Cheesefork catalog.
+              </p>
+              <p>
+                The "REPY Latest" catalog comes from parsing the REPY file distributed by the
+                Technion. It is automatically monitored every hour for changes. Older catalogs are
+                parsed available at the REPY Catalog of Catalogs. To use a given catalog, copy the
+                JSON link into the "Catalog URL" field above.
+              </p>
+
+              <a href="https://repy-176217.appspot.com" class="card-link">REPY
+                Catalog of Catalogs</a>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-primary" type="button" onclick="location.reload()">Apply</button>
+          </div>
+        </form>
+
+
+        <h3>Filters</h3>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" onchange="saveSettings()"
+            id="filter.noCollisions">
+          <label class="form-check-label" for="filter.noCollisions">
+            No collisions
+          </label>
+        </div>
+
+        <form id="rating-limits-form" style="max-width: 400px">
+        </form>
+
+        <h4>Forbidden groups</h4>
+
+        <ul id="forbidden-groups"></ul>
+
+        <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the catalog.</p>
+
+        <h3>Test schedule</h3>
+        <form style="max-width: 400px">
+          <div class="row">
+            <div class="col col-form-label"
+              title="Tests less than this many days apart are considered 'too close'">
+              Close test distance
+            </div>
+            <div class="col">
+              <input class="form-control" id="close-test-distance" placeholder="5"
+                onchange="saveSettings()" type="number" />
+            </div>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" onchange="saveSettings()"
+              id="hide-courses-with-close-tests">
+            <label class="form-check-label" for="hide-courses-with-close-tests"
+              title="When adding courses, ones with tests closer than 'close test distance' away will be hidden (instead of shown in red)">
+              Hide courses that have a close test
+            </label>
+          </div>
+        </form>
+
+        <h3>Custom events</h3>
+
+        <div class="form-group" style="font-family: monospace">
+          <textarea class="form-control" onchange="saveSettings(); checkCustomEvents()"
+            onkeyup="checkCustomEvents()" id="custom-events-textarea"></textarea>
+        </div>
+        <script>
+          document.getElementById('custom-events-textarea')
+            .placeholder =
+            'Mon 10:00-11:00 Some event\nWed 13:00-17:00 Some other event';
+
+        </script>
+
+        <h3>Developers</h3>
+        <ul>
+          <li><a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)" href="#/">Add
+              sample courses</a></li>
+          <li><a href="http://github.com/lutzky/ttime3">Repository</a>
           </li>
         </ul>
       </div>
-    </nav>
-
-    <div class="alert alert-warning alert-dismissible collapse fade"
-         id="old-catalog-alert" role="alert">
-      <strong>You are using a custom catalog.</strong>
-      <a href="#/" onclick="setCatalogUrl(''); location.reload()">Click here</a>
-      to use the default, most up-to-date catalog.</b>
-      <hr />
-      <small>Current catalog: <span id="old-catalog-alert-url"></span></small>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-      </button>
     </div>
+  </div>
 
-    <div class="container-fluid">
-      <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="schedules" role="tabpanel" aria-labelledby="schedules-tab">
-          <div class="row">
-            <div class="col-md-8">
-              <div id="initial-instructions" class="alert alert-info">
-                Add desired courses and click "Generate Schedules".
-              </div>
-              <div id="no-schedules" style="display: none" class="alert
-                alert-warning">
-                No schedules are possible given the selected courses and constraints.
-              </div>
-              <div id="rendered-schedule-container" style="display:none">
-                <table id="day-headers">
-                  <tr>
-                    <th>&nbsp;<!-- Time column --></th>
-                    <th>Sun<span class="hide-narrow">day</span></th>
-                    <th>Mon<span class="hide-narrow">day</span></th>
-                    <th>Tue<span class="hide-narrow">sday</span></th>
-                    <th>Wed<span class="hide-narrow">nesday</span></th>
-                    <th>Thu<span class="hide-narrow">rsday</span></th>
-                  </tr>
-                </table>
-                <div id="rendered-schedule"></div>
-              </div>
-            </div>
-            <div class="col-md-4" id="selected-courses-container">
-              <div id="schedule-browser" style="display: none">
-                <h4>Schedules</h4>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <button class="btn btn-outline-secondary" onclick="prevSchedule()">&laquo;</button>
-                  </div>
-                  <label class="input-group-text">
-                    Schedule&nbsp;
-                    <span id="current-schedule-id">?</span>
-                    &nbsp;of&nbsp;
-                    <span id="num-schedules">?</span>
-                  </label>
-                  <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" onclick="nextSchedule()">&raquo;</button>
-                  </div>
-                </div>
-                <div id="schedule-contents"></div>
-              </div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+    integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous">
+  </script>
 
-              <h4>Selected courses</h4>
-              <span class="badge badge-info">
-                Semester:
-                <span id="selected-courses-semester-indicator">[loading]</span>
-              </span>
-              <div id="selected-courses"></div>
-              <select style="display: none" id="courses-selectize"
-                placeholder="Add course by name/id, teacher, or faculty">
-                <option value=""></option>
-              </select>
-              <div id="exception-occurred-scheduling" style="display: none" class="error">
-                An error has occurred while generating schedules. Please open your
-                browser's javascript console and examine the error there. If reporting
-                a bug, please include that output.
-              </div>
-              <div id="exception-occurred-catalog" style="display: none" class="error">
-                An error has occurred while loading the catalog. Please open
-                your browser's javascript console and examine the error there.
-                If reporting a bug, please include that output.
-              </div>
-              <div>
-                <small class="text-muted">
-                  <span id="possible-schedules">0</span> possible schedules
-                  before filtering
-                </small>
-              </div>
-              <div>
-                <small class="text-muted">
-                  Courses with a close test (fewer than
-                  <span id="min-test-date-distance-display">[loading]</span>
-                  days away from a test in an already-selected course) are
-                  <span id="how-to-show-close-test-courses">[loading]</span>.
-                </small>
-              </div>
-              <div id="gen-schedules-button">
-                <button disabled class="btn btn-primary btn-block"
-                  id="generate-schedules"
-                  onclick="getSchedules()">
-                  Generate schedules
-                  <span class="float-right">
-                    <i id="spinner" style="display: none" class="fas fa-spinner fa-spin"></i>
-                  </span>
-                </button>
-              </div>
-              <h4>Test schedule</h4>
-              <div id="test-schedule">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="tab-pane fade" id="catalog" role="tabpanel" aria-labelledby="catalog-tab">
-          <h2>Catalog</h2>
-          <div id="catalog">(Loading courses)</div>
-        </div>
-        <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-          <form>
-            <div class="form-group">
-                <label for="catalog-url">Catalog URL</label>
-                <input class="form-control" type="url" id="catalog-url"
-                placeholder="Leave empty to use latest Cheesefork catalog"
-                onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
-            </div>
+  <script src="dist/ttime.js"></script>
+</body>
 
-            <div class="dropdown form-group">
-              <button class="btn btn-secondary dropdown-toggle" type="button"
-                      id="catalog-preset-dropdown-button"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false">
-                Presets
-              </button>
-              <div class="dropdown-menu"
-                   aria-labelledby="catalog-preset-dropdown-button">
-                <a class="dropdown-item" href="#/" onclick="setCatalogUrl('')">Cheesefork Latest</a>
-                <span id="cheesefork-catalog-selectors"></span>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#/" onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/latest.json')">REPY Latest</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a>
-              </div>
-              <a class="btn btn-info" role="button"
-                 data-toggle="collapse" aria-expanded="false"
-                 aria-controls="metacatalog-info" href="#metacatalog-info">
-                <i class="fas fa-info-circle"></i> More info
-              </a>
-            </div>
-            <div id="metacatalog-info" class="collapse">
-              <div class="card card-body">
-                <h5 class="card-title">Custom catalogs</h5>
-
-                <p>
-                  The Cheesefork catalogs come from <a href="http://cheesefork.cf">Cheesefork</a>,
-                  another Technion scheduler; these are generated from the
-                  Technion UG site. These are maintained by
-                  <a href="https://github.com/michael-maltsev">@michael-maltsev</a>.
-                </p>
-
-                <p>
-                  The UG data is usually higher-quality than REPY (as of
-                  2019-07-07, at least). For this reason, leaving the Catalog
-                  URL field empty causes TTime3 to use the latest available
-                  Cheesefork catalog.
-                </p>
-
-                <p>
-                  The "REPY Latest" catalog comes from parsing the REPY file
-                  distributed by the Technion. It is automatically monitored every
-                  hour for changes. Older catalogs are parsed available at
-                  the REPY Catalog of Catalogs.  To use a given catalog,
-                  copy the JSON link into the "Catalog URL" field above.
-                </p>
-
-                <a href="https://repy-176217.appspot.com" class="card-link">REPY
-                  Catalog of Catalogs</a>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <button class="btn btn-primary"
-                      type="button" onclick="location.reload()">Apply</button>
-            </div>
-          </form>
-
-
-          <h3>Filters</h3>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" onchange="saveSettings()" id="filter.noCollisions">
-            <label class="form-check-label" for="filter.noCollisions">
-              No collisions
-            </label>
-          </div>
-
-          <form id="rating-limits-form" style="max-width: 400px"></form>
-
-          <h4>Forbidden groups</h4>
-
-          <ul id="forbidden-groups"></ul>
-
-          <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the
-          catalog.</p>
-
-          <h3>Test schedule</h3>
-          <form style="max-width: 400px">
-            <div class="row">
-              <div class="col col-form-label" title="Tests less than this many days apart are considered 'too close'">
-                Close test distance
-              </div>
-              <div class="col">
-                <input class="form-control" id="close-test-distance"
-                                            placeholder="5"
-                                            onchange="saveSettings()"
-                                            type="number" />
-              </div>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox"
-                     onchange="saveSettings()"
-                     id="hide-courses-with-close-tests">
-              <label class="form-check-label"
-                for="hide-courses-with-close-tests"
-                title="When adding courses, ones with tests closer than 'close test distance' away will be hidden (instead of shown in red)">
-                Hide courses that have a close test
-              </label>
-            </div>
-          </form>
-
-          <h3>Custom events</h3>
-
-          <div class="form-group" style="font-family: monospace">
-            <textarea class="form-control"
-                      onchange="saveSettings(); checkCustomEvents()"
-                      onkeyup="checkCustomEvents()"
-                      id="custom-events-textarea"></textarea>
-          </div>
-          <script>
-            document.getElementById('custom-events-textarea').placeholder =
-              'Mon 10:00-11:00 Some event\nWed 13:00-17:00 Some other event';
-          </script>
-
-          <h3>Developers</h3>
-          <ul>
-            <li><a onclick="addSelectedCourseByID(104016, 104004, 234112, 114051)"
-                   href="#/">Add sample courses</a></li>
-            <li><a href="http://github.com/lutzky/ttime3">Repository</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-
-    <script src="dist/ttime.js"></script>
-  </body>
 </html>
