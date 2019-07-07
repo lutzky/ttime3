@@ -219,11 +219,29 @@
             </div>
             <div id="metacatalog-info" class="collapse">
               <div class="card card-body">
-                <h5 class="card-title">Custom REPY Catalogs</h5>
+                <h5 class="card-title">Custom catalogs</h5>
 
-                Catalogs comes from REPY. Older catalogs are parsed available at
-                the REPY app, as the Catalog of Catalogs.  To use a given catalog,
-                copy the JSON link into the "Catalog URL" field above.
+                <p>
+                  The Cheesefork catalogs come from <a href="http://cheesefork.cf">Cheesefork</a>,
+                  another Technion scheduler; these are generated from the
+                  Technion UG site. These are maintained by
+                  <a href="https://github.com/michael-maltsev">@michael-maltsev</a>.
+                </p>
+
+                <p>
+                  The UG data is usually higher-quality than REPY (as of
+                  2019-07-07, at least). For this reason, leaving the Catalog
+                  URL field empty causes TTime3 to use the latest available
+                  Cheesefork catalog.
+                </p>
+
+                <p>
+                  The "REPY Latest" catalog comes from parsing the REPY file
+                  distributed by the Technion. It is automatically monitored every
+                  hour for changes. Older catalogs are parsed available at
+                  the REPY Catalog of Catalogs.  To use a given catalog,
+                  copy the JSON link into the "Catalog URL" field above.
+                </p>
 
                 <a href="https://repy-176217.appspot.com" class="card-link">REPY
                   Catalog of Catalogs</a>
