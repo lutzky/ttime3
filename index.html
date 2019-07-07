@@ -187,6 +187,7 @@
             <div class="form-group">
                 <label for="catalog-url">Catalog URL</label>
                 <input class="form-control" type="url" id="catalog-url"
+                placeholder="Leave empty to use latest Cheesefork catalog"
                 onkeyup="catalogUrlChanged()" onchange="catalogUrlChanged()" />
             </div>
 
@@ -200,7 +201,7 @@
               </button>
               <div class="dropdown-menu"
                    aria-labelledby="catalog-preset-dropdown-button">
-                <a class="dropdown-item" href="#/" onclick="setCatalogUrl(defaultCatalogUrl)">Latest</a>
+                <a class="dropdown-item" href="#/" onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/latest.json')">REPY Latest</a>
                 <a class="dropdown-item" href="#/"
                    class="dropdown-item" onclick="setCatalogUrl('https://storage.googleapis.com/repy-176217.appspot.com/981f009466c6007441b9833c326f40059f9c6433.json')">
                   Final Winter 2018 Catalog
@@ -212,6 +213,7 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#/" onclick="setCatalogUrl('testdata.json')">Local test data</a>
                 <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#/" onclick="setCatalogUrl('')">Cheesefork Latest</a>
                 <span id="cheesefork-catalog-selectors"></span>
               </div>
               <a class="btn btn-info" role="button"
