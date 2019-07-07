@@ -1129,6 +1129,11 @@ buildRatingsLimitForm();
 
 const settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
 
+if (settings.catalogUrl) {
+  $('#old-catalog-alert-url').text(settings.catalogUrl);
+  $('#old-catalog-alert').collapse('show');
+}
+
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
 updateForbiddenGroups();
 
