@@ -215,7 +215,7 @@ export function catalogNameFromUrl(url: string): string {
  *
  * @param token - Github API token; if unsure, set to ''.
  *
- * @returns [Name, URL] for all catalogs, sorted chronologically
+ * @returns [Name, URL] for all catalogs, sorted oldest-to-newest
  */
 export function getCatalogs(token: string): Promise<Array<[string, string]>> {
   return new Promise((resolve, reject) => {

@@ -54,6 +54,14 @@ describe('Cheesefork API Integration test', function() {
         expect(url).to.include('https://');
         expect(name).to.include('CheeseFork');
       }
+
+      const firstUrl = catalogs[0][1];
+      const secondUrl = catalogs[1][1];
+      /* tslint:disable:no-unused-expression */
+      expect(
+          firstUrl < secondUrl,
+          `Wrong sort order: ${firstUrl} came before ${secondUrl}`)
+          .to.be.true;
     });
   });
 });
