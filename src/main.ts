@@ -48,7 +48,7 @@ function catalogUrlChanged() {
 
 const cheeseForkCatalogs = cheesefork.getCatalogs('');
 cheeseForkCatalogs.then((catalogs) => {
-  for (const [catalogName, catalogUrl] of catalogs.reverse()) {
+  for (const [catalogName, catalogUrl] of catalogs.slice().reverse()) {
     $('#cheesefork-catalog-selectors').append($('<a>', {
       class: 'dropdown-item',
       click: () => setCatalogUrl(catalogUrl),
