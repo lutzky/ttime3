@@ -323,6 +323,22 @@
     </div>
   </div>
 
+  <div class="toast hide" role="status" aria-live="polite" data-delay="3000" aria-atomic="true"
+    style="position: fixed; top: 0; right: 0">
+    <!-- Using class "toast hide" is important, otherwise pointer-events don't
+         get sent in mobile mode to the hamburger button on the top-right. -->
+    <div class="toast-header">
+      <strong class="mr-auto">Note</strong>
+      <small>Regenerate courses</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+      You've made changes that will only take effect until you click "Generate schedules" again.
+    </div>
+  </div>
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
