@@ -80,6 +80,9 @@ let currentCatalogByCourseID: Map<number, Course> = null;
  * Updates forblink according to its data('forbidden')
  */
 function updateForbidLinkText(fl: JQuery) {
+  if (!fl.data('groupID')) {
+    console.info('Error: No groupID for', fl);
+  }
   fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
 }
 
@@ -185,12 +188,13 @@ function updateForbiddenGroups() {
     ul.append(li);
   });
 
-  $('a.forbid-link').each(() => {
-    const groupID: string = $(this).data('groupID');
+  $('a.forbid-link').each((_, element) => {
+    const ejq = $(element);
+    const groupID: string = ejq.data('groupID');
 
     const isForbidden = forbiddenGroups.has(groupID);
-    $(this).data('forbidden', isForbidden);
-    updateForbidLinkText($(this));
+    ejq.data('forbidden', isForbidden);
+    updateForbidLinkText(ejq);
   });
 }
 
