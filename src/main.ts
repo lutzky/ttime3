@@ -168,6 +168,7 @@ function isGroupForbidden(group: Group): boolean {
  */
 function updateForbiddenGroups() {
   const ul = $('#forbidden-groups');
+  showToast();
   ul.empty();
 
   forbiddenGroups.forEach((fg) => {
@@ -356,6 +357,11 @@ function getCheckboxValueById(id: string): boolean {
  */
 function setCheckboxValueById(id: string, checked: boolean) {
   (document.getElementById(id) as HTMLInputElement).checked = checked;
+}
+
+function toastAndSaveSettings() {
+  showToast();
+  saveSettings();
 }
 
 /**
@@ -664,11 +670,28 @@ function buildCustomEventsCourses(s: string): Course[] {
   return result;
 }
 
+let showToastAgain = false;
+
+function showToast() {
+  if (showToastAgain) {
+    $('.toast').toast('show');
+    $('#generate-schedules').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    showToastAgain = false;
+  }
+}
+
+function hideToast() {
+  $('.toast').toast('hide');
+  showToastAgain = false;
+}
+
 /**
  * Start a worker to generate schedules
  */
 function getSchedules() {
+  hideToast();
   $('#generate-schedules').prop('disabled', true);
+  showToastAgain = true;
   $('#spinner').show();
   $('#exception-occurred').hide();
   $('#no-schedules').hide();
@@ -1109,7 +1132,7 @@ function buildRatingsLimitForm() {
     row.append($('<div>', {
       class: 'col',
       html: $('<input>', {
-        change: saveSettings,
+        change: toastAndSaveSettings,
         class: 'form-control',
         id: `rating-${r}-min`,
         placeholder: '-∞',
@@ -1119,7 +1142,7 @@ function buildRatingsLimitForm() {
     row.append($('<div>', {
       class: 'col',
       html: $('<input>', {
-        change: saveSettings,
+        change: toastAndSaveSettings,
         class: 'form-control',
         id: `rating-${r}-max`,
         placeholder: '∞',
@@ -1176,3 +1199,4 @@ async function renderCatalog() {
 }
 
 renderCatalog();
+showToastAgain = true;
