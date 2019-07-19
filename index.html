@@ -144,7 +144,7 @@
             </div>
           </div>
           <div class="col-md-4" id="selected-courses-container">
-            <h4>Selected courses</h4>
+            <h4 class="mb-2">Selected courses</h4>
             <span class="badge badge-info">
               Semester:
               <span id="selected-courses-semester-indicator">[loading]</span>
@@ -187,9 +187,11 @@
                 </span>
               </button>
             </div>
-            <h4>Test schedule</h4>
+            <h4 class="my-2">Test schedule</h4>
             <div id="test-schedule">
             </div>
+            <h4 class="my-2">Forbidden groups</h4>
+            <ul id="forbidden-groups" class="list-group"></ul>
           </div>
         </div>
       </div>
@@ -270,12 +272,6 @@
 
         <form id="rating-limits-form" style="max-width: 400px">
         </form>
-
-        <h4>Forbidden groups</h4>
-
-        <ul id="forbidden-groups"></ul>
-
-        <p>Add forbidden groups by clicking <i>[forbid]</i> next to them on the catalog.</p>
 
         <h3>Test schedule</h3>
         <form style="max-width: 400px">

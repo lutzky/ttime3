@@ -171,9 +171,14 @@ function updateForbiddenGroups() {
   showToast();
   ul.empty();
 
+  if (forbiddenGroups.size === 0) {
+    ul.html('<small class="text-muted">[empty]</small>');
+  }
+
   forbiddenGroups.forEach((fg) => {
     const li = $('<li>');
     li.text(fg + ' ');
+    li.addClass('list-group-item');
 
     const unforbidLink = $('<a>', {
       href: '#/',
