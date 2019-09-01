@@ -10,6 +10,9 @@ script:
   - npm test
   - FIREFOX_HEADLESS=1 CHROME_HEADLESS=1 npm run karma
   - npm run build
+  - npm install codecov -g
+after_success:
+  - codecov
 branches:
   except:
     - /.*-wip$/
