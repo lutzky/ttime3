@@ -1,4 +1,4 @@
-# ttime3 [![Build Status](https://travis-ci.org/lutzky/ttime3.svg?branch=master)](https://travis-ci.org/lutzky/ttime3)
+# ttime3 [![Build Status](https://travis-ci.org/lutzky/ttime3.svg?branch=master)](https://travis-ci.org/lutzky/ttime3) [![codecov](https://codecov.io/gh/lutzky/ttime3/branch/master/graph/badge.svg)](https://codecov.io/gh/lutzky/ttime3)
 
 TTime3 is a web app intended to help Technion students build a timetable. Report bugs at https://github.com/lutzky/ttime3/issues. Developer instructions are at [CONTRIBUTING.md](CONTRIBUTING.md).
 
