@@ -136,3 +136,8 @@
   background: #ddf;
   color: #005;
 }
+
+.rtlnotes {
+  direction: rtl;
+  text-align: right;
+}

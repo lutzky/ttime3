@@ -70,6 +70,7 @@ export function parse(jsData: string): Catalog {
     lecturer_tutor: 'מרצה/מתרגל',
     moed_a: 'מועד א',
     moed_b: 'מועד ב',
+    notes: 'הערות',
     num: 'מס.',
     room: 'חדר',
     sport: 'ספורט',
@@ -107,6 +108,7 @@ export function parse(jsData: string): Catalog {
       id: Number(dataCourse.general[hebrew.courseId]),
       lecturerInCharge: dataCourse.general[hebrew.thoseInCharge],
       name: dataCourse.general[hebrew.courseName],
+      notes: dataCourse.general[hebrew.notes],
       testDates: [
         dataCourse.general[hebrew.moed_a],
         dataCourse.general[hebrew.moed_b],

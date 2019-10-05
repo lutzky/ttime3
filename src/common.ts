@@ -29,6 +29,7 @@ export class Course {
   public lecturerInCharge: string;
   public testDates: Date[];
   public faculty?: Faculty;
+  public notes: string;
 }
 
 export class AcademicEvent {
