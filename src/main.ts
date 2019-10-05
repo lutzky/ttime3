@@ -239,6 +239,15 @@ function htmlDescribeCourse(course: Course): HTMLElement {
   }
   ul.append(testDates);
 
+  if (course.notes) {
+    const li = $('<li>');
+    li.append('<b>Notes:</b> ');
+    li.append(
+        $('<div>',
+          {html: course.notes.replace(/\n/g, '<br>'), class: 'rtlnotes'}));
+    ul.append(li);
+  }
+
   ul.append($('<li>', {html: '<b>Groups:</b>'}));
   const groups = $('<ul>');
   if (course.groups) {
@@ -619,6 +628,7 @@ function createSingleEventCourse(
     id: 0,
     lecturerInCharge: '',
     name,
+    notes: '',
     testDates: [],
   };
 
