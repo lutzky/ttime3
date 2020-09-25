@@ -1,3 +1,7 @@
 tasks:
   - init: npm install && npm run build
     command: npm run start
+
+vscode:
+  extensions:
+    - jkillian.custom-local-formatters@0.0.4:j6QuKz6RB5AXZYWIF0Ra/Q==
