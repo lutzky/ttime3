@@ -5,3 +5,5 @@ tasks:
 vscode:
   extensions:
     - jkillian.custom-local-formatters@0.0.4:j6QuKz6RB5AXZYWIF0Ra/Q==
+    - hbenl.vscode-mocha-test-adapter@2.7.2:sMMi6OqycWH35P5G4IEE7A==
+    - hbenl.vscode-test-explorer@2.19.2:8rKHUShFJJd0UivektEkng==
