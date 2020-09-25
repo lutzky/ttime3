@@ -1,0 +1,10 @@
+{
+    "customLocalFormatters.formatters": [
+        {
+            "command": "node_modules/.bin/clang-format --assume-filename=file.ts",
+            "languages": [
+                "typescript"
+            ]
+        }
+    ]
+}
