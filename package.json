@@ -29,7 +29,7 @@
         "typescript-formatter": "^7.2.2",
         "webpack": "^4.46.0",
         "webpack-dev-server": "^3.11.2",
-        "worker-loader": "^2.0.0"
+        "worker-loader": "^3.0.8"
     },
     "devDependencies": {
         "@istanbuljs/nyc-config-typescript": "^0.1.3",
