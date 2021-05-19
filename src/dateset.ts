@@ -1,4 +1,4 @@
-import {Course} from './common';
+import { Course } from "./common";
 
 export default class DateSet {
   private dates: Array<[Date, Course]>;
@@ -12,7 +12,7 @@ export default class DateSet {
       }
     }
 
-    this.dates.sort((a, b) => (a[0].getTime() - b[0].getTime()));
+    this.dates.sort((a, b) => a[0].getTime() - b[0].getTime());
   }
 
   /**
@@ -30,7 +30,7 @@ export default class DateSet {
 
     for (let i = 0; i < this.dates.length - 1; i++) {
       const distance =
-          this.dates[i + 1][0].getTime() - this.dates[i][0].getTime();
+        this.dates[i + 1][0].getTime() - this.dates[i][0].getTime();
       if (distance < dInMillisecs) {
         return false;
       }
@@ -62,12 +62,13 @@ export default class DateSet {
       return [];
     }
 
-    const result: Array<[number, Date, Course]> =
-        [[0, this.dates[0][0], this.dates[0][1]]];
+    const result: Array<[number, Date, Course]> = [
+      [0, this.dates[0][0], this.dates[0][1]],
+    ];
 
     for (let i = 1; i < this.dates.length; i++) {
       const distance =
-          this.dates[i][0].getTime() - this.dates[i - 1][0].getTime();
+        this.dates[i][0].getTime() - this.dates[i - 1][0].getTime();
       const dInDays = Math.ceil(distance / (24 * 3600 * 1000));
 
       result.push([dInDays, this.dates[i][0], this.dates[i][1]]);

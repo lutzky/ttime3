@@ -101,7 +101,7 @@
   content: "[";
 }
 
-.event .event-type::after{
+.event .event-type::after {
   content: "]";
 }
 

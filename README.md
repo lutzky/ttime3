@@ -1,6 +1,6 @@
 # ttime3
 
-[![Build Status](https://travis-ci.org/lutzky/ttime3.svg?branch=master)](https://travis-ci.org/lutzky/ttime3) 
+[![Build Status](https://travis-ci.org/lutzky/ttime3.svg?branch=master)](https://travis-ci.org/lutzky/ttime3)
 [![codecov](https://codecov.io/gh/lutzky/ttime3/branch/master/graph/badge.svg)](https://codecov.io/gh/lutzky/ttime3)
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/lutzky/ttime3)
 
@@ -13,20 +13,20 @@ Please email all bug reports and feature requests to ohad@lutzky.net. If you hav
 ## Usage
 
 1. Add courses from the Catalog - type part of the course name or ID.
-    1. Remove courses by clicking 🗑️
-    1. Get detailed course information by clicking ℹ️
+   1. Remove courses by clicking 🗑️
+   1. Get detailed course information by clicking ℹ️
 1. Click Generate Schedules
 1. Each schedule receives multiple ratings (earliest start, latest finish, etc.) - click any of those to sort by that rating; click again to sort descending.
 1. To forbid a certain group in a schedule, click the 🚫 sign in its corner. That group will not be selected the next time schedules are generated. (You can undo this under Settings).
 1. Under Settings, you can:
-    * Change the catalog URL - use the presets there, click "More info" for an explanation. This requires pressing "Apply" afterwards.
-    * Allow collisions (uncheck "No collisions")
-    * Filter (minimal and maximal values for each rating)
-    * Add custom events (e.g. weekly time commitments that aren't courses)
+   - Change the catalog URL - use the presets there, click "More info" for an explanation. This requires pressing "Apply" afterwards.
+   - Allow collisions (uncheck "No collisions")
+   - Filter (minimal and maximal values for each rating)
+   - Add custom events (e.g. weekly time commitments that aren't courses)
 
 ## Data source
 
-The catalog data comes from a [hosted REPY parser](https://repy-176217.appspot.com/). You can see there that the Technion updates this file every couple of days, and we keep a version history. By default, ttime loads the *latest* version. To view an older version, in the Settings tab, modify the catalog URL to point at the desired JSON file.
+The catalog data comes from a [hosted REPY parser](https://repy-176217.appspot.com/). You can see there that the Technion updates this file every couple of days, and we keep a version history. By default, ttime loads the _latest_ version. To view an older version, in the Settings tab, modify the catalog URL to point at the desired JSON file.
 
 The maintainers of ttime do not control nor verify the REPY data - it's downloaded directly from the Technion. We're looking into other potential data sources as well, see #12.
 

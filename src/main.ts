@@ -1,18 +1,25 @@
 let mainDebugLogging = false;
 
-if (new URL(window.location.href).searchParams.get('ttime_debug')) {
+if (new URL(window.location.href).searchParams.get("ttime_debug")) {
   mainDebugLogging = true;
 }
 
-import {groupsByType, loadCatalog, sortEvents} from './common';
-import {AcademicEvent, Catalog, Course, FilterSettings, Group, Schedule} from './common';
-import {displayName, minutesToTime} from './formatting';
-import {ScheduleRating} from './rating';
+import { groupsByType, loadCatalog, sortEvents } from "./common";
+import {
+  AcademicEvent,
+  Catalog,
+  Course,
+  FilterSettings,
+  Group,
+  Schedule,
+} from "./common";
+import { displayName, minutesToTime } from "./formatting";
+import { ScheduleRating } from "./rating";
 
-import * as cheesefork from './cheesefork';
-import DateSet from './dateset';
-import getNicknames from './nicknames';
-import * as render from './render';
+import * as cheesefork from "./cheesefork";
+import DateSet from "./dateset";
+import getNicknames from "./nicknames";
+import * as render from "./render";
 
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
@@ -33,7 +40,7 @@ class Settings {
  * Set the given catalog URL and save settings. For use from HTML.
  */
 function setCatalogUrl(url: string) {
-  $('#catalog-url').val(url);
+  $("#catalog-url").val(url);
   catalogUrlChanged();
 }
 (window as any).setCatalogUrl = setCatalogUrl;
@@ -46,15 +53,17 @@ function catalogUrlChanged() {
 }
 (window as any).catalogUrlChanged = catalogUrlChanged;
 
-const cheeseForkCatalogs = cheesefork.getCatalogs('');
+const cheeseForkCatalogs = cheesefork.getCatalogs("");
 cheeseForkCatalogs.then((catalogs) => {
   for (const [catalogName, catalogUrl] of catalogs.slice().reverse()) {
-    $('#cheesefork-catalog-selectors').append($('<a>', {
-      class: 'dropdown-item',
-      click: () => setCatalogUrl(catalogUrl),
-      href: '#/',
-      text: catalogName,
-    }));
+    $("#cheesefork-catalog-selectors").append(
+      $("<a>", {
+        class: "dropdown-item",
+        click: () => setCatalogUrl(catalogUrl),
+        href: "#/",
+        text: catalogName,
+      })
+    );
   }
 });
 
@@ -80,37 +89,37 @@ let currentCatalogByCourseID: Map<number, Course> = null;
  * Updates forblink according to its data('forbidden')
  */
 function updateForbidLinkText(fl: JQuery) {
-  if (!fl.data('groupID')) {
-    console.info('Error: No groupID for', fl);
+  if (!fl.data("groupID")) {
+    console.info("Error: No groupID for", fl);
   }
-  fl.text(fl.data('forbidden') ? '[unforbid]' : '[forbid]');
+  fl.text(fl.data("forbidden") ? "[unforbid]" : "[forbid]");
 }
 
 /**
  * Creates a header for the given group, for displaying in the catalog
  */
 function groupHeaderForCatalog(group: Group): JQuery {
-  const result = $('<li>');
+  const result = $("<li>");
   let groupNameText = `Group ${group.id} (${group.type}) `;
   if (group.teachers.length > 0) {
-    groupNameText += `(${group.teachers.join(', ')}) `;
+    groupNameText += `(${group.teachers.join(", ")}) `;
   }
 
-  const groupName = $('<b>', {
+  const groupName = $("<b>", {
     text: groupNameText,
   });
   result.append(groupName);
 
-  const forbidLink = $('<a>', {
-    class: 'forbid-link',
-    data: {forbidden: isGroupForbidden(group), groupID: groupIDString(group)},
-    href: '#/',
+  const forbidLink = $("<a>", {
+    class: "forbid-link",
+    data: { forbidden: isGroupForbidden(group), groupID: groupIDString(group) },
+    href: "#/",
   });
 
   updateForbidLinkText(forbidLink);
 
-  forbidLink.on('click', () => {
-    if (forbidLink.data('forbidden')) {
+  forbidLink.on("click", () => {
+    if (forbidLink.data("forbidden")) {
       delForbiddenGroup(group);
     } else {
       addForbiddenGroup(group);
@@ -167,7 +176,7 @@ function isGroupForbidden(group: Group): boolean {
  * Update the list of currently forbidden groups
  */
 function updateForbiddenGroups() {
-  const ul = $('#forbidden-groups');
+  const ul = $("#forbidden-groups");
   showToast();
   ul.empty();
 
@@ -176,13 +185,13 @@ function updateForbiddenGroups() {
   }
 
   forbiddenGroups.forEach((fg) => {
-    const li = $('<li>');
-    li.text(fg + ' ');
-    li.addClass('list-group-item');
+    const li = $("<li>");
+    li.text(fg + " ");
+    li.addClass("list-group-item");
 
-    const unforbidLink = $('<a>', {
-      href: '#/',
-      text: '[unforbid]',
+    const unforbidLink = $("<a>", {
+      href: "#/",
+      text: "[unforbid]",
       click() {
         forbiddenGroups.delete(fg);
         saveSettings();
@@ -194,12 +203,12 @@ function updateForbiddenGroups() {
     ul.append(li);
   });
 
-  $('a.forbid-link').each((_, element) => {
+  $("a.forbid-link").each((_, element) => {
     const ejq = $(element);
-    const groupID: string = ejq.data('groupID');
+    const groupID: string = ejq.data("groupID");
 
     const isForbidden = forbiddenGroups.has(groupID);
-    ejq.data('forbidden', isForbidden);
+    ejq.data("forbidden", isForbidden);
     updateForbidLinkText(ejq);
   });
 }
@@ -210,64 +219,79 @@ function updateForbiddenGroups() {
  * For example, 18420 should be presented (and searchable) as 018420.
  */
 function formatCourseId(id: number): string {
-  return String(id).padStart(6, '0');
+  return String(id).padStart(6, "0");
 }
 
 /**
  * Return an HTML description for a course
  */
 function htmlDescribeCourse(course: Course): HTMLElement {
-  const result = $('<span>');
-  const ul = $('<ul>');
-  ul.append($('<li>', {
-    html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
-  }));
+  const result = $("<span>");
+  const ul = $("<ul>");
   ul.append(
-      $('<li>', {html: `<b>Academic points:</b> ${course.academicPoints}`}));
-  ul.append($('<li>', {
-    html: `<b>Lecturer in charge:</b> ${
-        rtlSpan(course.lecturerInCharge || '[unknown]')}`,
-  }));
-  ul.append($('<li>', {html: '<b>Test dates:</b>'}));
-  const testDates = $('<ul>');
+    $("<li>", {
+      html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
+    })
+  );
+  ul.append(
+    $("<li>", { html: `<b>Academic points:</b> ${course.academicPoints}` })
+  );
+  ul.append(
+    $("<li>", {
+      html: `<b>Lecturer in charge:</b> ${rtlSpan(
+        course.lecturerInCharge || "[unknown]"
+      )}`,
+    })
+  );
+  ul.append($("<li>", { html: "<b>Test dates:</b>" }));
+  const testDates = $("<ul>");
   if (course.testDates) {
     course.testDates.forEach((d) => {
-      testDates.append($('<li>', {text: d.toDateString()}));
+      testDates.append($("<li>", { text: d.toDateString() }));
     });
   } else {
-    testDates.append($('<li>', {text: '[unknown]'}));
+    testDates.append($("<li>", { text: "[unknown]" }));
   }
   ul.append(testDates);
 
   if (course.notes) {
-    const li = $('<li>');
-    li.append('<b>Notes:</b> ');
+    const li = $("<li>");
+    li.append("<b>Notes:</b> ");
     li.append(
-        $('<div>',
-          {html: course.notes.replace(/\n/g, '<br>'), class: 'rtlnotes'}));
+      $("<div>", {
+        class: "rtlnotes",
+        html: course.notes.replace(/\n/g, "<br>"),
+      })
+    );
     ul.append(li);
   }
 
-  ul.append($('<li>', {html: '<b>Groups:</b>'}));
-  const groups = $('<ul>');
+  ul.append($("<li>", { html: "<b>Groups:</b>" }));
+  const groups = $("<ul>");
   if (course.groups) {
     course.groups.forEach((g) => {
       groups.append(groupHeaderForCatalog(g)[0]);
-      const events = $('<ul>');
+      const events = $("<ul>");
       if (g.events) {
         g.events.forEach((e) => {
-          events.append($('<li>', {
-            text: `${dayNames[e.day]}, ` + minutesToTime(e.startMinute) + '-' +
-                minutesToTime(e.endMinute) + ` at ${e.location || '[unknown]'}`,
-          }));
+          events.append(
+            $("<li>", {
+              text:
+                `${dayNames[e.day]}, ` +
+                minutesToTime(e.startMinute) +
+                "-" +
+                minutesToTime(e.endMinute) +
+                ` at ${e.location || "[unknown]"}`,
+            })
+          );
         });
       } else {
-        events.append($('<li>', {text: '[unknown]'}));
+        events.append($("<li>", { text: "[unknown]" }));
       }
       groups.append(events);
     });
   } else {
-    groups.append($('<li>', {text: '[unknown]'}));
+    groups.append($("<li>", { text: "[unknown]" }));
   }
   ul.append(groups);
 
@@ -289,27 +313,27 @@ function rtlSpan(s: string): string {
  * Create a span for a course label, including info button
  */
 function courseLabel(course: Course): HTMLElement {
-  const span = document.createElement('span');
-  const infoLink = document.createElement('a');
+  const span = document.createElement("span");
+  const infoLink = document.createElement("a");
   infoLink.innerHTML = expandInfoSymbol;
-  infoLink.className = 'expando';
-  infoLink.href = '#/';
+  infoLink.className = "expando";
+  infoLink.href = "#/";
   span.innerHTML = ` ${formatCourseId(course.id)} ${rtlSpan(course.name)} `;
   infoLink.onclick = () => {
-    if (!$(span).data('ttime3_expanded')) {
-      const infoDiv = document.createElement('div');
-      $(span).data('infoDiv', infoDiv);
+    if (!$(span).data("ttime3_expanded")) {
+      const infoDiv = document.createElement("div");
+      $(span).data("infoDiv", infoDiv);
       infoDiv.appendChild(htmlDescribeCourse(course));
       if (mainDebugLogging) {
         console.info(course);
       }
       span.appendChild(infoDiv);
       infoLink.innerHTML = collapseInfoSymbol;
-      $(span).data('ttime3_expanded', true);
+      $(span).data("ttime3_expanded", true);
     } else {
       infoLink.innerHTML = expandInfoSymbol;
-      $(span).data('ttime3_expanded', false);
-      span.removeChild($(span).data('infoDiv'));
+      $(span).data("ttime3_expanded", false);
+      span.removeChild($(span).data("infoDiv"));
     }
   };
   span.appendChild(infoLink);
@@ -323,28 +347,28 @@ const courseAddLabels = new Map();
  * Write catalog selector to page.
  */
 function writeCatalogSelector() {
-  const facultiesDiv = $('#catalog');
+  const facultiesDiv = $("#catalog");
 
   facultiesDiv.empty();
   currentCatalog.forEach((faculty) => {
-    const facultyDetails = $('<details>');
+    const facultyDetails = $("<details>");
 
-    const summary = $('<summary>');
+    const summary = $("<summary>");
     summary.html(`<strong>${faculty.name}</strong> `);
-    const semesterTag = $('<span>', {
-      class: 'badge badge-secondary',
+    const semesterTag = $("<span>", {
+      class: "badge badge-secondary",
       text: faculty.semester,
     });
     summary.append(semesterTag);
     facultyDetails.append(summary);
     facultiesDiv.append(facultyDetails);
 
-    const courseList = $('<ul>', {class: 'course-list'});
+    const courseList = $("<ul>", { class: "course-list" });
     facultyDetails.append(courseList);
 
     faculty.courses.forEach((course) => {
-      const btn = $('<button>', {
-        text: '+',
+      const btn = $("<button>", {
+        text: "+",
         click() {
           addSelectedCourse(course);
         },
@@ -352,7 +376,7 @@ function writeCatalogSelector() {
       courseAddButtons.set(course.id, btn);
       const label = courseLabel(course);
       courseAddLabels.set(course.id, label);
-      const courseLi = $('<li>');
+      const courseLi = $("<li>");
       courseLi.append(btn).append(label);
       courseList.append(courseLi);
     });
@@ -383,44 +407,51 @@ function toastAndSaveSettings() {
  */
 function saveSettings() {
   settings.selectedCourses = Array.from(selectedCourses).map((c) => c.id);
-  settings.customEvents = $('#custom-events-textarea').val() as string;
-  settings.catalogUrl = $('#catalog-url').val() as string;
-  settings.hideCoursesWithCloseTests =
-      $('#hide-courses-with-close-tests').prop('checked') as boolean;
+  settings.customEvents = $("#custom-events-textarea").val() as string;
+  settings.catalogUrl = $("#catalog-url").val() as string;
+  settings.hideCoursesWithCloseTests = $("#hide-courses-with-close-tests").prop(
+    "checked"
+  ) as boolean;
 
   settings.minTestDateDistance = getNumInputValueWithDefault(
-      $('#close-test-distance')[0] as HTMLInputElement, 5);
+    $("#close-test-distance")[0] as HTMLInputElement,
+    5
+  );
   // Reflecting this back to the UI here is a bit of a hack :/
-  $('#min-test-date-distance-display').text(settings.minTestDateDistance);
+  $("#min-test-date-distance-display").text(settings.minTestDateDistance);
   updateTestDates();
 
   settings.filterSettings = {
     forbiddenGroups: Array.from(forbiddenGroups),
-    noCollisions: getCheckboxValueById('filter.noCollisions'),
+    noCollisions: getCheckboxValueById("filter.noCollisions"),
     ratingMax: getNullRating(),
     ratingMin: getNullRating(),
   };
 
   allRatingTypes.forEach((r) => {
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
-        ($(`#rating-${r}-min`)[0]) as HTMLInputElement, null);
+      $(`#rating-${r}-min`)[0] as HTMLInputElement,
+      null
+    );
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
-        ($(`#rating-${r}-max`)[0]) as HTMLInputElement, null);
+      $(`#rating-${r}-max`)[0] as HTMLInputElement,
+      null
+    );
   });
 
-  window.localStorage.setItem('ttime3_settings', JSON.stringify(settings));
+  window.localStorage.setItem("ttime3_settings", JSON.stringify(settings));
 
-  (window as any).gtag('event', settings.catalogUrl, {
-    event_category: 'saveSettings',
-    event_label: 'catalog-url',
+  (window as any).gtag("event", settings.catalogUrl, {
+    event_category: "saveSettings",
+    event_label: "catalog-url",
   });
-  (window as any).gtag('event', settings.filterSettings.noCollisions, {
-    event_category: 'saveSettings',
-    event_label: 'no-collisions',
+  (window as any).gtag("event", settings.filterSettings.noCollisions, {
+    event_category: "saveSettings",
+    event_label: "no-collisions",
   });
 
   if (mainDebugLogging) {
-    console.info('Saved settings:', settings);
+    console.info("Saved settings:", settings);
   }
 }
 (window as any).saveSettings = saveSettings;
@@ -430,8 +461,10 @@ function saveSettings() {
  * it's empty.
  */
 function getNumInputValueWithDefault(
-    input: HTMLInputElement, defaultValue: number): number {
-  if (input.value === '') {
+  input: HTMLInputElement,
+  defaultValue: number
+): number {
+  if (input.value === "") {
     return defaultValue;
   }
   return Number(input.value);
@@ -442,15 +475,15 @@ function getNumInputValueWithDefault(
  */
 function addSelectedCourse(course: Course) {
   if (mainDebugLogging) {
-    console.info('Selected', course);
+    console.info("Selected", course);
   }
-  (window as any).gtag('event', `${course.id}`, {
-    event_category: 'SelectCourses',
-    event_label: 'addCourse',
+  (window as any).gtag("event", `${course.id}`, {
+    event_category: "SelectCourses",
+    event_label: "addCourse",
   });
   selectedCourses.add(course);
   courseAddButtons.get(course.id).disabled = true;
-  courseAddLabels.get(course.id).classList.add('disabled-course-label');
+  courseAddLabels.get(course.id).classList.add("disabled-course-label");
   saveSettings();
   refreshSelectedCourses();
   updateTestDates();
@@ -466,7 +499,7 @@ function addSelectedCourseByID(...ids: number[]) {
     if (course) {
       addSelectedCourse(course);
     } else {
-      throw new Error('No course with ID ' + id);
+      throw new Error("No course with ID " + id);
     }
   });
 }
@@ -477,15 +510,15 @@ function addSelectedCourseByID(...ids: number[]) {
  */
 function delSelectedCourse(course: Course) {
   if (mainDebugLogging) {
-    console.info('Unselected', course);
+    console.info("Unselected", course);
   }
-  (window as any).gtag('event', `${course.id}`, {
-    event_category: 'SelectCourses',
-    event_label: 'delCourse',
+  (window as any).gtag("event", `${course.id}`, {
+    event_category: "SelectCourses",
+    event_label: "delCourse",
   });
   selectedCourses.delete(course);
   courseAddButtons.get(course.id).disabled = false;
-  courseAddLabels.get(course.id).classList.remove('disabled-course-label');
+  courseAddLabels.get(course.id).classList.remove("disabled-course-label");
   saveSettings();
   refreshSelectedCourses();
   updateTestDates();
@@ -493,34 +526,35 @@ function delSelectedCourse(course: Course) {
 
 function updateTestDates() {
   selectedCoursesTestDates = new DateSet(Array.from(selectedCourses));
-  const selectize = $('#courses-selectize')[0].selectize;
+  const selectize = $("#courses-selectize")[0].selectize;
   if (selectize) {
     selectize.clearCache();
   }
-  $('#how-to-show-close-test-courses')
-      .html(
-          settings.hideCoursesWithCloseTests ?
-              'hidden' :
-              'shown in <span style="color: red">red</span>');
-  const ul = $('<ul>', {class: 'list-group'});
-  $('#test-schedule').empty();
-  $('#test-schedule').append(ul);
+  $("#how-to-show-close-test-courses").html(
+    settings.hideCoursesWithCloseTests
+      ? "hidden"
+      : 'shown in <span style="color: red">red</span>'
+  );
+  const ul = $("<ul>", { class: "list-group" });
+  $("#test-schedule").empty();
+  $("#test-schedule").append(ul);
   const datesAndDistances = selectedCoursesTestDates.getDatesAndDistances();
   for (let i = 0; i < datesAndDistances.length; i++) {
     const [distance, date, course] = datesAndDistances[i];
-    let formattedDistance = '';
+    let formattedDistance = "";
     if (i > 0) {
       formattedDistance = `${distance}d`;
       if (distance < settings.minTestDateDistance) {
-        formattedDistance =
-            `<span style="color: red; font-weight: bold">${distance}d</span>`;
+        formattedDistance = `<span style="color: red; font-weight: bold">${distance}d</span>`;
       }
-      formattedDistance += ' &rarr;';
+      formattedDistance += " &rarr;";
     }
-    ul.append($('<li>', {
-      class: 'list-group-item',
-      html: `${formattedDistance} ${date.toDateString()} - ${course.name}`,
-    }));
+    ul.append(
+      $("<li>", {
+        class: "list-group-item",
+        html: `${formattedDistance} ${date.toDateString()} - ${course.name}`,
+      })
+    );
   }
 }
 
@@ -529,18 +563,19 @@ function updateTestDates() {
  */
 function refreshSelectedCourses() {
   const nscheds = Number(totalPossibleSchedules(selectedCourses));
-  $('#possible-schedules')
-      .text(`${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`);
-  $('#generate-schedules').prop('disabled', selectedCourses.size === 0);
-  const div = $('#selected-courses');
+  $("#possible-schedules").text(
+    `${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`
+  );
+  $("#generate-schedules").prop("disabled", selectedCourses.size === 0);
+  const div = $("#selected-courses");
   div.empty();
-  const ul = $('<ul>', {class: 'list-group'});
+  const ul = $("<ul>", { class: "list-group" });
   div.append(ul);
   selectedCourses.forEach((course) => {
-    const li = $('<li>', {class: 'list-group-item'});
+    const li = $("<li>", { class: "list-group-item" });
     const label = courseLabel(course);
-    const btn = $('<button>', {
-      class: 'btn btn-sm btn-danger float-right',
+    const btn = $("<button>", {
+      class: "btn btn-sm btn-danger float-right",
       html: '<i class="fas fa-trash-alt"></i>',
       click() {
         delSelectedCourse(course);
@@ -549,10 +584,12 @@ function refreshSelectedCourses() {
     li.append(label);
 
     if (course.groups === null || course.groups.length === 0) {
-      li.append($('<i>', {
-        class: 'text-warning fas fa-exclamation-triangle',
-        title: 'Course has no groups',
-      }));
+      li.append(
+        $("<i>", {
+          class: "text-warning fas fa-exclamation-triangle",
+          title: "Course has no groups",
+        })
+      );
     }
 
     li.append(btn);
@@ -560,21 +597,21 @@ function refreshSelectedCourses() {
   });
 }
 
-import SchedulerWorker = require('worker-loader?name=[name].js!./scheduler_worker');
+import SchedulerWorker = require("worker-loader?name=[name].js!./scheduler_worker");
 const schedulerWorker = new SchedulerWorker();
-schedulerWorker.postMessage({debug: mainDebugLogging});
+schedulerWorker.postMessage({ debug: mainDebugLogging });
 
 /**
  * Respond to scheduling result from worker
  */
 schedulerWorker.onmessage = (e: MessageEvent) => {
   if (mainDebugLogging) {
-    console.info('Received message from worker:', e);
+    console.info("Received message from worker:", e);
   }
-  $('#generate-schedules').prop('disabled', false);
-  $('#spinner').hide();
+  $("#generate-schedules").prop("disabled", false);
+  $("#spinner").hide();
   if (e.data == null) {
-    $('#exception-occurred-scheduling').show();
+    $("#exception-occurred-scheduling").show();
   } else {
     setPossibleSchedules(e.data);
   }
@@ -584,26 +621,30 @@ schedulerWorker.onmessage = (e: MessageEvent) => {
  * Check if custom-events-textarea has valid events
  */
 function checkCustomEvents() {
-  const elem = $('#custom-events-textarea');
-  elem.removeClass('is-invalid');
-  elem.removeClass('is-valid');
+  const elem = $("#custom-events-textarea");
+  elem.removeClass("is-invalid");
+  elem.removeClass("is-valid");
 
   try {
     const courses = buildCustomEventsCourses(elem.val() as string);
     if (courses.length > 0) {
-      elem.addClass('is-valid');
+      elem.addClass("is-valid");
     }
   } catch (e) {
-    elem.addClass('is-invalid');
+    elem.addClass("is-invalid");
   }
 }
 (window as any).checkCustomEvents = checkCustomEvents;
 
-const customEventRegex = new RegExp([
-  /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
-  /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
-  /(.*)/,
-].map((x) => x.source).join(''));
+const customEventRegex = new RegExp(
+  [
+    /(Sun|Mon|Tue|Wed|Thu|Fri|Sat) /,
+    /([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) /,
+    /(.*)/,
+  ]
+    .map((x) => x.source)
+    .join("")
+);
 
 /* tslint:disable:object-literal-sort-keys */
 const inverseDayIndex = {
@@ -621,24 +662,28 @@ const inverseDayIndex = {
  * Create a course with a single event
  */
 function createSingleEventCourse(
-    name: string, day: number, startMinute: number, endMinute: number): Course {
+  name: string,
+  day: number,
+  startMinute: number,
+  endMinute: number
+): Course {
   const c: Course = {
     academicPoints: 0,
     groups: [],
     id: 0,
-    lecturerInCharge: '',
+    lecturerInCharge: "",
     name,
-    notes: '',
+    notes: "",
     testDates: [],
   };
 
   const g: Group = {
     course: c,
-    description: '',
+    description: "",
     events: [],
     id: 0,
     teachers: [],
-    type: 'lecture',
+    type: "lecture",
   };
 
   c.groups.push(g);
@@ -647,7 +692,7 @@ function createSingleEventCourse(
     day,
     endMinute,
     group: g,
-    location: '',
+    location: "",
     startMinute,
   };
 
@@ -664,14 +709,14 @@ function createSingleEventCourse(
 function buildCustomEventsCourses(s: string): Course[] {
   const result: Course[] = [];
 
-  if (s === '') {
+  if (s === "") {
     return result;
   }
 
-  s.split('\n').forEach((line) => {
+  s.split("\n").forEach((line) => {
     const m = customEventRegex.exec(line);
     if (m == null) {
-      throw Error('Invalid custom event line: ' + line);
+      throw Error("Invalid custom event line: " + line);
     }
 
     const day: number = inverseDayIndex[m[1] as keyof typeof inverseDayIndex];
@@ -689,14 +734,14 @@ let showToastAgain = false;
 
 function showToast() {
   if (showToastAgain) {
-    $('.toast').toast('show');
-    $('#generate-schedules').fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
+    $(".toast").toast("show");
+    $("#generate-schedules").fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100);
     showToastAgain = false;
   }
 }
 
 function hideToast() {
-  $('.toast').toast('hide');
+  $(".toast").toast("hide");
   showToastAgain = false;
 }
 
@@ -705,15 +750,15 @@ function hideToast() {
  */
 function getSchedules() {
   hideToast();
-  $('#generate-schedules').prop('disabled', true);
+  $("#generate-schedules").prop("disabled", true);
   showToastAgain = true;
-  $('#spinner').show();
-  $('#exception-occurred').hide();
-  $('#no-schedules').hide();
-  $('#initial-instructions').hide();
+  $("#spinner").show();
+  $("#exception-occurred").hide();
+  $("#no-schedules").hide();
+  $("#initial-instructions").hide();
 
-  (window as any).gtag('event', 'generateSchedules');
-  (window as any).gtag('event', 'generateSchedules-num-courses', {
+  (window as any).gtag("event", "generateSchedules");
+  (window as any).gtag("event", "generateSchedules-num-courses", {
     value: selectedCourses.size,
   });
 
@@ -722,7 +767,7 @@ function getSchedules() {
     const courses = buildCustomEventsCourses(settings.customEvents);
     courses.forEach((c) => coursesToSchedule.add(c));
   } catch (error) {
-    console.error('Failed to build custom events course:', error);
+    console.error("Failed to build custom events course:", error);
   }
 
   schedulerWorker.postMessage({
@@ -742,12 +787,14 @@ let currentSchedule = 0;
 function setPossibleSchedules(schedules: Schedule[]) {
   possibleSchedules = schedules;
   currentSchedule = 0;
-  const divs = $('#schedule-browser, #rendered-schedule-container');
-  $('#num-schedules').text(schedules.length);
-  if (schedules.length === 0 ||
-      (schedules.length === 1 && schedules[0].events.length === 0)) {
+  const divs = $("#schedule-browser, #rendered-schedule-container");
+  $("#num-schedules").text(schedules.length);
+  if (
+    schedules.length === 0 ||
+    (schedules.length === 1 && schedules[0].events.length === 0)
+  ) {
     divs.hide();
-    $('#no-schedules').show();
+    $("#no-schedules").show();
   } else {
     divs.show();
     goToSchedule(0);
@@ -771,43 +818,47 @@ function prevSchedule() {
 (window as any).prevSchedule = prevSchedule;
 
 const dayNames = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
 ];
 
 // Colors are taken from this page, but reordered to maximize contrast:
 // https://getbootstrap.com/docs/4.1/getting-started/theming/
 const courseColors = [
-  ['#007bff', '#fff'],  // blue
-  ['#e83e8c', '#fff'],  // pink
-  ['#ffc107', '#000'],  // yellow
-  ['#6610f2', '#fff'],  // indigo
-  ['#dc3545', '#fff'],  // red
-  ['#28a745', '#fff'],  // green
-  ['#6f42c1', '#fff'],  // purple
-  ['#fd7e14', '#000'],  // orange
-  ['#20c997', '#fff'],  // teal
-  ['#17a2b8', '#fff'],  // cyan
-  ['#6c757d', '#fff'],  // gray
-  ['#343a40', '#fff'],  // dark-gray
+  ["#007bff", "#fff"], // blue
+  ["#e83e8c", "#fff"], // pink
+  ["#ffc107", "#000"], // yellow
+  ["#6610f2", "#fff"], // indigo
+  ["#dc3545", "#fff"], // red
+  ["#28a745", "#fff"], // green
+  ["#6f42c1", "#fff"], // purple
+  ["#fd7e14", "#000"], // orange
+  ["#20c997", "#fff"], // teal
+  ["#17a2b8", "#fff"], // cyan
+  ["#6c757d", "#fff"], // gray
+  ["#343a40", "#fff"], // dark-gray
 ];
 
 /**
  * Get appropriate colors for courses
  */
 function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
-  const numbers = Array.from(courses.values()).map((c) => c.id).sort();
+  const numbers = Array.from(courses.values())
+    .map((c) => c.id)
+    .sort();
 
   // 0 course ID is for custom events
   numbers.push(0);
 
-  const numsAndColors = numbers.map((num, i) => [num, courseColors[i]]) as
-      Array<[number, string[]]>;
+  const numsAndColors = numbers.map((num, i) => [
+    num,
+    courseColors[i],
+  ]) as Array<[number, string[]]>;
 
   return new Map(numsAndColors);
 }
@@ -819,38 +870,41 @@ function goToSchedule(i: number) {
   const max = possibleSchedules.length;
   i = (i + max) % max;
   currentSchedule = i;
-  $('#current-schedule-id').text(i + 1);
+  $("#current-schedule-id").text(i + 1);
   const schedule = possibleSchedules[i];
 
-  writeScheduleContents($('#schedule-contents'), schedule);
+  writeScheduleContents($("#schedule-contents"), schedule);
   render.renderSchedule(
-      $('#rendered-schedule')[0], schedule, getCourseColorMap(selectedCourses));
+    $("#rendered-schedule")[0],
+    schedule,
+    getCourseColorMap(selectedCourses)
+  );
 }
 
-let sortedByRating = '';
+let sortedByRating = "";
 
 let sortedByRatingAsc = true;
 
 const allRatings = {
   earliestStart: {
     badgeTextFunc: (s: number) => `Earliest start: ${s}`,
-    explanation: 'Hour at which the earliest class of the week start',
-    name: 'Earliest start',
+    explanation: "Hour at which the earliest class of the week start",
+    name: "Earliest start",
   },
   freeDays: {
     badgeTextFunc: (s: number) => `${s} free days`,
-    explanation: 'Number of days with no classes',
-    name: 'Free days',
+    explanation: "Number of days with no classes",
+    name: "Free days",
   },
   latestFinish: {
     badgeTextFunc: (s: number) => `Latest finish: ${s}`,
-    explanation: 'Hour at which the latest class of the week finishes',
-    name: 'Latest finish',
+    explanation: "Hour at which the latest class of the week finishes",
+    name: "Latest finish",
   },
   numRuns: {
     badgeTextFunc: (s: number) => `${s} runs`,
-    explanation: 'Number of adjacent classes in different buildings',
-    name: 'Number of runs',
+    explanation: "Number of adjacent classes in different buildings",
+    name: "Number of runs",
   },
 };
 
@@ -873,8 +927,9 @@ function sortByRating(rating: ratingType) {
 
   goToSchedule(0);
   allRatingTypes.forEach((r) => {
-    $(`#rating-badge-${r}`)
-        .replaceWith(getRatingBadge(r, possibleSchedules[0]));
+    $(`#rating-badge-${r}`).replaceWith(
+      getRatingBadge(r, possibleSchedules[0])
+    );
   });
 }
 
@@ -882,9 +937,9 @@ function sortByRating(rating: ratingType) {
  * Get a badge for the given rating according to the schedule type
  */
 function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
-  const result = $('<a>', {
-    class: 'badge badge-info',
-    href: '#/',
+  const result = $("<a>", {
+    class: "badge badge-info",
+    href: "#/",
     id: `rating-badge-${rating}`,
     text: allRatings[rating].badgeTextFunc(schedule.rating[rating]),
     title: allRatings[rating].explanation,
@@ -894,7 +949,7 @@ function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
   });
 
   if (sortedByRating === rating) {
-    const icon = sortedByRatingAsc ? 'fa-sort-up' : 'fa-sort-down';
+    const icon = sortedByRatingAsc ? "fa-sort-up" : "fa-sort-down";
     result.append(` <i class="fas ${icon}"></i>`);
   }
 
@@ -907,20 +962,21 @@ function getRatingBadge(rating: ratingType, schedule: Schedule): JQuery {
 function writeScheduleContents(target: JQuery, schedule: Schedule) {
   target.empty();
 
-  allRatingTypes.map((rating) => getRatingBadge(rating, schedule))
-      .forEach((badge) => {
-        target.append(badge).append(' ');
-      });
+  allRatingTypes
+    .map((rating) => getRatingBadge(rating, schedule))
+    .forEach((badge) => {
+      target.append(badge).append(" ");
+    });
 
-  const ul = $('<ul>', {class: 'list-group'});
+  const ul = $("<ul>", { class: "list-group" });
   target.append(ul);
 
   byDay(schedule).forEach((dayEvents) => {
-    const dayEntry = $('<li>', {
-      class: 'list-group-item',
-      css: {'padding-top': '2px', 'padding-bottom': '2px'},
-      html: $('<small>', {
-        class: 'font-weight-bold',
+    const dayEntry = $("<li>", {
+      class: "list-group-item",
+      css: { "padding-top": "2px", "padding-bottom": "2px" },
+      html: $("<small>", {
+        class: "font-weight-bold",
         text: dayNames[dayEvents[0].day],
       }),
     });
@@ -928,13 +984,13 @@ function writeScheduleContents(target: JQuery, schedule: Schedule) {
     // let eventList = $('<ul>');
     //    dayEntry.append(eventList);
     dayEvents.forEach((e) => {
-      const eventEntry = $('<li>', {
-        class: 'list-group-item',
+      const eventEntry = $("<li>", {
+        class: "list-group-item",
       });
       const startTime = minutesToTime(e.startMinute);
-      const location = e.location || '[unknown]';
+      const location = e.location || "[unknown]";
       const endTime = minutesToTime(e.endMinute);
-      const teachers = e.group.teachers.join(',') || '[unknown]';
+      const teachers = e.group.teachers.join(",") || "[unknown]";
       eventEntry.html(`
         <div class="d-flex w-100 justify-content-between">
            <small class="text-muted">
@@ -998,7 +1054,7 @@ function getCourseByID(id: number): Course {
  * Set up the course selection selectize.js box
  */
 function coursesSelectizeSetup() {
-  const selectBox = $('#courses-selectize');
+  const selectBox = $("#courses-selectize");
 
   // Getting the types right for selectize is difficult :/
 
@@ -1006,7 +1062,7 @@ function coursesSelectizeSetup() {
   const optgroups: any = [];
 
   currentCatalog.forEach((faculty) => {
-    optgroups.push({label: faculty.name, value: faculty.name});
+    optgroups.push({ label: faculty.name, value: faculty.name });
     faculty.courses.forEach((course) => {
       opts.push({
         nicknames: getNicknames(course),
@@ -1023,28 +1079,32 @@ function coursesSelectizeSetup() {
     render: {
       option(data, escape) {
         let hasCloseTest = false;
-        const closeTestStyle =
-            settings.hideCoursesWithCloseTests ? 'display: none' : 'color: red';
+        const closeTestStyle = settings.hideCoursesWithCloseTests
+          ? "display: none"
+          : "color: red";
         const course = getCourseByID(data.value);
         if (course.testDates) {
           course.testDates.forEach((testDate: Date) => {
-            if (!getTestDates().fitsWithDistance(
-                    testDate, settings.minTestDateDistance)) {
+            if (
+              !getTestDates().fitsWithDistance(
+                testDate,
+                settings.minTestDateDistance
+              )
+            ) {
               hasCloseTest = true;
             }
           });
         }
-        return $('<div>', {
-                 class: 'option',
-                 style: hasCloseTest ? closeTestStyle : null,
-                 text: escape(data.text),
-               })[0]
-            .outerHTML;
+        return $("<div>", {
+          class: "option",
+          style: hasCloseTest ? closeTestStyle : null,
+          text: escape(data.text),
+        })[0].outerHTML;
       },
     },
-    searchField: ['text', 'nicknames'],
+    searchField: ["text", "nicknames"],
     onItemAdd(courseID) {
-      if (courseID === '') {
+      if (courseID === "") {
         return;
       }
       const course = getCourseByID(Number(courseID));
@@ -1073,8 +1133,8 @@ function getNullRating(): ScheduleRating {
  */
 function loadSettings(s: string): Settings {
   let result: Settings = {
-    catalogUrl: '',
-    customEvents: '',
+    catalogUrl: "",
+    customEvents: "",
     filterSettings: {
       forbiddenGroups: [],
       noCollisions: true,
@@ -1087,25 +1147,30 @@ function loadSettings(s: string): Settings {
     selectedCourses: [],
   };
 
-  if (s !== '') {
-    result = $.extend(true /* deep */, result, JSON.parse(s) as Settings) as
-        Settings;
+  if (s !== "") {
+    result = $.extend(
+      true /* deep */,
+      result,
+      JSON.parse(s) as Settings
+    ) as Settings;
   }
 
   if (mainDebugLogging) {
-    console.info('Loaded settings:', result);
+    console.info("Loaded settings:", result);
   }
 
-  $('#catalog-url').val(result.catalogUrl);
-  $('#custom-events-textarea').val(result.customEvents);
-  $('#hide-courses-with-close-tests')
-      .prop('checked', result.hideCoursesWithCloseTests);
-  $('#min-test-date-distance-display').text(result.minTestDateDistance);
-  $('#close-test-distance').val(result.minTestDateDistance);
+  $("#catalog-url").val(result.catalogUrl);
+  $("#custom-events-textarea").val(result.customEvents);
+  $("#hide-courses-with-close-tests").prop(
+    "checked",
+    result.hideCoursesWithCloseTests
+  );
+  $("#min-test-date-distance-display").text(result.minTestDateDistance);
+  $("#close-test-distance").val(result.minTestDateDistance);
 
   {
     const fs = result.filterSettings;
-    setCheckboxValueById('filter.noCollisions', fs.noCollisions);
+    setCheckboxValueById("filter.noCollisions", fs.noCollisions);
 
     allRatingTypes.forEach((r) => {
       $(`#rating-${r}-min`).val(fs.ratingMin[r]);
@@ -1124,56 +1189,63 @@ function totalPossibleSchedules(courses: Set<Course>): number {
   const k = Array.from(courses.values());
 
   return k
-      .map(
-          (course) => groupsByType(course)
-                          .map((t) => t.length)
-                          .reduce((a, b) => a * b, 1))
-      .reduce((a, b) => a * b, 1);
+    .map((course) =>
+      groupsByType(course)
+        .map((t) => t.length)
+        .reduce((a, b) => a * b, 1)
+    )
+    .reduce((a, b) => a * b, 1);
 }
 
 /**
  * Build the limit-by-ratings form for the settings subpage
  */
 function buildRatingsLimitForm() {
-  const form = $('#rating-limits-form');
+  const form = $("#rating-limits-form");
   allRatingTypes.forEach((r) => {
-    const row = $('<div>', {class: 'row'});
+    const row = $("<div>", { class: "row" });
     form.append(row);
-    row.append($('<div>', {
-      class: 'col col-form-label',
-      text: allRatings[r].name,
-      title: allRatings[r].explanation,
-    }));
-    row.append($('<div>', {
-      class: 'col',
-      html: $('<input>', {
-        change: toastAndSaveSettings,
-        class: 'form-control',
-        id: `rating-${r}-min`,
-        placeholder: '-∞',
-        type: 'number',
-      }),
-    }));
-    row.append($('<div>', {
-      class: 'col',
-      html: $('<input>', {
-        change: toastAndSaveSettings,
-        class: 'form-control',
-        id: `rating-${r}-max`,
-        placeholder: '∞',
-        type: 'number',
-      }),
-    }));
+    row.append(
+      $("<div>", {
+        class: "col col-form-label",
+        text: allRatings[r].name,
+        title: allRatings[r].explanation,
+      })
+    );
+    row.append(
+      $("<div>", {
+        class: "col",
+        html: $("<input>", {
+          change: toastAndSaveSettings,
+          class: "form-control",
+          id: `rating-${r}-min`,
+          placeholder: "-∞",
+          type: "number",
+        }),
+      })
+    );
+    row.append(
+      $("<div>", {
+        class: "col",
+        html: $("<input>", {
+          change: toastAndSaveSettings,
+          class: "form-control",
+          id: `rating-${r}-max`,
+          placeholder: "∞",
+          type: "number",
+        }),
+      })
+    );
   });
 }
 
 buildRatingsLimitForm();
 
-const settings = loadSettings(window.localStorage.getItem('ttime3_settings'));
+const settings = loadSettings(window.localStorage.getItem("ttime3_settings"));
 
 if (settings.catalogUrl) {
-  $('#old-catalog-alert-url').text(settings.catalogUrl);
-  $('#old-catalog-alert').collapse('show');
+  $("#old-catalog-alert-url").text(settings.catalogUrl);
+  $("#old-catalog-alert").collapse("show");
 }
 
 forbiddenGroups = new Set(settings.filterSettings.forbiddenGroups);
@@ -1181,12 +1253,14 @@ updateForbiddenGroups();
 
 async function renderCatalog() {
   try {
-    const cheeseForkLatest =
-        cheeseForkCatalogs.then((catalogs) => catalogs[catalogs.length - 1][1]);
-    const catalog =
-        await loadCatalog(settings.catalogUrl || await cheeseForkLatest);
+    const cheeseForkLatest = cheeseForkCatalogs.then(
+      (catalogs) => catalogs[catalogs.length - 1][1]
+    );
+    const catalog = await loadCatalog(
+      settings.catalogUrl || (await cheeseForkLatest)
+    );
     if (mainDebugLogging) {
-      console.log('Loaded catalog:', catalog);
+      console.log("Loaded catalog:", catalog);
     }
     currentCatalog = catalog;
     currentCatalogByCourseID = new Map();
@@ -1205,11 +1279,11 @@ async function renderCatalog() {
         console.error(`Failed to add course ${id}:`, error);
       }
     });
-    $('#selected-courses-semester-indicator').text(currentCatalog[0].semester);
+    $("#selected-courses-semester-indicator").text(currentCatalog[0].semester);
     coursesSelectizeSetup();
   } catch (error) {
-    $('#exception-occurred-catalog').show();
-    console.error('Failed to load catalog:', error);
+    $("#exception-occurred-catalog").show();
+    console.error("Failed to load catalog:", error);
   }
 }
 

@@ -1,6 +1,6 @@
-import * as cheesefork from './cheesefork';
+import * as cheesefork from "./cheesefork";
 
-import {ScheduleRating} from './rating';
+import { ScheduleRating } from "./rating";
 
 /* tslint:disable:max-classes-per-file */
 
@@ -90,12 +90,12 @@ export function eventsCollide(events: AcademicEvent[]): boolean {
 export function loadCatalog(url: string): Promise<Catalog> {
   return new Promise((resolve, reject) => {
     const req = new XMLHttpRequest();
-    req.open('GET', url, true);
+    req.open("GET", url, true);
     req.onload = () => {
       if (req.status === 200) {
         let result: Catalog = null;
         try {
-          if (req.responseText[0] === '[') {
+          if (req.responseText[0] === "[") {
             result = JSON.parse(req.responseText);
           } else {
             result = cheesefork.parse(req.responseText);
@@ -114,7 +114,7 @@ export function loadCatalog(url: string): Promise<Catalog> {
     };
 
     req.onerror = () => {
-      reject(Error('Network Error'));
+      reject(Error("Network Error"));
     };
 
     req.send();

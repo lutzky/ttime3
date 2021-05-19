@@ -1,4 +1,3 @@
-
 /**
  * Layered objects for avoiding collisions
  *
@@ -42,7 +41,9 @@ class Layered<T> {
  * @param collide - Function to determine if an array of objects collides
  */
 export default function layerize<T>(
-    objects: T[], collide: (objs: T[]) => boolean): Array<Layered<T>> {
+  objects: T[],
+  collide: (objs: T[]) => boolean
+): Array<Layered<T>> {
   const result: Array<Layered<T>> = [];
 
   let remaining = objects.slice();

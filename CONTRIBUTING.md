@@ -11,11 +11,11 @@ We use [Travis CI](https://travis-ci.org/) to make sure all pull requests pass t
 
 Requirements: `npm`.
 
-* Run `npm install` first
-* Run `npm test` for all tests, or `npm run test:watch` to automatically rerun tests on file changes.
-* Run `npm run format:fix` to fix code style formatting.
-* Run `npm start` to run a local in a window - this will update the generated javascript when files are changed. This does not modify the production output.
-* Run `npm run build` to update the production version in `dist/`.
+- Run `npm install` first
+- Run `npm test` for all tests, or `npm run test:watch` to automatically rerun tests on file changes.
+- Run `npm run format:fix` to fix code style formatting.
+- Run `npm start` to run a local in a window - this will update the generated javascript when files are changed. This does not modify the production output.
+- Run `npm run build` to update the production version in `dist/`.
 
 To enable additional debug logging, add the parameter `?ttime_debug=1` to the URL.
 

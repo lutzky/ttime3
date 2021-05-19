@@ -1,12 +1,4 @@
 {
-    "customLocalFormatters.formatters": [
-        {
-            "command": "node_modules/.bin/clang-format --assume-filename=file.ts",
-            "languages": [
-                "typescript"
-            ]
-        }
-    ],
-    "mochaExplorer.files": "spec/**/*.ts",
-    "mochaExplorer.require": "ts-node/register"
+  "mochaExplorer.files": "spec/**/*.ts",
+  "mochaExplorer.require": "ts-node/register"
 }

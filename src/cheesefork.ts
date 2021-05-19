@@ -1,4 +1,4 @@
-import {AcademicEvent, Catalog, Course, Faculty, Group} from './common';
+import { AcademicEvent, Catalog, Course, Faculty, Group } from "./common";
 
 /**
  * This module implements support for importing data from cheeseFork
@@ -14,8 +14,8 @@ import {AcademicEvent, Catalog, Course, Faculty, Group} from './common';
  * @returns Minutes since midnight
  */
 function parseCheeseForkHour(s: string): number[] {
-  return s.split(' - ').map((hhm) => {
-    const splitHour = hhm.split(':');
+  return s.split(" - ").map((hhm) => {
+    const splitHour = hhm.split(":");
     let minute = Number(splitHour[0]) * 60;
     if (splitHour.length > 1) {
       minute += Number(splitHour[1]) * 10;
@@ -38,7 +38,7 @@ export function parseCheeseForkTestDate(s: string): Date {
 
   const r = dateRegex.exec(s);
   if (r == null) {
-    console.warn('Failed to match date regex with: ', s);
+    console.warn("Failed to match date regex with: ", s);
     return null;
   }
 
@@ -55,35 +55,38 @@ export function parseCheeseForkTestDate(s: string): Date {
  * @param jsData - Cheesefork courses_*.js data
  */
 export function parse(jsData: string): Catalog {
-  const cheeseForkPrefix = 'var courses_from_rishum = ';
+  const cheeseForkPrefix = "var courses_from_rishum = ";
 
   const hebrew = {
-    academicPoints: 'נקודות',
-    building: 'בניין',
-    courseId: 'מספר מקצוע',
-    courseName: 'שם מקצוע',
-    day: 'יום',
-    dayLetters: 'אבגדהוש',
-    faculty: 'פקולטה',
-    group: 'קבוצה',
-    hour: 'שעה',
-    lecturer_tutor: 'מרצה/מתרגל',
-    moed_a: 'מועד א',
-    moed_b: 'מועד ב',
-    notes: 'הערות',
-    num: 'מס.',
-    room: 'חדר',
-    sport: 'ספורט',
-    thoseInCharge: 'אחראים',
-    type: 'סוג',
+    academicPoints: "נקודות",
+    building: "בניין",
+    courseId: "מספר מקצוע",
+    courseName: "שם מקצוע",
+    day: "יום",
+    dayLetters: "אבגדהוש",
+    faculty: "פקולטה",
+    group: "קבוצה",
+    hour: "שעה",
+    lecturer_tutor: "מרצה/מתרגל",
+    moed_a: "מועד א",
+    moed_b: "מועד ב",
+    notes: "הערות",
+    num: "מס.",
+    room: "חדר",
+    sport: "ספורט",
+    thoseInCharge: "אחראים",
+    type: "סוג",
   };
 
-  const typeMap = new Map([['הרצאה', 'lecture'], ['תרגול', 'tutorial']]);
+  const typeMap = new Map([
+    ["הרצאה", "lecture"],
+    ["תרגול", "tutorial"],
+  ]);
 
   const facultiesByName: Map<string, Faculty> = new Map();
 
   if (!jsData.startsWith(cheeseForkPrefix)) {
-    throw new Error('Not valid cheesefork jsData - lacks expected prefix');
+    throw new Error("Not valid cheesefork jsData - lacks expected prefix");
   }
 
   const data = JSON.parse(jsData.substring(cheeseForkPrefix.length));
@@ -95,7 +98,7 @@ export function parse(jsData: string): Catalog {
       facultiesByName.set(facultyName, {
         courses: [],
         name: facultyName,
-        semester: 'cheesefork-unknown-semester',
+        semester: "cheesefork-unknown-semester",
       });
     }
 
@@ -112,8 +115,9 @@ export function parse(jsData: string): Catalog {
       testDates: [
         dataCourse.general[hebrew.moed_a],
         dataCourse.general[hebrew.moed_b],
-      ].map(parseCheeseForkTestDate)
-                     .filter((x) => x != null),
+      ]
+        .map(parseCheeseForkTestDate)
+        .filter((x) => x != null),
     };
 
     const groupFirstAppearedInMetagroup: Map<number, number> = new Map();
@@ -144,14 +148,14 @@ export function parse(jsData: string): Catalog {
       }
 
       if (!groupsById.has(groupId)) {
-        let type = '';
-        let desc = '';
+        let type = "";
+        let desc = "";
         if (facultyName === hebrew.sport) {
-          type = 'sport';
+          type = "sport";
           desc = dataSchedule[hebrew.type];
         } else {
-          type = typeMap.get(dataSchedule[hebrew.type]) ||
-              dataSchedule[hebrew.type];
+          type =
+            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type];
         }
 
         groupsById.set(groupId, {
@@ -173,7 +177,7 @@ export function parse(jsData: string): Catalog {
         endMinute: times[1],
         group,
         location:
-            dataSchedule[hebrew.building] + ' ' + dataSchedule[hebrew.room],
+          dataSchedule[hebrew.building] + " " + dataSchedule[hebrew.room],
         startMinute: times[0],
       };
 
@@ -198,9 +202,12 @@ export function parse(jsData: string): Catalog {
 }
 
 export function catalogNameFromUrl(url: string): string {
-  const raw = url.substr(url.lastIndexOf('_') + 1, 6);
-  const semesterNames:
-      {[semester: number]: string} = {1: 'Winter', 2: 'Spring', 3: 'Summer'};
+  const raw = url.substr(url.lastIndexOf("_") + 1, 6);
+  const semesterNames: { [semester: number]: string } = {
+    1: "Winter",
+    2: "Spring",
+    3: "Summer",
+  };
   const year = Number(raw.slice(0, 4));
   const semester = Number(raw.slice(4));
   let yearStr: string;
@@ -222,14 +229,14 @@ export function catalogNameFromUrl(url: string): string {
 export function getCatalogs(token: string): Promise<Array<[string, string]>> {
   return new Promise((resolve, reject) => {
     const apiURL =
-        'https://api.github.com/repos/michael-maltsev/cheese-fork/contents/courses?ref=gh-pages';
+      "https://api.github.com/repos/michael-maltsev/cheese-fork/contents/courses?ref=gh-pages";
     const req = new XMLHttpRequest();
-    req.open('GET', apiURL, true);
+    req.open("GET", apiURL, true);
     if (token) {
-      console.info('Using API token');
+      console.info("Using API token");
       // We use setRequestHeader rather than withCredentials due to CORS
       // limitations; see https://stackoverflow.com/a/21851378/993214
-      req.setRequestHeader('Authorization', 'Basic ' + btoa('lutzky:' + token));
+      req.setRequestHeader("Authorization", "Basic " + btoa("lutzky:" + token));
     }
     req.onload = () => {
       if (req.status !== 200) {
@@ -237,18 +244,20 @@ export function getCatalogs(token: string): Promise<Array<[string, string]>> {
         return;
       }
       if (token) {
-        for (const header of ['X-RateLimit-Limit', 'X-RateLimit-Remaining']) {
+        for (const header of ["X-RateLimit-Limit", "X-RateLimit-Remaining"]) {
           console.info(`${header}: ${req.getResponseHeader(header)}`);
         }
       }
       try {
         const result = JSON.parse(req.responseText);
-        const minified: string[] =
-            result.map((r: any): string => r.download_url)
-                .filter((url: string) => url.endsWith('.min.js'));
-        const tuples: Array<[string, string]> = minified.map(
-            (url: string): [string, string] => [catalogNameFromUrl(url), url]);
-        const sortedByURL = tuples.sort((a, b) => a[1] < b[1] ? -1 : 1);
+        const minified: string[] = result
+          .map((r: any): string => r.download_url)
+          .filter((url: string) => url.endsWith(".min.js"));
+        const tuples: Array<[string, string]> = minified.map((url: string): [
+          string,
+          string
+        ] => [catalogNameFromUrl(url), url]);
+        const sortedByURL = tuples.sort((a, b) => (a[1] < b[1] ? -1 : 1));
         resolve(sortedByURL);
       } catch (err) {
         reject(err);
@@ -256,7 +265,7 @@ export function getCatalogs(token: string): Promise<Array<[string, string]>> {
     };
 
     req.onerror = () => {
-      reject(Error('Network Error'));
+      reject(Error("Network Error"));
       return;
     };
 
