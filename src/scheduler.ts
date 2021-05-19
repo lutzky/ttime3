@@ -2,16 +2,16 @@ let schedulerDebugLogging = false;
 
 export function setDebug(debugMode: boolean) {
   if (debugMode) {
-    console.info('Called scheduler.setDebug with', debugMode);
+    console.info("Called scheduler.setDebug with", debugMode);
   }
   schedulerDebugLogging = debugMode;
 }
 
-import {Course, FilterSettings, Group, Schedule} from './common';
-import {eventsCollide, groupsByType} from './common';
+import { Course, FilterSettings, Group, Schedule } from "./common";
+import { eventsCollide, groupsByType } from "./common";
 
-import cartesian from './cartesian';
-import rate from './rating';
+import cartesian from "./cartesian";
+import rate from "./rating";
 
 /**
  * Returns true iff schedule has no collisions
@@ -24,21 +24,23 @@ function filterNoCollisions(schedule: Schedule): boolean {
  * Return all possible schedules
  */
 export function generateSchedules(
-    courses: Set<Course>, settings: FilterSettings): Schedule[] {
+  courses: Set<Course>,
+  settings: FilterSettings
+): Schedule[] {
   if (schedulerDebugLogging) {
-    console.time('generateSchedules');
+    console.time("generateSchedules");
   }
 
   const groupBins = Array.from(courses)
-                        .map((c) => removeForbiddenGroups(c, settings))
-                        .map(groupsByType)
-                        .reduce((a, b) => a.concat(b), []);
+    .map((c) => removeForbiddenGroups(c, settings))
+    .map(groupsByType)
+    .reduce((a, b) => a.concat(b), []);
 
   const groupProduct = cartesian(...groupBins);
   let schedules = groupProduct.map(groupsToSchedule);
 
   if (settings.noCollisions) {
-    schedules = filterWithDelta(schedules, filterNoCollisions, 'noCollisions');
+    schedules = filterWithDelta(schedules, filterNoCollisions, "noCollisions");
   }
 
   if (schedulerDebugLogging) {
@@ -50,7 +52,7 @@ export function generateSchedules(
   schedules = runAllFilters(schedules, settings);
 
   if (schedulerDebugLogging) {
-    console.timeEnd('generateSchedules');
+    console.timeEnd("generateSchedules");
   }
   return schedules;
 }
@@ -60,13 +62,16 @@ export function generateSchedules(
  * course as well.
  */
 function removeForbiddenGroups(
-    course: Course, settings: FilterSettings): Course {
+  course: Course,
+  settings: FilterSettings
+): Course {
   if (course.groups == null) {
-    console.warn('Scheduling with groupless course', course);
+    console.warn("Scheduling with groupless course", course);
     return course;
   }
   course.groups = course.groups.filter(
-      (g) => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`));
+    (g) => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`)
+  );
   return course;
 }
 
@@ -75,12 +80,15 @@ function removeForbiddenGroups(
  * it removed.
  */
 function filterWithDelta(
-    src: Schedule[], filter: (s: Schedule) => boolean,
-    filterName: string): Schedule[] {
+  src: Schedule[],
+  filter: (s: Schedule) => boolean,
+  filterName: string
+): Schedule[] {
   const result = src.filter(filter);
   if (schedulerDebugLogging) {
     console.info(
-        `Filter ${filterName} removed ${src.length - result.length} schedules`);
+      `Filter ${filterName} removed ${src.length - result.length} schedules`
+    );
   }
   return result;
 }
@@ -89,11 +97,13 @@ function filterWithDelta(
  * Filter using all filters, according to settings
  */
 function runAllFilters(
-    schedules: Schedule[], settings: FilterSettings): Schedule[] {
+  schedules: Schedule[],
+  settings: FilterSettings
+): Schedule[] {
   let result = schedules.slice();
 
   if (settings.noCollisions) {
-    result = filterWithDelta(result, filterNoCollisions, 'noCollisions');
+    result = filterWithDelta(result, filterNoCollisions, "noCollisions");
   }
 
   result = filterByRatings(result, settings);
@@ -105,26 +115,37 @@ function runAllFilters(
  * Filter schedules by ratingMin and ratingMax
  */
 function filterByRatings(
-    schedules: Schedule[], settings: FilterSettings): Schedule[] {
-  Object.keys(settings.ratingMin)
-      .forEach((r: keyof typeof settings.ratingMin) => {
-        if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
-          return;
-        }
+  schedules: Schedule[],
+  settings: FilterSettings
+): Schedule[] {
+  Object.keys(settings.ratingMin).forEach(
+    (r: keyof typeof settings.ratingMin) => {
+      if (settings.ratingMin[r] == null && settings.ratingMax[r] == null) {
+        return;
+      }
 
-        schedules = filterWithDelta(schedules, (schedule) => {
-          if (settings.ratingMin[r] != null &&
-              schedule.rating[r] < settings.ratingMin[r]) {
+      schedules = filterWithDelta(
+        schedules,
+        (schedule) => {
+          if (
+            settings.ratingMin[r] != null &&
+            schedule.rating[r] < settings.ratingMin[r]
+          ) {
             return false;
           }
-          if (settings.ratingMax[r] != null &&
-              schedule.rating[r] > settings.ratingMax[r]) {
+          if (
+            settings.ratingMax[r] != null &&
+            schedule.rating[r] > settings.ratingMax[r]
+          ) {
             return false;
           }
 
           return true;
-        }, `Rating '${r}'`);
-      });
+        },
+        `Rating '${r}'`
+      );
+    }
+  );
 
   return schedules;
 }

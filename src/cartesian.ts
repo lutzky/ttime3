@@ -10,6 +10,6 @@ export default function cartesian<T>(...arrays: T[][]): T[][] {
 
   const subCart = cartesian(...arrays.slice(1));
   return arrays[0]
-      .map((x) => subCart.map((y) => [x].concat(y)))
-      .reduce((a, b) => a.concat(b));
+    .map((x) => subCart.map((y) => [x].concat(y)))
+    .reduce((a, b) => a.concat(b));
 }
