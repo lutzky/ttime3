@@ -42,6 +42,7 @@
   },
   "scripts": {
     "test": "nyc npm run test:mocha && npm run format:check && npm run lint",
+    "test:quick": "npm run test:mocha && npm run lint",
     "test:mocha": "mocha -r ts-node/register spec/**/*.spec.ts",
     "test:watch": "npm run test:mocha -- --watch --watch-extensions ts",
     "tsc:watch": "tsc --watch",
