@@ -1,5 +1,5 @@
-import {AcademicEvent} from './common';
-import {sortEvents} from './common';
+import { AcademicEvent } from "./common";
+import { sortEvents } from "./common";
 
 /**
  * earliestStart and latestFinish are in hours (e.g. 1:30PM is 13.5).
@@ -34,7 +34,7 @@ export default function rate(events: AcademicEvent[]): ScheduleRating {
  */
 function eventBuilding(ev: AcademicEvent): string {
   if (ev.location) {
-    return ev.location.split(' ')[0];
+    return ev.location.split(" ")[0];
   } else {
     return ev.location;
   }

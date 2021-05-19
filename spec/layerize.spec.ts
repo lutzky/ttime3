@@ -1,20 +1,20 @@
-import {expect} from 'chai';
+import { expect } from "chai";
 
-import {AcademicEvent, eventsCollide} from '../src/common';
-import layerize from '../src/layerize';
+import { AcademicEvent, eventsCollide } from "../src/common";
+import layerize from "../src/layerize";
 
 // https://mochajs.org/#arrow-functions
 /* tslint:disable:only-arrow-functions */
 
-describe('Render', function() {
-  it('should correctly lay out layered events', function() {
+describe("Render", function () {
+  it("should correctly lay out layered events", function () {
     const events = [
-      {day: 1, startMinute: 5, endMinute: 25},
-      {day: 1, startMinute: 0, endMinute: 15},
-      {day: 1, startMinute: 20, endMinute: 35},
-      {day: 2, startMinute: 5, endMinute: 25},
-      {day: 2, startMinute: 0, endMinute: 15},
-      {day: 2, startMinute: 10, endMinute: 35},
+      { day: 1, startMinute: 5, endMinute: 25 },
+      { day: 1, startMinute: 0, endMinute: 15 },
+      { day: 1, startMinute: 20, endMinute: 35 },
+      { day: 2, startMinute: 5, endMinute: 25 },
+      { day: 2, startMinute: 0, endMinute: 15 },
+      { day: 2, startMinute: 10, endMinute: 35 },
     ] as AcademicEvent[];
 
     const result = layerize(events, eventsCollide);
