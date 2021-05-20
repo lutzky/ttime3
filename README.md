@@ -1,6 +1,6 @@
 # ttime3
 
-[![Build Status](https://travis-ci.org/lutzky/ttime3.svg?branch=master)](https://travis-ci.org/lutzky/ttime3)
+[![Build status](https://github.com/lutzky/ttime3/actions/workflows/workflow.yml/badge.svg)](https://github.com/lutzky/ttime3/actions/workflows/workflow.yml)
 [![codecov](https://codecov.io/gh/lutzky/ttime3/branch/master/graph/badge.svg)](https://codecov.io/gh/lutzky/ttime3)
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/lutzky/ttime3)
 
