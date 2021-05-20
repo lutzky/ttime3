@@ -226,7 +226,7 @@ export function catalogNameFromUrl(url: string): string {
  *
  * @returns [Name, URL] for all catalogs, sorted oldest-to-newest
  */
-export function getCatalogs(token: string): Promise<Array<[string, string]>> {
+export function getCatalogs(token: string): Promise<[string, string][]> {
   return new Promise((resolve, reject) => {
     const apiURL =
       "https://api.github.com/repos/michael-maltsev/cheese-fork/contents/courses?ref=gh-pages";
@@ -253,7 +253,7 @@ export function getCatalogs(token: string): Promise<Array<[string, string]>> {
         const minified: string[] = result
           .map((r: any): string => r.download_url)
           .filter((url: string) => url.endsWith(".min.js"));
-        const tuples: Array<[string, string]> = minified.map((url: string): [
+        const tuples: [string, string][] = minified.map((url: string): [
           string,
           string
         ] => [catalogNameFromUrl(url), url]);
