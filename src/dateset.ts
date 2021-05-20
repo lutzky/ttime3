@@ -1,7 +1,7 @@
 import { Course } from "./common";
 
 export default class DateSet {
-  private dates: Array<[Date, Course]>;
+  private dates: [Date, Course][];
   constructor(courses: Course[]) {
     this.dates = [];
     for (const course of courses) {
@@ -57,12 +57,12 @@ export default class DateSet {
     return true;
   }
 
-  public getDatesAndDistances(): Array<[number, Date, Course]> {
+  public getDatesAndDistances(): [number, Date, Course][] {
     if (this.dates.length === 0) {
       return [];
     }
 
-    const result: Array<[number, Date, Course]> = [
+    const result: [number, Date, Course][] = [
       [0, this.dates[0][0], this.dates[0][1]],
     ];
 

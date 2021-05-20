@@ -855,10 +855,10 @@ function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
   // 0 course ID is for custom events
   numbers.push(0);
 
-  const numsAndColors = numbers.map((num, i) => [
-    num,
-    courseColors[i],
-  ]) as Array<[number, string[]]>;
+  const numsAndColors = numbers.map((num, i) => [num, courseColors[i]]) as [
+    number,
+    string[]
+  ][];
 
   return new Map(numsAndColors);
 }

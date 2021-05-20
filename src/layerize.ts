@@ -43,8 +43,8 @@ class Layered<T> {
 export default function layerize<T>(
   objects: T[],
   collide: (objs: T[]) => boolean
-): Array<Layered<T>> {
-  const result: Array<Layered<T>> = [];
+): Layered<T>[] {
+  const result: Layered<T>[] = [];
 
   let remaining = objects.slice();
 
