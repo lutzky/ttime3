@@ -1,0 +1,34 @@
+name: TTime3 Workflow
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Install prerequisites
+        run: npm install
+      - name: Run base tests
+        run: npm test
+      - name: Build for Github Pages
+        # Test that the build works even if not deploying
+        run: npm run build
+      - name: Run browser-based tests
+        run: FIREFOX_HEADLESS=1 CHROME_HEADLESS=1 npm run karma
+      - name: Deploy (only if this is master)
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/master'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+      - uses: codecov/codecov-action@v1
+        with:
+          files: coverage/*.json
