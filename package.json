@@ -5,10 +5,10 @@
   "main": "main.js",
   "dependencies": {
     "@types/bootstrap": "^5.0.15",
-    "@types/chai": "^4.2.17",
+    "@types/chai": "^4.2.18",
     "@types/jquery": "^3.5.5",
     "@types/mocha": "^8.2.2",
-    "@types/node": "^15.3.0",
+    "@types/node": "^15.3.1",
     "@types/selectize": "^0.12.34",
     "chai": "^4.3.4",
     "js-beautify": "^1.13.13",
