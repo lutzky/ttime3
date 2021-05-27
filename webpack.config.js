@@ -27,9 +27,6 @@ module.exports = (env) => {
       disableHostCheck: true,
       host: "0.0.0.0",
     },
-    node: {
-      fs: "empty",
-    },
     module: {
       rules: [
         // all files with a `.ts` or `.tsx` extension will be handled by
