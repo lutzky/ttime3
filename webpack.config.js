@@ -15,7 +15,10 @@ module.exports = (env) => {
       filename: "ttime.js",
       library: "ttime",
       libraryTarget: "umd",
-      path: path.resolve(__dirname, isProduction ? "dist" : "dev-server/dist"),
+      path: path.resolve(
+        __dirname,
+        isProduction ? "public/dist" : "dev-server/dist"
+      ),
       publicPath: "dist/",
     },
     resolve: {
@@ -26,6 +29,7 @@ module.exports = (env) => {
     devServer: {
       disableHostCheck: true,
       host: "0.0.0.0",
+      contentBase: "static/",
     },
     module: {
       rules: [

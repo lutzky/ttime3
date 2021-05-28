@@ -11,7 +11,7 @@ import { generateSchedules } from "../src/scheduler";
 
 const algebraCourseID = 104166;
 
-import * as testData from "../testdata.json";
+import * as testData from "../static/testdata.json";
 
 export function loadTestCatalog(): Promise<Catalog> {
   return new Promise((resolve, _ /* reject */) => {
