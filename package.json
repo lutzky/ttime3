@@ -38,7 +38,7 @@
     "source-map-support": "^0.5.19",
     "ts-node": "^10.0.0",
     "tslint-config-prettier": "^1.18.0",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^4.7.0"
   },
   "scripts": {
     "test": "nyc npm run test:mocha && npm run format:check && npm run lint",
@@ -51,9 +51,9 @@
     "lint": "tslint -c tslint.json src/**/*.ts spec/**/*.ts",
     "karma": "karma start karma.unit.js",
     "karma:thorough": "TTIME_THOROUGH=1 npm run karma",
-    "start": "webpack-dev-server",
-    "start:production": "webpack-dev-server --env.production",
-    "build": "rm -rf public && webpack --env.production --progress && cp -a -v static/* public/",
+    "start": "webpack serve",
+    "start:production": "webpack serve --env production",
+    "build": "rm -rf public && webpack --env production --progress && cp -a -v static/* public/",
     "posttest": "nyc report --reporter=json"
   },
   "repository": {
