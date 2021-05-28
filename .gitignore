@@ -3,4 +3,5 @@
 .nyc_output
 
 /built
-/dist
+# Unignore /dist due to https://github.com/lutzky/ttime3/issues/97
+# /dist
