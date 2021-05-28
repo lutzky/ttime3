@@ -19,7 +19,7 @@ module.exports = (env) => {
         __dirname,
         isProduction ? "public/dist" : "dev-server/dist"
       ),
-      publicPath: "/dist/",
+      publicPath: "./dist/",
     },
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.
