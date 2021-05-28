@@ -14,15 +14,17 @@ Requirements: `npm`.
 - Run `npm install` first
 - Run `npm test` for all tests, or `npm run test:watch` to automatically rerun tests on file changes.
 - Run `npm run format:fix` to fix code style formatting.
-- Run `npm start` to run a local in a window - this will update the generated javascript when files are changed. This does not modify the production output.
-- Run `npm run build` to update the production version in `dist/`.
+- Run `npm start` to run a local in a window - this will update the generated javascript when files are changed. Using `npm run start:production` creates an optimized build more similar to that created by `npm run build`.
+- Run `npm run build` to create a production version in `public/` for local testing.
 
 To enable additional debug logging, add the parameter `?ttime_debug=1` to the URL.
 
 ## Releasing a version
 
-The `dist` directory holds a minified, no-debug-info version of the webpack. To update it, run `npm run build`. Test the output using an HTTP server of your choice, or `npm run start:production`.
+Pushing a new version to the `master` branch automatically deploys a new version into `gh-pages` using `npm run build`. This creates
 
-In the `master` branch, this directory is empty (and gitignore'd). Travis builds and deploys this automatically to the `gh-pages` branch. Other files should be identical in the `gh-pages` branch, but should not take up extra space in the git repository as they'd be represented by the same blob.
+The `public` directory holds a minified, no-debug-info version of the webpack. To create it ,manually, run `npm run build`. Test the output using an HTTP server of your choice.
 
-If Travis CI is not operating correctly, deploy manually by merging `master` into `gh-pages`, running `npm run build`, and force-adding the files in the `dist` directory.
+In the `master` branch, this directory is nonexistent (and gitignore'd). Github actions builds and deploys this automatically to the `gh-pages` branch.
+
+If Github Actions is not operating correctly, deploy manually by running `npm run build`, saving the `public` directory elsewhere, and then updating the `gh-pages` branch with its contents.
