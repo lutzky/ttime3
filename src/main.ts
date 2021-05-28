@@ -203,6 +203,13 @@ function updateForbiddenGroups() {
     ul.append(li);
   });
 
+  $("a.forbid-all-lecture").each((_, element) => {
+    updateAllOrNothingSelector(element as HTMLAnchorElement, "lecture");
+  });
+  $("a.forbid-all-tutorial").each((_, element) => {
+    updateAllOrNothingSelector(element as HTMLAnchorElement, "tutorial");
+  });
+
   $("a.forbid-link").each((_, element) => {
     const ejq = $(element);
     const groupID: string = ejq.data("groupID");
@@ -338,6 +345,48 @@ function courseLabel(course: Course): HTMLElement {
   };
   span.appendChild(infoLink);
   return span;
+}
+
+function toggleAllGroups(course: Course, type: string) {
+  const relevantGroups = course.groups.filter((g) => g.type === type);
+  if (relevantGroups.length === 0) {
+    console.info(`No ${type} groups for course ${course.id}`);
+    return;
+  }
+  const relevantForbiddenGroups = relevantGroups.filter(isGroupForbidden);
+  if (relevantGroups.length === relevantForbiddenGroups.length) {
+    // All groups are forbidden - unforbid all
+    for (const g of relevantForbiddenGroups) {
+      delForbiddenGroup(g);
+    }
+  } else {
+    // Some or none of the groups are forbidden - forbid all
+    const remainingGroups = relevantGroups.filter((g) => !isGroupForbidden(g));
+    for (const g of remainingGroups) {
+      addForbiddenGroup(g);
+    }
+  }
+}
+
+function updateAllOrNothingSelector(s: HTMLAnchorElement, type: string) {
+  const course = getCourseByID(parseInt(s.dataset.courseId, 10));
+  const relevantGroups = course.groups.filter((g) => g.type === type);
+  const relevantForbiddenGroups = relevantGroups.filter(isGroupForbidden);
+  const baseClassName = `forbid-all-${type}`;
+  switch (relevantForbiddenGroups.length) {
+    case relevantGroups.length:
+      s.className = `${baseClassName} badge badge-danger`;
+      s.title = `All ${type} groups forbidden`;
+      break;
+    case 0:
+      s.className = `${baseClassName} badge badge-success`;
+      s.title = `All ${type} groups allowed`;
+      break;
+    default:
+      s.className = `${baseClassName} badge badge-warning`;
+      s.title = `Some ${type} groups forbidden`;
+      break;
+  }
 }
 
 const courseAddButtons = new Map();
@@ -591,6 +640,22 @@ function refreshSelectedCourses() {
         })
       );
     }
+
+    const noLectures = document.createElement("a");
+    noLectures.innerHTML = "L";
+    noLectures.href = "#/";
+    noLectures.dataset.courseId = `${course.id}`;
+    noLectures.onclick = () => toggleAllGroups(course, "lecture");
+    updateAllOrNothingSelector(noLectures, "lecture");
+    li.append(noLectures);
+
+    const noTutorials = document.createElement("a");
+    noTutorials.innerHTML = "T";
+    noTutorials.href = "#/";
+    noTutorials.dataset.courseId = `${course.id}`;
+    noTutorials.onclick = () => toggleAllGroups(course, "tutorial");
+    updateAllOrNothingSelector(noTutorials, "tutorial");
+    li.append(noTutorials);
 
     li.append(btn);
     ul.append(li);
