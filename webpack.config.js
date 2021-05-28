@@ -15,11 +15,7 @@ module.exports = (env) => {
       filename: "ttime.js",
       library: "ttime",
       libraryTarget: "umd",
-      path: path.resolve(
-        __dirname,
-        isProduction ? "public/dist" : "dev-server/dist"
-      ),
-      publicPath: "./dist/",
+      path: path.resolve(__dirname, isProduction ? "public/" : "dev-server/"),
     },
     resolve: {
       // Add `.ts` and `.tsx` as a resolvable extension.
