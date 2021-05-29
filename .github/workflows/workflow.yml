@@ -52,14 +52,22 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        browser: ["chrome:headless", "firefox:headless"]
+        browser: ["chrome", "firefox"]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ env.NODE_VERSION }}
+      - uses: FedericoCarboni/setup-ffmpeg@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
         run: npm install
       - env:
-          TESTCAFE_BROWSER_LIST: ${{ matrix.browser }}
+          TESTCAFE_BROWSER_LIST: ${{ matrix.browser }}:headless
+          TESTCAFE_VIDEO_DIR: testcafe_video
         run: npm run test:e2e
+      - uses: actions/upload-artifact@v2
+        with:
+          name: testcafe_video_${{ matrix.browser }}
+          path: testcafe_video
