@@ -46,7 +46,7 @@
     "test:quick": "npm run test:mocha && npm run lint",
     "test:mocha": "mocha -r ts-node/register spec/**/*.spec.ts",
     "test:watch": "npm run test:mocha -- --watch --watch-extensions ts",
-    "test:e2e": "testcafe ${TESTCAFE_BROWSER_LIST:?} --app 'npm start' integration_tests/*.ts",
+    "test:e2e": "testcafe ${TESTCAFE_BROWSER_LIST:?} ${TESTCAFE_VIDEO_DIR:+--video ${TESTCAFE_VIDEO_DIR}} --app 'npm start' integration_tests/*.ts",
     "tsc:watch": "tsc --watch",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",

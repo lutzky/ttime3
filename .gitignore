@@ -2,3 +2,4 @@
 .*.swp
 .nyc_output
 /public
+/testcafe_video
