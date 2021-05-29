@@ -36,6 +36,7 @@
     "nyc": "^15.1.0",
     "prettier": "2.3.0",
     "source-map-support": "^0.5.19",
+    "testcafe": "^1.14.2",
     "ts-node": "^10.0.0",
     "tslint-config-prettier": "^1.18.0",
     "webpack-cli": "^4.7.0"
@@ -45,6 +46,7 @@
     "test:quick": "npm run test:mocha && npm run lint",
     "test:mocha": "mocha -r ts-node/register spec/**/*.spec.ts",
     "test:watch": "npm run test:mocha -- --watch --watch-extensions ts",
+    "test:e2e": "testcafe ${TESTCAFE_BROWSER_LIST:?} --app 'npm start' integration_tests/*.ts",
     "tsc:watch": "tsc --watch",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
