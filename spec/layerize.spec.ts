@@ -4,7 +4,7 @@ import { AcademicEvent, eventsCollide } from "../src/common";
 import layerize from "../src/layerize";
 
 // https://mochajs.org/#arrow-functions
-/* tslint:disable:only-arrow-functions */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 describe("Render", function () {
   it("should correctly lay out layered events", function () {

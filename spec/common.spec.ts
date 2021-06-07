@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { AcademicEvent, eventsCollide } from "../src/common";
 
 // https://mochajs.org/#arrow-functions
-/* tslint:disable:only-arrow-functions */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 describe("Common functions", function () {
   it("should detect when events collide", function () {

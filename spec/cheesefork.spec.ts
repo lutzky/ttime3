@@ -3,7 +3,7 @@ import { expect } from "chai";
 import * as cheesefork from "../src/cheesefork";
 
 // https://mochajs.org/#arrow-functions
-/* tslint:disable:only-arrow-functions */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 describe("Cheesefork API", function () {
   it("Should correctly convert URLs into names", function () {
@@ -60,7 +60,7 @@ describe("Cheesefork API Integration test", function () {
 
       const firstUrl = catalogs[0][1];
       const secondUrl = catalogs[1][1];
-      /* tslint:disable:no-unused-expression */
+      /* eslint-disable no-unused-expressions, @typescript-eslint/no-unused-expressions */
       expect(
         firstUrl < secondUrl,
         `Wrong sort order: ${firstUrl} came before ${secondUrl}`

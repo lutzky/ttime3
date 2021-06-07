@@ -2,7 +2,7 @@ import * as cheesefork from "./cheesefork";
 
 import { ScheduleRating } from "./rating";
 
-/* tslint:disable:max-classes-per-file */
+/* eslint-disable max-classes-per-file */
 
 export class Faculty {
   public name: string;
@@ -52,7 +52,7 @@ export class FilterSettings {
   public ratingMax: ScheduleRating;
 }
 
-/* tslint:enable:max-classes-per-file */
+/* eslint-enable max-classes-per-file */
 
 /**
  * Sorts events by start time
