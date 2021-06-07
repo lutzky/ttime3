@@ -7,7 +7,7 @@ import rate from "../src/rating";
 import { generateSchedules } from "../src/scheduler";
 
 // https://mochajs.org/#arrow-functions
-/* tslint:disable:only-arrow-functions */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 const algebraCourseID = 104166;
 

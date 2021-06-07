@@ -711,7 +711,7 @@ const customEventRegex = new RegExp(
     .join("")
 );
 
-/* tslint:disable:object-literal-sort-keys */
+/* eslint-disable  */
 const inverseDayIndex = {
   Sun: 0,
   Mon: 1,
@@ -721,7 +721,7 @@ const inverseDayIndex = {
   Fri: 5,
   Sat: 6,
 };
-/* tslint:enable:object-literal-sort-keys */
+/* eslint-enable */
 
 /**
  * Create a course with a single event

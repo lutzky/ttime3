@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { minutesToTime } from "../src/formatting";
 
 // https://mochajs.org/#arrow-functions
-/* tslint:disable:only-arrow-functions */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 describe("Formatting", function () {
   describe("time formatting", function () {

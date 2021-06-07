@@ -3,7 +3,7 @@ import { expect } from "chai";
 import cartesian from "../src/cartesian";
 
 // https://mochajs.org/#arrow-functions
-/* tslint:disable:only-arrow-functions */
+/* eslint-disable prefer-arrow/prefer-arrow-functions */
 
 let THOROUGH_TEST_MODE = false;
 
