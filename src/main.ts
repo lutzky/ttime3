@@ -21,6 +21,20 @@ import DateSet from "./dateset";
 import getNicknames from "./nicknames";
 import * as render from "./render";
 
+declare global {
+  interface Window {
+    addSelectedCourseByID: (...ids: number[]) => void;
+    catalogUrlChanged: () => void;
+    checkCustomEvents: () => void;
+    getSchedules: () => void;
+    saveSettings: () => void;
+    setCatalogUrl: (url: string) => void;
+
+    nextSchedule: () => void;
+    prevSchedule: () => void;
+  }
+}
+
 /**
  * Settings to be saved. Note that this must be serializable directly as JSON,
  * so Settings and all of the types of its member variables can't have maps
@@ -43,7 +57,7 @@ function setCatalogUrl(url: string) {
   $("#catalog-url").val(url);
   catalogUrlChanged();
 }
-(window as any).setCatalogUrl = setCatalogUrl;
+window.setCatalogUrl = setCatalogUrl;
 
 /**
  * Handler for changes to the catalog URL field
@@ -51,10 +65,10 @@ function setCatalogUrl(url: string) {
 function catalogUrlChanged() {
   saveSettings();
 }
-(window as any).catalogUrlChanged = catalogUrlChanged;
+window.catalogUrlChanged = catalogUrlChanged;
 
 const cheeseForkCatalogs = cheesefork.getCatalogs("");
-cheeseForkCatalogs.then((catalogs) => {
+void cheeseForkCatalogs.then((catalogs) => {
   for (const [catalogName, catalogUrl] of catalogs.slice().reverse()) {
     $("#cheesefork-catalog-selectors").append(
       $("<a>", {
@@ -212,7 +226,7 @@ function updateForbiddenGroups() {
 
   $("a.forbid-link").each((_, element) => {
     const ejq = $(element);
-    const groupID: string = ejq.data("groupID");
+    const groupID: string = ejq.data("groupID") as unknown as string;
 
     const isForbidden = forbiddenGroups.has(groupID);
     ejq.data("forbidden", isForbidden);
@@ -319,7 +333,7 @@ function rtlSpan(s: string): string {
 /**
  * Create a span for a course label, including info button
  */
-function courseLabel(course: Course): HTMLElement {
+function courseLabel(course: Course): HTMLSpanElement {
   const span = document.createElement("span");
   const infoLink = document.createElement("a");
   infoLink.innerHTML = expandInfoSymbol;
@@ -389,8 +403,8 @@ function updateAllOrNothingSelector(s: HTMLAnchorElement, type: string) {
   }
 }
 
-const courseAddButtons = new Map();
-const courseAddLabels = new Map();
+const courseAddButtons = new Map<number, HTMLButtonElement>();
+const courseAddLabels = new Map<number, HTMLElement>();
 
 /**
  * Write catalog selector to page.
@@ -422,7 +436,7 @@ function writeCatalogSelector() {
           addSelectedCourse(course);
         },
       });
-      courseAddButtons.set(course.id, btn);
+      courseAddButtons.set(course.id, btn as unknown as HTMLButtonElement);
       const label = courseLabel(course);
       courseAddLabels.set(course.id, label);
       const courseLi = $("<li>");
@@ -490,20 +504,20 @@ function saveSettings() {
 
   window.localStorage.setItem("ttime3_settings", JSON.stringify(settings));
 
-  (window as any).gtag("event", settings.catalogUrl, {
+  window.gtag("event", "catalog-url", {
     event_category: "saveSettings",
-    event_label: "catalog-url",
+    event_label: settings.catalogUrl,
   });
-  (window as any).gtag("event", settings.filterSettings.noCollisions, {
+  window.gtag("event", "no-collisions", {
     event_category: "saveSettings",
-    event_label: "no-collisions",
+    event_label: settings.filterSettings.noCollisions,
   });
 
   if (mainDebugLogging) {
     console.info("Saved settings:", settings);
   }
 }
-(window as any).saveSettings = saveSettings;
+window.saveSettings = saveSettings;
 
 /**
  * Get the numeric value in the given field, or return the default if
@@ -526,9 +540,9 @@ function addSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info("Selected", course);
   }
-  (window as any).gtag("event", `${course.id}`, {
+  window.gtag("event", "addCourse", {
     event_category: "SelectCourses",
-    event_label: "addCourse",
+    event_label: `${course.id}`,
   });
   selectedCourses.add(course);
   courseAddButtons.get(course.id).disabled = true;
@@ -548,11 +562,11 @@ function addSelectedCourseByID(...ids: number[]) {
     if (course) {
       addSelectedCourse(course);
     } else {
-      throw new Error("No course with ID " + id);
+      throw new Error(`No course with ID ${id}`);
     }
   });
 }
-(window as any).addSelectedCourseByID = addSelectedCourseByID;
+window.addSelectedCourseByID = addSelectedCourseByID;
 
 /**
  * Mark course as unselected.
@@ -561,9 +575,9 @@ function delSelectedCourse(course: Course) {
   if (mainDebugLogging) {
     console.info("Unselected", course);
   }
-  (window as any).gtag("event", `${course.id}`, {
+  window.gtag("event", "delCourse", {
     event_category: "SelectCourses",
-    event_label: "delCourse",
+    event_label: `${course.id}`,
   });
   selectedCourses.delete(course);
   courseAddButtons.get(course.id).disabled = false;
@@ -699,7 +713,7 @@ function checkCustomEvents() {
     elem.addClass("is-invalid");
   }
 }
-(window as any).checkCustomEvents = checkCustomEvents;
+window.checkCustomEvents = checkCustomEvents;
 
 const customEventRegex = new RegExp(
   [
@@ -822,8 +836,8 @@ function getSchedules() {
   $("#no-schedules").hide();
   $("#initial-instructions").hide();
 
-  (window as any).gtag("event", "generateSchedules");
-  (window as any).gtag("event", "generateSchedules-num-courses", {
+  window.gtag("event", "generateSchedules", {
+    event_label: "numCourses",
     value: selectedCourses.size,
   });
 
@@ -840,7 +854,7 @@ function getSchedules() {
     filterSettings: settings.filterSettings,
   });
 }
-(window as any).getSchedules = getSchedules;
+window.getSchedules = getSchedules;
 
 let possibleSchedules: Schedule[] = [];
 
@@ -872,7 +886,7 @@ function setPossibleSchedules(schedules: Schedule[]) {
 function nextSchedule() {
   goToSchedule(currentSchedule + 1);
 }
-(window as any).nextSchedule = nextSchedule;
+window.nextSchedule = nextSchedule;
 
 /**
  * Decrement the current displayed schedule
@@ -880,7 +894,7 @@ function nextSchedule() {
 function prevSchedule() {
   goToSchedule(currentSchedule - 1);
 }
-(window as any).prevSchedule = prevSchedule;
+window.prevSchedule = prevSchedule;
 
 const dayNames = [
   "Sunday",
@@ -920,10 +934,10 @@ function getCourseColorMap(courses: Set<Course>): Map<number, string[]> {
   // 0 course ID is for custom events
   numbers.push(0);
 
-  const numsAndColors = numbers.map((num, i) => [num, courseColors[i]]) as [
-    number,
-    string[]
-  ][];
+  const numsAndColors = numbers.map<[number, string[]]>((num, i) => [
+    num,
+    courseColors[i],
+  ]);
 
   return new Map(numsAndColors);
 }
@@ -1123,8 +1137,10 @@ function coursesSelectizeSetup() {
 
   // Getting the types right for selectize is difficult :/
 
-  const opts: any = [];
-  const optgroups: any = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const opts: any[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const optgroups: any[] = [];
 
   currentCatalog.forEach((faculty) => {
     optgroups.push({ label: faculty.name, value: faculty.name });
@@ -1139,7 +1155,9 @@ function coursesSelectizeSetup() {
   });
 
   selectBox.selectize({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     optgroups,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     options: opts,
     render: {
       option(data, escape) {
@@ -1147,6 +1165,7 @@ function coursesSelectizeSetup() {
         const closeTestStyle = settings.hideCoursesWithCloseTests
           ? "display: none"
           : "color: red";
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const course = getCourseByID(data.value);
         if (course.testDates) {
           course.testDates.forEach((testDate: Date) => {
@@ -1163,6 +1182,7 @@ function coursesSelectizeSetup() {
         return $("<div>", {
           class: "option",
           style: hasCloseTest ? closeTestStyle : null,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           text: escape(data.text),
         })[0].outerHTML;
       },
@@ -1213,11 +1233,7 @@ function loadSettings(s: string): Settings {
   };
 
   if (s !== "") {
-    result = $.extend(
-      true /* deep */,
-      result,
-      JSON.parse(s) as Settings
-    ) as Settings;
+    result = $.extend(true /* deep */, result, JSON.parse(s) as Settings);
   }
 
   if (mainDebugLogging) {
@@ -1352,5 +1368,5 @@ async function renderCatalog() {
   }
 }
 
-renderCatalog();
+void renderCatalog();
 showToastAgain = true;

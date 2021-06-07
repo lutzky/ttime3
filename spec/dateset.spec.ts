@@ -3,9 +3,6 @@ import { expect } from "chai";
 import { Course } from "../src/common";
 import DateSet from "../src/dateset";
 
-// https://mochajs.org/#arrow-functions
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-
 function courseWithTest(dObj: Date): Course {
   return { testDates: [dObj] } as Course;
 }

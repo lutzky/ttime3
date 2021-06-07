@@ -1,13 +1,19 @@
 let schedulerDebugLogging = false;
 
-export function setDebug(debugMode: boolean) {
+export function setDebug(debugMode: boolean): void {
   if (debugMode) {
     console.info("Called scheduler.setDebug with", debugMode);
   }
   schedulerDebugLogging = debugMode;
 }
 
-import { Course, FilterSettings, Group, Schedule } from "./common";
+import {
+  AcademicEvent,
+  Course,
+  FilterSettings,
+  Group,
+  Schedule,
+} from "./common";
 import { eventsCollide, groupsByType } from "./common";
 
 import cartesian from "./cartesian";
@@ -154,7 +160,7 @@ function filterByRatings(
  * Convert groups to a schedule
  */
 function groupsToSchedule(groups: Group[]): Schedule {
-  const e = groups.reduce((a, b) => a.concat(b.events), []);
+  const e = groups.reduce<AcademicEvent[]>((a, b) => a.concat(b.events), []);
   return {
     events: e,
     rating: null,

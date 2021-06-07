@@ -1,9 +1,6 @@
 import { expect } from "chai";
 import { minutesToTime } from "../src/formatting";
 
-// https://mochajs.org/#arrow-functions
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-
 describe("Formatting", function () {
   describe("time formatting", function () {
     const testCases = [
@@ -16,7 +13,7 @@ describe("Formatting", function () {
       { minutes: 780, time: "13:00" },
     ];
     testCases.forEach((tc) => {
-      it("should format " + tc.minutes + " as " + tc.time, function () {
+      it(`should format ${tc.minutes} as ${tc.time}`, function () {
         expect(minutesToTime(tc.minutes)).to.equal(tc.time);
       });
     });

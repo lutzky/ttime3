@@ -24,7 +24,7 @@ export function renderSchedule(
   target: HTMLElement,
   schedule: Schedule,
   courseColors: Map<number, string[]>
-) {
+): void {
   target.innerHTML = "";
 
   const earliest = getEarliest(schedule);
@@ -57,7 +57,7 @@ export function renderSchedule(
 
 let addForbiddenGroup: (g: Group) => void = null;
 
-export function setAddForbiddenGroupCallback(f: (g: Group) => void) {
+export function setAddForbiddenGroupCallback(f: (g: Group) => void): void {
   addForbiddenGroup = f;
 }
 

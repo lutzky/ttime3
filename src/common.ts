@@ -57,7 +57,7 @@ export class FilterSettings {
 /**
  * Sorts events by start time
  */
-export function sortEvents(events: AcademicEvent[]) {
+export function sortEvents(events: AcademicEvent[]): void {
   events.sort((a, b) => {
     if (a.day !== b.day) {
       return a.day - b.day;
@@ -96,7 +96,7 @@ export function loadCatalog(url: string): Promise<Catalog> {
         let result: Catalog = null;
         try {
           if (req.responseText[0] === "[") {
-            result = JSON.parse(req.responseText);
+            result = JSON.parse(req.responseText) as Catalog;
           } else {
             result = cheesefork.parse(req.responseText);
             for (const faculty of result) {
@@ -121,10 +121,16 @@ export function loadCatalog(url: string): Promise<Catalog> {
   });
 }
 
+interface DateTuple {
+  year: number;
+  month: number;
+  day: number;
+}
+
 /**
- * Convert {year,month,day} tuples to Date objects, if necessary
+ * Convert DateTuple objects to Date objects, if necessary
  */
-function fixDate(d: any): Date {
+function fixDate(d: Date | DateTuple): Date {
   if (d instanceof Date) {
     return d;
   }
@@ -135,7 +141,7 @@ function fixDate(d: any): Date {
  * Add back-links to catalog objects (course -> faculty, group -> course, etc.)
  * Also, fix dates as necessary
  */
-export function fixRawCatalog(catalog: Catalog) {
+export function fixRawCatalog(catalog: Catalog): void {
   catalog.forEach((faculty) => {
     faculty.courses.forEach((course) => {
       course.faculty = faculty;
@@ -160,7 +166,7 @@ export function fixRawCatalog(catalog: Catalog) {
  * Return course's groups as an array of arrays, split by type
  */
 export function groupsByType(course: Course): Group[][] {
-  const m = new Map();
+  const m = new Map<string, Group[]>();
   if (!course.groups) {
     return [];
   }

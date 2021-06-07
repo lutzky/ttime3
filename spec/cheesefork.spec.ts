@@ -2,9 +2,6 @@ import { expect } from "chai";
 
 import * as cheesefork from "../src/cheesefork";
 
-// https://mochajs.org/#arrow-functions
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-
 describe("Cheesefork API", function () {
   it("Should correctly convert URLs into names", function () {
     expect(
@@ -27,11 +24,13 @@ describe("Cheesefork API", function () {
 });
 
 function getFlag(name: string): string {
-  const karma = (window as any).__karma__;
+  // eslint-disable-next-line
+  const karma = (window as any).__karma__ as unknown as any;
   if (!karma) {
     return "";
   }
-  const args = karma.config.args;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  const args = karma.config.args as string[];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--" + name) {
       return args[i + 1];

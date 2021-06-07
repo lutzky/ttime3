@@ -1,4 +1,5 @@
-const ctx: Worker = self as any;
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+const ctx: Worker = self as unknown as Worker;
 
 import { generateSchedules, setDebug } from "./scheduler";
 
