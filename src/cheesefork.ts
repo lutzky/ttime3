@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AcademicEvent, Catalog, Course, Faculty, Group } from "./common";
 
 /**
@@ -89,10 +91,10 @@ export function parse(jsData: string): Catalog {
     throw new Error("Not valid cheesefork jsData - lacks expected prefix");
   }
 
-  const data = JSON.parse(jsData.substring(cheeseForkPrefix.length));
+  const data = JSON.parse(jsData.substring(cheeseForkPrefix.length)) as any[];
 
   data.forEach((dataCourse: any) => {
-    const facultyName = dataCourse.general[hebrew.faculty];
+    const facultyName = dataCourse.general[hebrew.faculty] as string;
 
     if (!facultiesByName.has(facultyName)) {
       facultiesByName.set(facultyName, {
@@ -109,9 +111,9 @@ export function parse(jsData: string): Catalog {
       faculty,
       groups: [],
       id: Number(dataCourse.general[hebrew.courseId]),
-      lecturerInCharge: dataCourse.general[hebrew.thoseInCharge],
-      name: dataCourse.general[hebrew.courseName],
-      notes: dataCourse.general[hebrew.notes],
+      lecturerInCharge: dataCourse.general[hebrew.thoseInCharge] as string,
+      name: dataCourse.general[hebrew.courseName] as string,
+      notes: dataCourse.general[hebrew.notes] as string,
       testDates: [
         dataCourse.general[hebrew.moed_a],
         dataCourse.general[hebrew.moed_b],
@@ -124,7 +126,7 @@ export function parse(jsData: string): Catalog {
 
     const groupsById: Map<number, Group> = new Map();
 
-    dataCourse.schedule.forEach((dataSchedule: any) => {
+    (dataCourse.schedule as any[]).forEach((dataSchedule: any) => {
       /*
        * In CheeseFork data, groups are repeated according to
        * "groups-you-should-sign-up-to". This is denoted as "group" in the data,
@@ -137,8 +139,8 @@ export function parse(jsData: string): Catalog {
        * that is, any group with a number we've seen before, but a metagroup we
        * haven't seen.
        */
-      const metaGroupId = dataSchedule[hebrew.group];
-      const groupId = dataSchedule[hebrew.num];
+      const metaGroupId = dataSchedule[hebrew.group] as number;
+      const groupId = dataSchedule[hebrew.num] as number;
 
       if (!groupFirstAppearedInMetagroup.has(groupId)) {
         groupFirstAppearedInMetagroup.set(groupId, metaGroupId);
@@ -152,10 +154,10 @@ export function parse(jsData: string): Catalog {
         let desc = "";
         if (facultyName === hebrew.sport) {
           type = "sport";
-          desc = dataSchedule[hebrew.type];
+          desc = dataSchedule[hebrew.type] as string;
         } else {
-          type =
-            typeMap.get(dataSchedule[hebrew.type]) || dataSchedule[hebrew.type];
+          type = (typeMap.get(dataSchedule[hebrew.type]) ||
+            dataSchedule[hebrew.type]) as string;
         }
 
         groupsById.set(groupId, {
@@ -177,12 +179,13 @@ export function parse(jsData: string): Catalog {
         endMinute: times[1],
         group,
         location:
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           dataSchedule[hebrew.building] + " " + dataSchedule[hebrew.room],
         startMinute: times[0],
       };
 
       {
-        const t = dataSchedule[hebrew.lecturer_tutor];
+        const t = dataSchedule[hebrew.lecturer_tutor] as string;
         if (t && !group.teachers.includes(t)) {
           group.teachers.push(t);
         }
@@ -219,6 +222,10 @@ export function catalogNameFromUrl(url: string): string {
   return `${semesterNames[semester]} ${yearStr} (CheeseFork)`;
 }
 
+interface GHContentsJSONEntry {
+  download_url: string;
+}
+
 /**
  * Get all Cheesefork catalogs
  *
@@ -249,9 +256,9 @@ export function getCatalogs(token: string): Promise<[string, string][]> {
         }
       }
       try {
-        const result = JSON.parse(req.responseText);
+        const result = JSON.parse(req.responseText) as GHContentsJSONEntry[];
         const minified: string[] = result
-          .map((r: any): string => r.download_url)
+          .map((r: GHContentsJSONEntry): string => r.download_url)
           .filter((url: string) => url.endsWith(".min.js"));
         const tuples: [string, string][] = minified.map((url: string): [
           string,

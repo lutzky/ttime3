@@ -6,17 +6,14 @@ import { ScheduleRating } from "../src/rating";
 import rate from "../src/rating";
 import { generateSchedules } from "../src/scheduler";
 
-// https://mochajs.org/#arrow-functions
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-
 const algebraCourseID = 104166;
 
 import * as testData from "../static/testdata.json";
 
 export function loadTestCatalog(): Promise<Catalog> {
   return new Promise((resolve, _ /* reject */) => {
-    const testDataCopy = JSON.parse(JSON.stringify(testData));
-    const result: Catalog = testDataCopy as any as Catalog;
+    const testDataCopy = JSON.parse(JSON.stringify(testData)) as Catalog;
+    const result: Catalog = testDataCopy;
     fixRawCatalog(result);
     resolve(result);
   });
@@ -52,7 +49,7 @@ describe("Scheduler", function () {
     let catalog: Catalog = null;
     let algebra: Course = null;
     beforeEach((done) => {
-      loadTestCatalog().then((c) => {
+      void loadTestCatalog().then((c) => {
         catalog = c;
         algebra = catalog[0].courses.find(
           (course) => course.id === algebraCourseID
@@ -81,7 +78,7 @@ describe("Scheduler", function () {
       ]);
       schedules.forEach((schedule) => {
         expect(schedule.events.length).to.equal(2);
-        const typeCounts = new Map();
+        const typeCounts = new Map<string, number>();
         schedule.events.forEach((ev) => {
           const type = ev.group.type;
           if (!typeCounts.has(type)) {

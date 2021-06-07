@@ -3,13 +3,11 @@ import { expect } from "chai";
 import cartesian from "../src/cartesian";
 
 // https://mochajs.org/#arrow-functions
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
-
 let THOROUGH_TEST_MODE = false;
 
-declare var ttime_thorough: boolean;
+declare const ttimeThorough: boolean;
 
-if (typeof ttime_thorough !== "undefined") {
+if (typeof ttimeThorough !== "undefined") {
   console.info("Thorough test mode active");
   THOROUGH_TEST_MODE = true;
 }
