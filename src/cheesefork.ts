@@ -260,10 +260,9 @@ export function getCatalogs(token: string): Promise<[string, string][]> {
         const minified: string[] = result
           .map((r: GHContentsJSONEntry): string => r.download_url)
           .filter((url: string) => url.endsWith(".min.js"));
-        const tuples: [string, string][] = minified.map((url: string): [
-          string,
-          string
-        ] => [catalogNameFromUrl(url), url]);
+        const tuples: [string, string][] = minified.map(
+          (url: string): [string, string] => [catalogNameFromUrl(url), url]
+        );
         const sortedByURL = tuples.sort((a, b) => (a[1] < b[1] ? -1 : 1));
         resolve(sortedByURL);
       } catch (err) {
