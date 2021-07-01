@@ -23,7 +23,7 @@
     "mocha": "^9.0.1",
     "ts-loader": "^9.2.2",
     "ts-node": "^10.0.0",
-    "typescript": "^4.3.2",
+    "typescript": "^4.3.5",
     "typescript-formatter": "^7.2.2",
     "webpack": "^5.41.1",
     "webpack-dev-server": "^3.11.2",
