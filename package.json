@@ -4,7 +4,7 @@
   "description": "TTime pure-JS implementation",
   "main": "main.js",
   "dependencies": {
-    "@types/bootstrap": "^5.0.15",
+    "@types/bootstrap": "^5.0.16",
     "@types/chai": "^4.2.18",
     "@types/jquery": "^3.5.5",
     "@types/mocha": "^8.2.2",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.1",
-    "@types/gtag.js": "^0.0.5",
+    "@types/gtag.js": "^0.0.6",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
     "eslint": "^7.29.0",
