@@ -5,7 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "@types/bootstrap": "^5.0.16",
-    "@types/chai": "^4.2.19",
+    "@types/chai": "^4.2.21",
     "@types/jquery": "^3.5.5",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.12.0",
