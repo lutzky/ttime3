@@ -8,7 +8,7 @@
     "@types/chai": "^4.2.21",
     "@types/jquery": "^3.5.6",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.4.9",
+    "@types/node": "^16.7.10",
     "@types/selectize": "^0.12.35",
     "chai": "^4.3.4",
     "js-beautify": "^1.14.0",
