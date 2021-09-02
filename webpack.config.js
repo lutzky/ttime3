@@ -23,9 +23,9 @@ module.exports = (env) => {
       modules: ["node_modules"],
     },
     devServer: {
-      disableHostCheck: true,
+      allowedHosts: "all",
       host: "0.0.0.0",
-      contentBase: "static/",
+      static: "static/",
     },
     module: {
       rules: [
