@@ -1,0 +1,43 @@
+name: Deploy CI
+
+env:
+  NODE_VERSION: 16.x # TODO: synchronize with workflow.yml
+
+on:
+  issue_comment:
+    types: [created]
+  push:
+    branches-ignore:
+      - master
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+jobs:
+  release:
+    name: Deploy website
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && (contains(github.event.comment.body, 'Deploy') || contains(github.event.comment.body, 'deploy') || github.event_name == 'push' || github.event_name == 'pull_request')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Install Surge.sh
+        run: npm install -g surge
+      - name: Build static site
+        run: npm run build
+      - name: Deploy
+        uses: koj-co/deploy-pr-action@v1.0.1
+        with:
+          prefix: ttime # Prefix for deployment URL
+          distDir: public # Path to dist directory
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub token
+          SURGE_LOGIN: ${{ secrets.SURGE_LOGIN }} # Surge.sh email
+          SURGE_TOKEN: ${{ secrets.SURGE_TOKEN }} # Surge.sh token
