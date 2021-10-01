@@ -43,7 +43,7 @@
     "nyc": "^15.1.0",
     "prettier": "^2.4.1",
     "source-map-support": "^0.5.20",
-    "testcafe": "^1.15.3",
+    "testcafe": "^1.16.0",
     "ts-node": "^10.2.1",
     "webpack-cli": "^4.8.0"
   },
