@@ -2,6 +2,37 @@ import { expect } from "chai";
 
 import * as cheesefork from "../src/cheesefork";
 
+describe("Cheesefork Utilities", function () {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const testCases: Array<[string, any]> = [
+    ["var courses_from_rishum = [1]", [1]],
+    ["var courses_from_rishum = [[1,2]]", [[1, 2]]],
+    ['var courses_from_rishum = [{"hello":"world"}]', [{ hello: "world" }]],
+    ['var courses_from_rishum = JSON.parse("[1]")', [1]],
+    [
+      String.raw`var courses_from_rishum = JSON.parse("[{\"hello\":\"world\"}]")`,
+      [{ hello: "world" }],
+    ],
+    [
+      `var courses_from_rishum = JSON.parse('[{"hello":"world"}]')`,
+      [{ hello: "world" }],
+    ],
+  ];
+
+  const deserialize = cheesefork._private.deserialize;
+
+  testCases.forEach((testCase) =>
+    it(`Should correctly deserialize cheesefork-style JSON: ${testCase[0]}`, function () {
+      const data = testCase[0];
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const want = testCase[1];
+
+      const got = deserialize(data);
+      expect(got).to.deep.equal(want);
+    })
+  );
+});
+
 describe("Cheesefork API", function () {
   it("Should correctly convert URLs into names", function () {
     expect(
@@ -66,4 +97,45 @@ describe("Cheesefork API Integration test", function () {
       ).to.be.true;
     });
   });
+
+  const catalogsToTest = [
+    "201701",
+    "201901",
+    "202001",
+    "202002",
+    "202101",
+    "202102",
+  ];
+
+  catalogsToTest.forEach((catalogID) =>
+    it(`Should successfully parse catalog ${catalogID}`, function () {
+      this.timeout(10000);
+      if (typeof XMLHttpRequest === "undefined") {
+        // We intend to test the correct usage of XMLHttpRequest in the browser;
+        // node doesn't have XMLHttpRequest, and emulating it won't be useful,
+        // so we just skip. This test only runs in karma.
+        this.skip();
+        return null;
+      }
+
+      return new Promise((resolve, reject) => {
+        const catalogURL = `https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_${catalogID}.min.js`;
+
+        const req = new XMLHttpRequest();
+        req.open("GET", catalogURL, true);
+
+        req.onload = () => {
+          if (req.status !== 200) {
+            reject(Error(`HTTP ${req.status}: ${req.statusText}`));
+            return;
+          }
+          resolve(req.responseText);
+        };
+        req.send();
+      }).then((cheeseForkData: string) => {
+        const faculties = cheesefork.parse(cheeseForkData);
+        expect(faculties.length).to.be.greaterThan(5);
+      });
+    })
+  );
 });

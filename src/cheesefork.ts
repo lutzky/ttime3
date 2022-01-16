@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AcademicEvent, Catalog, Course, Faculty, Group } from "./common";
+import * as json5 from "json5";
 
 /**
  * This module implements support for importing data from cheeseFork
@@ -51,14 +52,47 @@ export function parseCheeseForkTestDate(s: string): Date {
   return new Date(year, month - 1, day);
 }
 
+const _exported_for_testing_only = {
+  deserialize: deserialize,
+};
+export { _exported_for_testing_only as _private };
+
+function deserialize(jsData: string): any[] {
+  const rawJSPrefix = "var courses_from_rishum = [";
+  const jsonParsePrefix = "var courses_from_rishum = JSON.parse(";
+
+  let rawJSON = "";
+
+  if (jsData.startsWith(rawJSPrefix)) {
+    rawJSON = jsData.substring(rawJSPrefix.length - 1 /* include initial [ */);
+  } else if (jsData.startsWith(jsonParsePrefix)) {
+    const rawEscapedJSON = jsData.substring(
+      jsonParsePrefix.length,
+      jsData.length - 1 /* drop trailing ) */
+    );
+
+    // The external string is single-quoted, but occasionally contains escape
+    // sequences, e.g. JSON.parse('{"\\\"":0}'). Unescaping it directly is error-prone,
+    // so we use JSON.parse ourselves; however, the JSON standard forbids single-quoted
+    // strings, so we use JSON5 in this case.
+
+    rawJSON = json5.parse(rawEscapedJSON);
+  }
+
+  if (rawJSON == "") {
+    throw new Error("Not valid cheesefork jsData - lacks expected prefix");
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return JSON.parse(rawJSON);
+}
+
 /**
  * Parse cheesefork data
  *
  * @param jsData - Cheesefork courses_*.js data
  */
 export function parse(jsData: string): Catalog {
-  const cheeseForkPrefix = "var courses_from_rishum = ";
-
   const hebrew = {
     academicPoints: "נקודות",
     building: "בניין",
@@ -86,12 +120,7 @@ export function parse(jsData: string): Catalog {
   ]);
 
   const facultiesByName: Map<string, Faculty> = new Map();
-
-  if (!jsData.startsWith(cheeseForkPrefix)) {
-    throw new Error("Not valid cheesefork jsData - lacks expected prefix");
-  }
-
-  const data = JSON.parse(jsData.substring(cheeseForkPrefix.length)) as any[];
+  const data = deserialize(jsData);
 
   data.forEach((dataCourse: any) => {
     const facultyName = dataCourse.general[hebrew.faculty] as string;
