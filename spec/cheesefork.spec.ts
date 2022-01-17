@@ -49,8 +49,11 @@ describe("Cheesefork API", function () {
 
   it("Should correctly convert test dates", function () {
     expect(
-      cheesefork.parseCheeseForkTestDate("בתאריך 02.02.2020 יום א")
+      cheesefork._private.parseTestDate("בתאריך 02.02.2020 יום א")
     ).to.deep.equal(new Date(2020, 1, 2));
+    expect(
+      cheesefork._private.parseTestDate("13-02-2022")
+    ).to.deep.equal(new Date(2022, 1, 13));
   });
 });
 

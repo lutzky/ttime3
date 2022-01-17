@@ -27,14 +27,14 @@ function parseCheeseForkHour(s: string): number[] {
   });
 }
 
-const dateRegex = /([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{4})/;
-
 /**
  * Parse a cheesefork-format test date
  *
  * @param s - "Bla bla bla DD.MM.YYYY Bla bla bla"
  */
-export function parseCheeseForkTestDate(s: string): Date {
+function parseTestDate(s: string): Date {
+  const dateRegex = /([0-9]{1,2})[\-\.]([0-9]{1,2})[\-\.]([0-9]{4})/;
+
   if (!s) {
     return null;
   }
@@ -54,6 +54,7 @@ export function parseCheeseForkTestDate(s: string): Date {
 
 const _exported_for_testing_only = {
   deserialize: deserialize,
+  parseTestDate: parseTestDate,
 };
 export { _exported_for_testing_only as _private };
 
@@ -147,7 +148,7 @@ export function parse(jsData: string): Catalog {
         dataCourse.general[hebrew.moed_a],
         dataCourse.general[hebrew.moed_b],
       ]
-        .map(parseCheeseForkTestDate)
+        .map(parseTestDate)
         .filter((x) => x != null),
     };
 
