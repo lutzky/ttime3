@@ -51,9 +51,16 @@ describe("Cheesefork API", function () {
     expect(
       cheesefork._private.parseTestDate("בתאריך 02.02.2020 יום א")
     ).to.deep.equal(new Date(2020, 1, 2));
-    expect(
-      cheesefork._private.parseTestDate("13-02-2022")
-    ).to.deep.equal(new Date(2022, 1, 13));
+    expect(cheesefork._private.parseTestDate("13-02-2022")).to.deep.equal(
+      new Date(2022, 1, 13)
+    );
+  });
+
+  it("Should parse days of the week", function () {
+    expect(cheesefork._private.parseDayOfWeek("ג")).to.equal(2);
+    expect(cheesefork._private.parseDayOfWeek("ש")).to.equal(6);
+    expect(cheesefork._private.parseDayOfWeek("שלישי")).to.equal(2);
+    expect(cheesefork._private.parseDayOfWeek("שבת")).to.equal(6);
   });
 });
 

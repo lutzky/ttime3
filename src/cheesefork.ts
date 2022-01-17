@@ -55,6 +55,7 @@ function parseTestDate(s: string): Date {
 const _exported_for_testing_only = {
   deserialize: deserialize,
   parseTestDate: parseTestDate,
+  parseDayOfWeek: parseDayOfWeek,
 };
 export { _exported_for_testing_only as _private };
 
@@ -88,33 +89,32 @@ function deserialize(jsData: string): any[] {
   return JSON.parse(rawJSON);
 }
 
+const hebrew = {
+  academicPoints: "נקודות",
+  building: "בניין",
+  courseId: "מספר מקצוע",
+  courseName: "שם מקצוע",
+  day: "יום",
+  faculty: "פקולטה",
+  group: "קבוצה",
+  hour: "שעה",
+  lecturer_tutor: "מרצה/מתרגל",
+  moed_a: "מועד א",
+  moed_b: "מועד ב",
+  notes: "הערות",
+  num: "מס.",
+  room: "חדר",
+  sport: "ספורט",
+  thoseInCharge: "אחראים",
+  type: "סוג",
+};
+
 /**
  * Parse cheesefork data
  *
  * @param jsData - Cheesefork courses_*.js data
  */
 export function parse(jsData: string): Catalog {
-  const hebrew = {
-    academicPoints: "נקודות",
-    building: "בניין",
-    courseId: "מספר מקצוע",
-    courseName: "שם מקצוע",
-    day: "יום",
-    dayLetters: "אבגדהוש",
-    faculty: "פקולטה",
-    group: "קבוצה",
-    hour: "שעה",
-    lecturer_tutor: "מרצה/מתרגל",
-    moed_a: "מועד א",
-    moed_b: "מועד ב",
-    notes: "הערות",
-    num: "מס.",
-    room: "חדר",
-    sport: "ספורט",
-    thoseInCharge: "אחראים",
-    type: "סוג",
-  };
-
   const typeMap = new Map([
     ["הרצאה", "lecture"],
     ["תרגול", "tutorial"],
@@ -205,7 +205,7 @@ export function parse(jsData: string): Catalog {
       const times = parseCheeseForkHour(dataSchedule[hebrew.hour]);
 
       const event: AcademicEvent = {
-        day: hebrew.dayLetters.indexOf(dataSchedule[hebrew.day]),
+        day: parseDayOfWeek(dataSchedule[hebrew.day]),
         endMinute: times[1],
         group,
         location:
@@ -232,6 +232,17 @@ export function parse(jsData: string): Catalog {
   });
 
   return Array.from(facultiesByName.values());
+}
+
+function parseDayOfWeek(hebrewDay: string): number {
+  const dayLetters = "אבגדהוש";
+  const dayNames = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+
+  const result = dayLetters.indexOf(hebrewDay);
+  if (result != -1) {
+    return result;
+  }
+  return dayNames.indexOf(hebrewDay);
 }
 
 export function catalogNameFromUrl(url: string): string {
