@@ -2,6 +2,66 @@ import { expect } from "chai";
 
 import * as cheesefork from "../src/cheesefork";
 
+describe("Cheesefork parser", function () {
+  it("Should correctly convert test dates", function () {
+    expect(
+      cheesefork._private.parseTestDate("בתאריך 02.02.2020 יום א")
+    ).to.deep.equal(new Date(2020, 1, 2));
+    expect(cheesefork._private.parseTestDate("13-02-2022")).to.deep.equal(
+      new Date(2022, 1, 13)
+    );
+  });
+
+  it("Should parse days of the week", function () {
+    expect(cheesefork._private.parseDayOfWeek("ג")).to.equal(2);
+    expect(cheesefork._private.parseDayOfWeek("ש")).to.equal(6);
+    expect(cheesefork._private.parseDayOfWeek("שלישי")).to.equal(2);
+    expect(cheesefork._private.parseDayOfWeek("שבת")).to.equal(6);
+  });
+
+  it("Should parse pre-202002 hours", function () {
+    expect(cheesefork._private.parseHour("12:3 - 14:3")).to.deep.equal([
+      12 * 60 + 30,
+      14 * 60 + 30,
+    ]);
+    expect(cheesefork._private.parseHour("12 - 14:3")).to.deep.equal([
+      12 * 60,
+      14 * 60 + 30,
+    ]);
+    expect(cheesefork._private.parseHour("12:3 - 14")).to.deep.equal([
+      12 * 60 + 30,
+      14 * 60,
+    ]);
+    expect(cheesefork._private.parseHour("12 - 14")).to.deep.equal([
+      12 * 60,
+      14 * 60,
+    ]);
+  });
+
+  it("Should parse post-202002 hours", function () {
+    expect(cheesefork._private.parseHour("12:30 - 14:30")).to.deep.equal([
+      12 * 60 + 30,
+      14 * 60 + 30,
+    ]);
+    expect(cheesefork._private.parseHour("12:00 - 14:30")).to.deep.equal([
+      12 * 60,
+      14 * 60 + 30,
+    ]);
+    expect(cheesefork._private.parseHour("12:30 - 14:00")).to.deep.equal([
+      12 * 60 + 30,
+      14 * 60,
+    ]);
+    expect(cheesefork._private.parseHour("12:00 - 14:00")).to.deep.equal([
+      12 * 60,
+      14 * 60,
+    ]);
+    expect(cheesefork._private.parseHour("17:15 - 18:45")).to.deep.equal([
+      17 * 60 + 15,
+      18 * 60 + 45,
+    ]);
+  });
+});
+
 describe("Cheesefork Utilities", function () {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const testCases: Array<[string, any]> = [
@@ -45,22 +105,6 @@ describe("Cheesefork API", function () {
         "https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201801.min.js"
       )
     ).to.equal("Winter 2018/19 (CheeseFork)");
-  });
-
-  it("Should correctly convert test dates", function () {
-    expect(
-      cheesefork._private.parseTestDate("בתאריך 02.02.2020 יום א")
-    ).to.deep.equal(new Date(2020, 1, 2));
-    expect(cheesefork._private.parseTestDate("13-02-2022")).to.deep.equal(
-      new Date(2022, 1, 13)
-    );
-  });
-
-  it("Should parse days of the week", function () {
-    expect(cheesefork._private.parseDayOfWeek("ג")).to.equal(2);
-    expect(cheesefork._private.parseDayOfWeek("ש")).to.equal(6);
-    expect(cheesefork._private.parseDayOfWeek("שלישי")).to.equal(2);
-    expect(cheesefork._private.parseDayOfWeek("שבת")).to.equal(6);
   });
 });
 
