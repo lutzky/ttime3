@@ -12,16 +12,17 @@ import * as json5 from "json5";
 /**
  * Parse a cheesefork-format hour
  *
- * @param s - "HH:M - HH:M", where M is tens of minutes
+ * @param s - Either "HH:MM - HH:MM" or "HH:M - HH:M", where M is tens of minutes
  *
  * @returns Minutes since midnight
  */
-function parseCheeseForkHour(s: string): number[] {
+function parseHour(s: string): number[] {
   return s.split(" - ").map((hhm) => {
     const splitHour = hhm.split(":");
     let minute = Number(splitHour[0]) * 60;
     if (splitHour.length > 1) {
-      minute += Number(splitHour[1]) * 10;
+      const minuteMultiplier = splitHour[1].length == 1 ? 10 : 1;
+      minute += Number(splitHour[1]) * minuteMultiplier;
     }
     return minute;
   });
@@ -56,6 +57,7 @@ const _exported_for_testing_only = {
   deserialize: deserialize,
   parseTestDate: parseTestDate,
   parseDayOfWeek: parseDayOfWeek,
+  parseHour: parseHour,
 };
 export { _exported_for_testing_only as _private };
 
@@ -202,7 +204,7 @@ export function parse(jsData: string): Catalog {
 
       const group = groupsById.get(groupId);
 
-      const times = parseCheeseForkHour(dataSchedule[hebrew.hour]);
+      const times = parseHour(dataSchedule[hebrew.hour]);
 
       const event: AcademicEvent = {
         day: parseDayOfWeek(dataSchedule[hebrew.day]),
