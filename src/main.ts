@@ -692,7 +692,7 @@ schedulerWorker.onmessage = (e: MessageEvent) => {
   if (e.data == null) {
     $("#exception-occurred-scheduling").show();
   } else {
-    setPossibleSchedules(e.data);
+    setPossibleSchedules(e.data as Schedule[]);
   }
 };
 
@@ -1166,7 +1166,7 @@ function coursesSelectizeSetup() {
           ? "display: none"
           : "color: red";
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const course = getCourseByID(data.value);
+        const course = getCourseByID(data.value as number);
         if (course.testDates) {
           course.testDates.forEach((testDate: Date) => {
             if (
@@ -1183,7 +1183,7 @@ function coursesSelectizeSetup() {
           class: "option",
           style: hasCloseTest ? closeTestStyle : null,
           // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          text: escape(data.text),
+          text: escape(data.text as string),
         })[0].outerHTML;
       },
     },
