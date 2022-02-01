@@ -188,8 +188,9 @@ export function parse(jsData: string): Catalog {
           type = "sport";
           desc = dataSchedule[hebrew.type] as string;
         } else {
-          type = (typeMap.get(dataSchedule[hebrew.type]) ||
-            dataSchedule[hebrew.type]) as string;
+          type =
+            typeMap.get(dataSchedule[hebrew.type] as string) ||
+            (dataSchedule[hebrew.type] as string);
         }
 
         groupsById.set(groupId, {
@@ -204,10 +205,10 @@ export function parse(jsData: string): Catalog {
 
       const group = groupsById.get(groupId);
 
-      const times = parseHour(dataSchedule[hebrew.hour]);
+      const times = parseHour(dataSchedule[hebrew.hour] as string);
 
       const event: AcademicEvent = {
-        day: parseDayOfWeek(dataSchedule[hebrew.day]),
+        day: parseDayOfWeek(dataSchedule[hebrew.day] as string),
         endMinute: times[1],
         group,
         location:
