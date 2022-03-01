@@ -6,7 +6,7 @@
   "dependencies": {
     "@types/bootstrap": "^5.1.8",
     "@types/chai": "^4.3.0",
-    "@types/jquery": "^3.5.13",
+    "@types/jquery": "^3.5.14",
     "@types/mocha": "^9.0.0",
     "@types/node": "^17.0.13",
     "@types/selectize": "^0.12.35",
