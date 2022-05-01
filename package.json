@@ -4,7 +4,7 @@
   "description": "TTime pure-JS implementation",
   "main": "main.js",
   "dependencies": {
-    "@types/bootstrap": "^5.1.8",
+    "@types/bootstrap": "^5.1.10",
     "@types/chai": "^4.3.0",
     "@types/jquery": "^3.5.14",
     "@types/mocha": "^9.0.0",
@@ -35,7 +35,7 @@
     "@types/json5": "^2.2.0",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.13.0",
-    "eslint": "^8.12.0",
+    "eslint": "^8.14.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-jsdoc": "^37.9.5",
     "eslint-plugin-prefer-arrow": "^1.2.3",
