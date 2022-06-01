@@ -39,7 +39,7 @@
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-jsdoc": "^39.3.2",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "eslint-plugin-react": "^7.29.4",
+    "eslint-plugin-react": "^7.30.0",
     "git-hooks": "^1.1.10",
     "json5": "^2.2.1",
     "nyc": "^15.1.0",
