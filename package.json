@@ -37,7 +37,7 @@
     "@typescript-eslint/parser": "^5.30.0",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.4.0",
-    "eslint-plugin-jsdoc": "^39.3.3",
+    "eslint-plugin-jsdoc": "^39.3.4",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.30.1",
     "git-hooks": "^1.1.10",
