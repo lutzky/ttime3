@@ -4,7 +4,7 @@
   "description": "TTime pure-JS implementation",
   "main": "main.js",
   "dependencies": {
-    "@types/bootstrap": "^5.1.12",
+    "@types/bootstrap": "^5.2.1",
     "@types/chai": "^4.3.0",
     "@types/jquery": "^3.5.14",
     "@types/mocha": "^9.0.0",
