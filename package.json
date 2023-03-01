@@ -43,7 +43,7 @@
     "git-hooks": "^1.1.10",
     "json5": "^2.2.3",
     "nyc": "^15.1.0",
-    "prettier": "^2.8.1",
+    "prettier": "^2.8.4",
     "source-map-support": "^0.5.21",
     "testcafe": "^2.3.0",
     "ts-node": "^10.9.1",
