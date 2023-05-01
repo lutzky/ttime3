@@ -12,7 +12,7 @@
     "@types/selectize": "^0.12.35",
     "chai": "^4.3.7",
     "js-beautify": "^1.14.7",
-    "karma": "^6.4.1",
+    "karma": "^6.4.2",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.2.0",
     "karma-firefox-launcher": "^2.1.0",
