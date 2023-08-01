@@ -11,7 +11,7 @@
     "@types/node": "^20.4.5",
     "@types/selectize": "^0.12.35",
     "chai": "^4.3.7",
-    "js-beautify": "^1.14.7",
+    "js-beautify": "^1.14.9",
     "karma": "^6.4.2",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.2.0",
