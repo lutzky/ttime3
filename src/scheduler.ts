@@ -31,7 +31,7 @@ function filterNoCollisions(schedule: Schedule): boolean {
  */
 export function generateSchedules(
   courses: Set<Course>,
-  settings: FilterSettings
+  settings: FilterSettings,
 ): Schedule[] {
   if (schedulerDebugLogging) {
     console.time("generateSchedules");
@@ -69,14 +69,14 @@ export function generateSchedules(
  */
 function removeForbiddenGroups(
   course: Course,
-  settings: FilterSettings
+  settings: FilterSettings,
 ): Course {
   if (course.groups == null) {
     console.warn("Scheduling with groupless course", course);
     return course;
   }
   course.groups = course.groups.filter(
-    (g) => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`)
+    (g) => !settings.forbiddenGroups.includes(`${course.id}.${g.id}`),
   );
   return course;
 }
@@ -88,12 +88,12 @@ function removeForbiddenGroups(
 function filterWithDelta(
   src: Schedule[],
   filter: (s: Schedule) => boolean,
-  filterName: string
+  filterName: string,
 ): Schedule[] {
   const result = src.filter(filter);
   if (schedulerDebugLogging) {
     console.info(
-      `Filter ${filterName} removed ${src.length - result.length} schedules`
+      `Filter ${filterName} removed ${src.length - result.length} schedules`,
     );
   }
   return result;
@@ -104,7 +104,7 @@ function filterWithDelta(
  */
 function runAllFilters(
   schedules: Schedule[],
-  settings: FilterSettings
+  settings: FilterSettings,
 ): Schedule[] {
   let result = schedules.slice();
 
@@ -122,7 +122,7 @@ function runAllFilters(
  */
 function filterByRatings(
   schedules: Schedule[],
-  settings: FilterSettings
+  settings: FilterSettings,
 ): Schedule[] {
   Object.keys(settings.ratingMin).forEach(
     (r: keyof typeof settings.ratingMin) => {
@@ -148,9 +148,9 @@ function filterByRatings(
 
           return true;
         },
-        `Rating '${r}'`
+        `Rating '${r}'`,
       );
-    }
+    },
   );
 
   return schedules;

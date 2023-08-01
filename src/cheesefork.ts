@@ -72,7 +72,7 @@ function deserialize(jsData: string): any[] {
   } else if (jsData.startsWith(jsonParsePrefix)) {
     const rawEscapedJSON = jsData.substring(
       jsonParsePrefix.length,
-      jsData.length - 1 /* drop trailing ) */
+      jsData.length - 1 /* drop trailing ) */,
     );
 
     // The external string is single-quoted, but occasionally contains escape
@@ -305,7 +305,7 @@ export function getCatalogs(token: string): Promise<[string, string][]> {
           .map((r: GHContentsJSONEntry): string => r.download_url)
           .filter((url: string) => url.endsWith(".min.js"));
         const tuples: [string, string][] = minified.map(
-          (url: string): [string, string] => [catalogNameFromUrl(url), url]
+          (url: string): [string, string] => [catalogNameFromUrl(url), url],
         );
         const sortedByURL = tuples.sort((a, b) => (a[1] < b[1] ? -1 : 1));
         resolve(sortedByURL);

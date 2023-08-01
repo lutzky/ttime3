@@ -5,10 +5,10 @@ import * as cheesefork from "../src/cheesefork";
 describe("Cheesefork parser", function () {
   it("Should correctly convert test dates", function () {
     expect(
-      cheesefork._private.parseTestDate("בתאריך 02.02.2020 יום א")
+      cheesefork._private.parseTestDate("בתאריך 02.02.2020 יום א"),
     ).to.deep.equal(new Date(2020, 1, 2));
     expect(cheesefork._private.parseTestDate("13-02-2022")).to.deep.equal(
-      new Date(2022, 1, 13)
+      new Date(2022, 1, 13),
     );
   });
 
@@ -89,7 +89,7 @@ describe("Cheesefork Utilities", function () {
 
       const got = deserialize(data);
       expect(got).to.deep.equal(want);
-    })
+    }),
   );
 });
 
@@ -97,13 +97,13 @@ describe("Cheesefork API", function () {
   it("Should correctly convert URLs into names", function () {
     expect(
       cheesefork.catalogNameFromUrl(
-        "https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201802.min.js"
-      )
+        "https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201802.min.js",
+      ),
     ).to.equal("Spring 2019 (CheeseFork)");
     expect(
       cheesefork.catalogNameFromUrl(
-        "https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201801.min.js"
-      )
+        "https://raw.githubusercontent.com/michael-maltsev/cheese-fork/gh-pages/courses/courses_201801.min.js",
+      ),
     ).to.equal("Winter 2018/19 (CheeseFork)");
   });
 });
@@ -147,7 +147,7 @@ describe("Cheesefork API Integration test", function () {
       /* eslint-disable no-unused-expressions, @typescript-eslint/no-unused-expressions */
       expect(
         firstUrl < secondUrl,
-        `Wrong sort order: ${firstUrl} came before ${secondUrl}`
+        `Wrong sort order: ${firstUrl} came before ${secondUrl}`,
       ).to.be.true;
     });
   });
@@ -190,6 +190,6 @@ describe("Cheesefork API Integration test", function () {
         const faculties = cheesefork.parse(cheeseForkData);
         expect(faculties.length).to.be.greaterThan(5);
       });
-    })
+    }),
   );
 });

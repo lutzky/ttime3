@@ -52,7 +52,7 @@ describe("Scheduler", function () {
       void loadTestCatalog().then((c) => {
         catalog = c;
         algebra = catalog[0].courses.find(
-          (course) => course.id === algebraCourseID
+          (course) => course.id === algebraCourseID,
         );
         expect(algebra).to.not.equal(undefined);
         done();
@@ -104,7 +104,7 @@ describe("Scheduler", function () {
       const schedules = generateSchedules(new Set([algebra]), settings);
 
       const schedulesWithGroup = schedules.filter((schedule) =>
-        schedule.events.map((x) => x.group.id).includes(11)
+        schedule.events.map((x) => x.group.id).includes(11),
       );
 
       expect(schedulesWithGroup.length).to.be.greaterThan(0);
@@ -117,7 +117,7 @@ describe("Scheduler", function () {
       const schedules = generateSchedules(new Set([algebra]), settings);
 
       const schedulesWithGroup = schedules.filter((schedule) =>
-        schedule.events.map((x) => x.group.id).includes(11)
+        schedule.events.map((x) => x.group.id).includes(11),
       );
 
       expect(schedulesWithGroup.length).to.equal(0);
