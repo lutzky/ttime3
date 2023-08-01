@@ -23,7 +23,7 @@ function getLatest(schedule: Schedule): number {
 export function renderSchedule(
   target: HTMLElement,
   schedule: Schedule,
-  courseColors: Map<number, string[]>
+  courseColors: Map<number, string[]>,
 ): void {
   target.innerHTML = "";
 
@@ -46,7 +46,7 @@ export function renderSchedule(
       /* left   */ (100 / 6.0) * (1 + event.day + le.layer / le.numLayers),
       /* top    */ scale * (event.startMinute - earliest),
       /* width  */ 100 / 6.0 / le.numLayers,
-      /* height */ scale * (event.endMinute - event.startMinute)
+      /* height */ scale * (event.endMinute - event.startMinute),
     );
     annotateEvent(eventDiv, event);
     target.appendChild(eventDiv);
@@ -120,7 +120,7 @@ function addGridLines(target: HTMLElement, schedule: Schedule) {
       /* left    */ 0,
       /* top     */ scale * (t - earliest),
       /* width   */ 100,
-      /* height  */ scale * gridDensity
+      /* height  */ scale * gridDensity,
     );
     target.appendChild(gridDiv);
   }
@@ -135,7 +135,7 @@ function positionElement(
   left: number,
   top: number,
   width: number,
-  height: number
+  height: number,
 ) {
   element.style.left = `${left}${units}`;
   element.style.top = `${top}${units}`;

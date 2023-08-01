@@ -76,7 +76,7 @@ void cheeseForkCatalogs.then((catalogs) => {
         click: () => setCatalogUrl(catalogUrl),
         href: "#/",
         text: catalogName,
-      })
+      }),
     );
   }
 });
@@ -252,17 +252,17 @@ function htmlDescribeCourse(course: Course): HTMLElement {
   ul.append(
     $("<li>", {
       html: `<b>Full name</b> ${formatCourseId(course.id)} ${course.name}`,
-    })
+    }),
   );
   ul.append(
-    $("<li>", { html: `<b>Academic points:</b> ${course.academicPoints}` })
+    $("<li>", { html: `<b>Academic points:</b> ${course.academicPoints}` }),
   );
   ul.append(
     $("<li>", {
       html: `<b>Lecturer in charge:</b> ${rtlSpan(
-        course.lecturerInCharge || "[unknown]"
+        course.lecturerInCharge || "[unknown]",
       )}`,
-    })
+    }),
   );
   ul.append($("<li>", { html: "<b>Test dates:</b>" }));
   const testDates = $("<ul>");
@@ -282,7 +282,7 @@ function htmlDescribeCourse(course: Course): HTMLElement {
       $("<div>", {
         class: "rtlnotes",
         html: course.notes.replace(/\n/g, "<br>"),
-      })
+      }),
     );
     ul.append(li);
   }
@@ -303,7 +303,7 @@ function htmlDescribeCourse(course: Course): HTMLElement {
                 "-" +
                 minutesToTime(e.endMinute) +
                 ` at ${e.location || "[unknown]"}`,
-            })
+            }),
           );
         });
       } else {
@@ -473,12 +473,12 @@ function saveSettings() {
   settings.customEvents = $("#custom-events-textarea").val() as string;
   settings.catalogUrl = $("#catalog-url").val() as string;
   settings.hideCoursesWithCloseTests = $("#hide-courses-with-close-tests").prop(
-    "checked"
+    "checked",
   ) as boolean;
 
   settings.minTestDateDistance = getNumInputValueWithDefault(
     $("#close-test-distance")[0] as HTMLInputElement,
-    5
+    5,
   );
   // Reflecting this back to the UI here is a bit of a hack :/
   $("#min-test-date-distance-display").text(settings.minTestDateDistance);
@@ -494,11 +494,11 @@ function saveSettings() {
   allRatingTypes.forEach((r) => {
     settings.filterSettings.ratingMin[r] = getNumInputValueWithDefault(
       $(`#rating-${r}-min`)[0] as HTMLInputElement,
-      null
+      null,
     );
     settings.filterSettings.ratingMax[r] = getNumInputValueWithDefault(
       $(`#rating-${r}-max`)[0] as HTMLInputElement,
-      null
+      null,
     );
   });
 
@@ -525,7 +525,7 @@ window.saveSettings = saveSettings;
  */
 function getNumInputValueWithDefault(
   input: HTMLInputElement,
-  defaultValue: number
+  defaultValue: number,
 ): number {
   if (input.value === "") {
     return defaultValue;
@@ -596,7 +596,7 @@ function updateTestDates() {
   $("#how-to-show-close-test-courses").html(
     settings.hideCoursesWithCloseTests
       ? "hidden"
-      : 'shown in <span style="color: red">red</span>'
+      : 'shown in <span style="color: red">red</span>',
   );
   const ul = $("<ul>", { class: "list-group" });
   $("#test-schedule").empty();
@@ -616,7 +616,7 @@ function updateTestDates() {
       $("<li>", {
         class: "list-group-item",
         html: `${formattedDistance} ${date.toDateString()} - ${course.name}`,
-      })
+      }),
     );
   }
 }
@@ -627,7 +627,7 @@ function updateTestDates() {
 function refreshSelectedCourses() {
   const nscheds = Number(totalPossibleSchedules(selectedCourses));
   $("#possible-schedules").text(
-    `${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`
+    `${nscheds.toLocaleString()} (${nscheds.toExponential(2)})`,
   );
   $("#generate-schedules").prop("disabled", selectedCourses.size === 0);
   const div = $("#selected-courses");
@@ -651,7 +651,7 @@ function refreshSelectedCourses() {
         $("<i>", {
           class: "text-warning fas fa-exclamation-triangle",
           title: "Course has no groups",
-        })
+        }),
       );
     }
 
@@ -722,7 +722,7 @@ const customEventRegex = new RegExp(
     /(.*)/,
   ]
     .map((x) => x.source)
-    .join("")
+    .join(""),
 );
 
 /* eslint-disable  */
@@ -744,7 +744,7 @@ function createSingleEventCourse(
   name: string,
   day: number,
   startMinute: number,
-  endMinute: number
+  endMinute: number,
 ): Course {
   const c: Course = {
     academicPoints: 0,
@@ -956,7 +956,7 @@ function goToSchedule(i: number) {
   render.renderSchedule(
     $("#rendered-schedule")[0],
     schedule,
-    getCourseColorMap(selectedCourses)
+    getCourseColorMap(selectedCourses),
   );
 }
 
@@ -1007,7 +1007,7 @@ function sortByRating(rating: ratingType) {
   goToSchedule(0);
   allRatingTypes.forEach((r) => {
     $(`#rating-badge-${r}`).replaceWith(
-      getRatingBadge(r, possibleSchedules[0])
+      getRatingBadge(r, possibleSchedules[0]),
     );
   });
 }
@@ -1172,7 +1172,7 @@ function coursesSelectizeSetup() {
             if (
               !getTestDates().fitsWithDistance(
                 testDate,
-                settings.minTestDateDistance
+                settings.minTestDateDistance,
               )
             ) {
               hasCloseTest = true;
@@ -1244,7 +1244,7 @@ function loadSettings(s: string): Settings {
   $("#custom-events-textarea").val(result.customEvents);
   $("#hide-courses-with-close-tests").prop(
     "checked",
-    result.hideCoursesWithCloseTests
+    result.hideCoursesWithCloseTests,
   );
   $("#min-test-date-distance-display").text(result.minTestDateDistance);
   $("#close-test-distance").val(result.minTestDateDistance);
@@ -1273,7 +1273,7 @@ function totalPossibleSchedules(courses: Set<Course>): number {
     .map((course) =>
       groupsByType(course)
         .map((t) => t.length)
-        .reduce((a, b) => a * b, 1)
+        .reduce((a, b) => a * b, 1),
     )
     .reduce((a, b) => a * b, 1);
 }
@@ -1291,7 +1291,7 @@ function buildRatingsLimitForm() {
         class: "col col-form-label",
         text: allRatings[r].name,
         title: allRatings[r].explanation,
-      })
+      }),
     );
     row.append(
       $("<div>", {
@@ -1303,7 +1303,7 @@ function buildRatingsLimitForm() {
           placeholder: "-∞",
           type: "number",
         }),
-      })
+      }),
     );
     row.append(
       $("<div>", {
@@ -1315,7 +1315,7 @@ function buildRatingsLimitForm() {
           placeholder: "∞",
           type: "number",
         }),
-      })
+      }),
     );
   });
 }
@@ -1335,10 +1335,10 @@ updateForbiddenGroups();
 async function renderCatalog() {
   try {
     const cheeseForkLatest = cheeseForkCatalogs.then(
-      (catalogs) => catalogs[catalogs.length - 1][1]
+      (catalogs) => catalogs[catalogs.length - 1][1],
     );
     const catalog = await loadCatalog(
-      settings.catalogUrl || (await cheeseForkLatest)
+      settings.catalogUrl || (await cheeseForkLatest),
     );
     if (mainDebugLogging) {
       console.log("Loaded catalog:", catalog);

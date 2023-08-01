@@ -12,7 +12,7 @@ ctx.onmessage = (e: MessageEvent) => {
   try {
     const schedules = generateSchedules(
       e.data.courses as Set<Course>,
-      e.data.filterSettings as FilterSettings
+      e.data.filterSettings as FilterSettings,
     );
     ctx.postMessage(schedules);
   } catch (err) {

@@ -42,7 +42,7 @@ class Layered<T> {
  */
 export default function layerize<T>(
   objects: T[],
-  collide: (objs: T[]) => boolean
+  collide: (objs: T[]) => boolean,
 ): Layered<T>[] {
   const result: Layered<T>[] = [];
 
