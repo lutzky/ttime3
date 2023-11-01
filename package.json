@@ -9,7 +9,7 @@
     "@types/jquery": "^3.5.20",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.8.0",
-    "@types/selectize": "^0.12.35",
+    "@types/selectize": "^0.12.37",
     "chai": "^4.3.8",
     "js-beautify": "^1.14.9",
     "karma": "^6.4.2",
