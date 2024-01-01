@@ -7,7 +7,7 @@
     "@types/bootstrap": "^5.2.10",
     "@types/chai": "^4.3.5",
     "@types/jquery": "^3.5.29",
-    "@types/mocha": "^10.0.1",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.6",
     "@types/selectize": "^0.12.39",
     "chai": "^4.3.8",
