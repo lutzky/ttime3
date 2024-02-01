@@ -10,7 +10,7 @@
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.10.6",
     "@types/selectize": "^0.12.39",
-    "chai": "^4.3.8",
+    "chai": "^5.0.3",
     "js-beautify": "^1.14.11",
     "karma": "^6.4.2",
     "karma-chai": "^0.1.0",
