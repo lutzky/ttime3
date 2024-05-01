@@ -26,7 +26,7 @@
     "typescript": "^5.4.3",
     "typescript-formatter": "^7.2.2",
     "webpack": "^5.91.0",
-    "webpack-dev-server": "^5.0.2",
+    "webpack-dev-server": "^5.0.4",
     "worker-loader": "^3.0.8"
   },
   "devDependencies": {
