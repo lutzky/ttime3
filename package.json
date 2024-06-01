@@ -20,7 +20,7 @@
     "karma-typescript": "^5.5.4",
     "karma-webpack": "^5.0.1",
     "lodash": "^4.17.21",
-    "mocha": "^10.2.0",
+    "mocha": "^10.4.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
